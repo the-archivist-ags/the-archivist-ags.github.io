@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - templar-news</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / templar-news</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">08-Apr-20 12:14 AM</span>
+
+            <div class="chatlog__message " data-message-id="697222715446394911" id="message-697222715446394911">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="System#4325">@Iced out Appa</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/222060915984433152/ba0e91d4ec1de8c16353d8d554d53745.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="System#4325" data-user-id="222060915984433152"  style="color: rgb(129, 134, 137)" >Iced out Appa</span>
+
+
+        <span class="chatlog__timestamp">08-Apr-20 12:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="697226771644284969" id="message-697226771644284969">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello, Templar News will be bringing everyone news on the Stock Market and other business related news. If anyone wishes to work at Templar News please get into contact with me</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 12:40 AM</span>
+
+            <div class="chatlog__message " data-message-id="697229471786205225" id="message-697229471786205225">
+                <div class="chatlog__content">
+                    <div class="markdown">Test</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 12:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="697233101931151473" id="message-697233101931151473">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://discord.gg/S2pAH9k">https://discord.gg/S2pAH9k</a> if you wish to join our organization</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 01:15 AM</span>
+
+            <div class="chatlog__message " data-message-id="697238273717960794" id="message-697238273717960794">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://discord.gg/FqKHVSm">https://discord.gg/FqKHVSm</a> updated</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 01:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="697241585477353553" id="message-697241585477353553">
+                <div class="chatlog__content">
+                    <div class="markdown">We have expanded our organiztion to have a Business News Team and a Religious News team, please come and join the Organization if you are interested in Business or Religion</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteNay" title="VoteNay" src="https://cdn.discordapp.com/emojis/406279998803017728.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 01:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="697243729043390545" id="message-697243729043390545">
+                <div class="chatlog__content">
+                    <div class="markdown">Non nobis, Domine, non nobis, sed Nomini tuo da gloriam
+(English: Not unto us, O Lord, not unto us, but unto thy Name give glory)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="perhaps" title="perhaps" src="https://cdn.discordapp.com/emojis/604799860415397888.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 07:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="697515435737874522" id="message-697515435737874522">
+                <div class="chatlog__content">
+                    <div class="markdown">First news article is out. <a href="https://docs.google.com/document/d/1AxfuTybpHw5yUoDUe1zUUyyy5DcDsVn4wTtaWgIItJE/edit?usp=drivesdk">https://docs.google.com/document/d/1AxfuTybpHw5yUoDUe1zUUyyy5DcDsVn4wTtaWgIItJE/edit?usp=drivesdk</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1AxfuTybpHw5yUoDUe1zUUyyy5DcDsVn4wTtaWgIItJE/edit?usp=drivesdk"><div class="markdown">Christianity Explained for Non-Christians</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Christianity Explained for Non-Christians By John Smith   I&#39;d like to talk about one thing that&#39;s extremely important to me, Jesus. I&#39;m a devote baptist and have always been. Christianity is in my opinion, the greatest religion, not just because I believe it to be the one true...</div></div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⛪" title="⛪" src="https://twemoji.maxcdn.com/2/72x72/26ea.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="✝️" title="✝️" src="https://twemoji.maxcdn.com/2/72x72/271d.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Apr-20 07:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="698238688642990110" id="message-698238688642990110">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1ggOAzun73Q_wsd4_Ey2XN6DFu5pjuTq24Hk85b56aOQ/edit?usp=sharing">https://docs.google.com/document/d/1ggOAzun73Q_wsd4_Ey2XN6DFu5pjuTq24Hk85b56aOQ/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1ggOAzun73Q_wsd4_Ey2XN6DFu5pjuTq24Hk85b56aOQ/edit?usp=sharing"><div class="markdown">Renewable Energy Becoming the New Fossil Fuel</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Renewable Energy Becoming the New Fossil Fuel?   8 minute Solar Energy temporarily stopped building a solar farm near Fresno, Calif., because of the coronavirus pandemic. Credit:Deanne Fitzmaurice for Templar News    By: Andrew Blaze With the Coronavirus pandemic came heighten...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/9WQG8yTRzFatiiGVFdz99IS9UyOrkSKaj6qCcV12ApDPlTFiuZFr4bjlhHzj2T2GxICo5wEhBw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/9WQG8yTRzFatiiGVFdz99IS9UyOrkSKaj6qCcV12ApDPlTFiuZFr4bjlhHzj2T2GxICo5wEhBw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="❓" title="❓" src="https://twemoji.maxcdn.com/2/72x72/2753.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">12-Apr-20 08:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="698973523678462044" id="message-698973523678462044">
+                <div class="chatlog__content">
+                    <div class="markdown">Happy Easter everyone</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🐀" title="🐀" src="https://twemoji.maxcdn.com/2/72x72/1f400.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">14-Apr-20 07:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="699682560824836107" id="message-699682560824836107">
+                <div class="chatlog__content">
+                    <div class="markdown">So far today the Dow Jones is up 540 points. So far so good</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="699682684875833395" id="message-699682684875833395">
+                <div class="chatlog__content">
+                    <div class="markdown">And the S&amp;P 500 index is up 80 points</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="699683015546241085" id="message-699683015546241085">
+                <div class="chatlog__content">
+                    <div class="markdown">Apple and Google are also having a good day up over 4% so far on the day and Tesla is up 12.35%</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 04:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="701998383602335764" id="message-701998383602335764">
+                <div class="chatlog__content">
+                    <div class="markdown">Oil has dropped 300% to -$36 a barrel</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Apr-20 07:21 AM</span>
+
+            <div class="chatlog__message " data-message-id="703490925749469214" id="message-703490925749469214">
+                <div class="chatlog__content">
+                    <div class="markdown">Some nice gains for the markets outlined in red boxes. Hopefully the market will continue to recover</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/222060915984433152/ba0e91d4ec1de8c16353d8d554d53745.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="System#4325" data-user-id="222060915984433152"  style="color: rgb(129, 134, 137)" >Iced out Appa</span>
+
+
+        <span class="chatlog__timestamp">25-Apr-20 07:23 AM</span>
+
+            <div class="chatlog__message " data-message-id="703491306206265374" id="message-703491306206265374">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/697222509388628060/703491305787097128/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/697222509388628060/703491305787097128/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Apr-20 07:41 AM</span>
+
+            <div class="chatlog__message " data-message-id="703495872876380162" id="message-703495872876380162">
+                <div class="chatlog__content">
+                    <div class="markdown">Tesla is also up 2.77% , this so far has been a great month for Tesla , they opened this month at $508 per share and sit currently at $725 up 142.7%. Looks like a good rally so far.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703496005924159488" id="message-703496005924159488">
+                <div class="chatlog__content">
+                    <div class="markdown">Correction, the 2.77% is on the Day and the 142.7% is on this month so far</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 06:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="704557708073893918" id="message-704557708073893918">
+                <div class="chatlog__content">
+                    <div class="markdown">Tesla ends the day up 10%</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="704557742949531710" id="message-704557742949531710">
+                <div class="chatlog__content">
+                    <div class="markdown">Tesla is having a fantastic month</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 06:09 AM</span>
+
+            <div class="chatlog__message " data-message-id="704559824603447316" id="message-704559824603447316">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dow Jones finished 1.5% up on the day. The S&amp;P 500 finished 1.47% and the NASDAQ finished 1.11% on the day</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 06:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="704561663730253851" id="message-704561663730253851">
+                <div class="chatlog__content">
+                    <div class="markdown">In other News. Oil continues to fall. It stands at little over $12 a barrel with gasoline costing $1.96 on average across the country. Along with the price drop it can be accounted to the 30 million barrels per day decrease in usage leaving companies with huge stockpiles of oil.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 07:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="704573050443661382" id="message-704573050443661382">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>WE HAVE MOVED HERE</strong></em>
+
+While <span class="mention">#the-dan-reinhard-show</span> has been archived, operations will remain as normal here on the show</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">29-Apr-20 04:05 AM</span>
+
+            <div class="chatlog__message " data-message-id="704890962803032176" id="message-704890962803032176">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>Leadership Approval Poll -</strong></em>
+
+<a href="https://forms.gle/5qcVkeyrxwQCfBEK7">https://forms.gle/5qcVkeyrxwQCfBEK7</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://forms.gle/5qcVkeyrxwQCfBEK7"><div class="markdown">TDRS Leadership Poll</div></a>
+                            </div>
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/y9mFa0ZlVWpI9UvrllBcP0GiIL0QLaCI0WMAZjgI5cTGeHPhEj-46Qy8hvmMf2UP_ILoqlM=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/y9mFa0ZlVWpI9UvrllBcP0GiIL0QLaCI0WMAZjgI5cTGeHPhEj-46Qy8hvmMf2UP_ILoqlM=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="☑️" title="☑️" src="https://twemoji.maxcdn.com/2/72x72/2611.png">
+                            <span class="chatlog__reaction-count">13</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">30-Apr-20 04:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="705254088799158284" id="message-705254088799158284">
+                <div class="chatlog__content">
+                    <div class="markdown">Results for the TDRS Leadership Poll - <a href="https://docs.google.com/document/d/1pJ6TwFJleIll7t9z8bi1uQyEpkAe3IzYlwE4X8vJLPE/edit">https://docs.google.com/document/d/1pJ6TwFJleIll7t9z8bi1uQyEpkAe3IzYlwE4X8vJLPE/edit</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1pJ6TwFJleIll7t9z8bi1uQyEpkAe3IzYlwE4X8vJLPE/edit"><div class="markdown">TDRS Leadership Poll Results</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">THE DAN REINHARD SHOW - LEADERSHIP POLL  What Party are you Registered to? Federalists - 46.2% American Liberal Coalition - 23.1% Centrists - 7.7% Classical Liberals - 7.7% Independent - 7.7% PSLPA - 7.7% 13 Responses ---------------------------------------------------------- ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/_3R9MD_MIFAbrSrA8wv16xekb1q49SV8fl4tOMrJnVfGJMjxQlOhpWSTL3g5mexm80TDWCvrWg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/_3R9MD_MIFAbrSrA8wv16xekb1q49SV8fl4tOMrJnVfGJMjxQlOhpWSTL3g5mexm80TDWCvrWg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">30-Apr-20 06:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="705468640014630964" id="message-705468640014630964">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1WwSE6axdhsm1d4I2CXNf6wLG3_uZ_NVBo00rZhEUqeU/edit?usp=sharing">https://docs.google.com/document/d/1WwSE6axdhsm1d4I2CXNf6wLG3_uZ_NVBo00rZhEUqeU/edit?usp=sharing</a></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-May-20 06:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="705658911956402217" id="message-705658911956402217">
+                <div class="chatlog__content">
+                    <div class="markdown">Happy to announce Atlas has joined our enterprises and is headed by <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> welcome to the Templar Family</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="iwouldprefernotto" title="iwouldprefernotto" src="https://cdn.discordapp.com/emojis/435263374402781185.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-May-20 06:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="705829272006164500" id="message-705829272006164500">
+                <div class="chatlog__content">
+                    <div class="markdown">We are happy to announce that we will be like the fourth news org to announce the obvious, which it that we will retain our tradition of prediciting elections, this time we are trying an updated model that we think will prove more effective and accurate</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-May-20 01:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="706307445714321488" id="message-706307445714321488">
+                <div class="chatlog__content">
+                    <div class="markdown">Our predictions are currently in the works. They will be put between 9:30 and 10:00 pm EST</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="thonk" title="thonk" src="https://cdn.discordapp.com/emojis/411953988494163978.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-May-20 03:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="706335221506637924" id="message-706335221506637924">
+                <div class="chatlog__content">
+                    <div class="markdown">Sorry about the super long extension, we lost internet and couldn&#39;t get the site where the live transcripts and copies of the posters are posted to load. Predictions will now come out as we get them</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706335829248704592" id="message-706335829248704592">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>DIXIE PREDICTIONS -</strong>
+
+DX-1 - TheodoreIvy has yet to campaign, and we at TDRS think Phoenix will win by around 8%, give or take
+
+Likely Aegeus Phoenix - 54%
+Drunken Sailor - 46%
+TheodoreIvy - 2%
+——————————
+DX-2 - Dylan Parker hasn&#39;t done good, let&#39;s just leave it at that
+
+Likely John Smith - 79%
+Dylan Parker - 21%
+——————————
+DX-3 - Uneventful, as Veritas Post has said, and also pretty obvious
+
+Likely Poliman - 56%
+Noodleborn - 44%
+——————————
+DX-4 - We predict a Lohengramm victory, but Ethan and Garvey did quite well as well. Soviet was absent for much of the end of the race, TDRS still doesn&#39;t know much about him
+
+Likely Lohengramm - 45%
+Ethan Matthias - 26%
+Garvey - 21%
+SovietSquidward - 8%
+——————————
+DX-5 - Not much to say here, one candidate mysteriously disappeared mid-race though?
+
+Likely Sandoval - 81%
+UBIGuy - 12%
+o7 - 7% (Don&#39;t quote have an opinion, he hasn&#39;t said anything other than that he was sleeping?)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-May-20 04:14 AM</span>
+
+            <div class="chatlog__message " data-message-id="706342793597026335" id="message-706342793597026335">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>NORTH PREDICTIONS -</strong>
+
+NS-1 - Enough said, missing votes hasn&#39;t hurt Emperio&#39;s re-election campaign. Well done <img class="emoji " alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">
+
+Likely Emperio - 65%
+Cylow - 25%
+SamTheRedFox - 10%
+—————————-
+NS-2 - Votes and endorsements will pick the winner
+
+Likely Hale - 41%
+Harper - 34%
+Oliver - 12%
+IndyPrez - 11%
+Kamala Devi Harris - 2%
+——————————
+NS-3 - 2 Strong faces, one will prevail
+
+Likely Thanos - 49%
+XRT17 - 40%
+MadelynMoon - 11%
+——————————
+NS-4 - Too close for a steady prediction, but whatever
+
+Likely Autocratc - 33%
+Pete Hoekstra - 30%
+Darby - 25%
+Dfads - 12%
+——————————
+NS-5 - If you can&#39;t predict NS-5...you&#39;re something else
+
+Likely Arkenstone - 100%
+——————————
+NS-6 - #CoulterIsTheHighestRatesPersonInTheHouseOfRepresentativesIfWeRememberCorrectly
+
+Likely Jack Coulter - 65%
+ADrewster - 35%
+——————————
+Senate - Extremely close, we predict a Hagen victory
+
+Likely Hagen - 52%
+LOTR - 48%</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706343608281727047" id="message-706343608281727047">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Mistake Caught</strong>
+
+We didn&#39;t realize we forgot to include the Senate race in Dixie, so here -
+
+Senate - If you can&#39;t guess this, you need to retire from politics
+
+Likely Order - 100%
+<em>mysterious opponent shows up and takes Order hostage</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-May-20 04:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="706527854740897863" id="message-706527854740897863">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>JEFFERSON PREDICTIONS -</strong>
+
+JF-1 - Not much to say, close race
+
+Likely Putbye - 51%
+Slavette - 49%
+
+JF-2 - This race, for sure, will be won solely by endorsements
+
+Likely Apex - 41%
+Cinna - 40%
+Elliot - 19%
+
+JF-3 - One candidate left mid race, then came back we guess?
+
+Likely Epsilon - 60%
+Computerguy - 40%
+
+JF-4 - We aren&#39;t even gonna talk about this race. Such a shitshow, most horrid debating ever. Plus, too close to guess
+
+JF-5 - Well played, newcomer!
+
+Likely JAPL - 62%
+Sam Adams - 38%
+
+JF-6 - Ok race, uneventful due to lack of competition
+
+Likely System - 100%</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-May-20 11:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="706636810780016670" id="message-706636810780016670">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Final Predictions after polls close, and results are compiled. Around 9-10 pm EST tonight</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-May-20 02:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="706679547617083454" id="message-706679547617083454">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>DIXIE</strong> -
+
+<strong>DX-1</strong> -
+
+Likely Aegeus Phoenix - 56%
+Drunken Sailor - 44%
+TheodoreIvy - 2%
+
+<strong>DX-2</strong> -
+
+Likely John Smith - 75%
+Dylan Parker - 25%
+
+<strong>DX-3</strong> -
+
+Likely Poliman - 74%
+Noodleborn - 26%
+
+<strong>DX-4</strong> -
+
+Likely Lohengramm - 45%
+Ethan Matthias - 28%
+Garvey - 23%
+SovietSquidward - 4%
+
+<strong>DX-5</strong> -
+
+Likely Sandoval - 83%
+UBIGuy - 13%
+o7 - 4%</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🅱️" title="🅱️" src="https://twemoji.maxcdn.com/2/72x72/1f171.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇮" title="🇮" src="https://twemoji.maxcdn.com/2/72x72/1f1ee.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇦" title="🇦" src="https://twemoji.maxcdn.com/2/72x72/1f1e6.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇸" title="🇸" src="https://twemoji.maxcdn.com/2/72x72/1f1f8.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-May-20 02:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="706682793886875710" id="message-706682793886875710">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>NORTH -</strong>
+
+<strong>NS-1</strong> -
+
+Likely Emperio - 63%
+Cylow - 29%
+SamTheRedFox - 8%
+
+<strong>NS-2</strong> -
+
+Likely Hale - 41%
+Harper - 31%
+Oliver - 16%
+IndyPrez - 10%
+Kamala Devi Harris - 2%
+
+<strong>NS-3</strong> -
+
+Likely Thanos - 48%
+XRT17 - 43%
+MadelynMoon - 9%
+
+<strong>NS-4</strong> -
+
+Likely Elkridge - 36%
+Pete Hoekstra - 33%
+Darby - 22%
+Dfads - 11%
+
+<strong>NS-5</strong> -
+
+Likely Arkenstone - 100%
+
+<strong>NS-6</strong> -
+
+Likely Jack Coulter - 66%
+ADrewster - 34%</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706684340020445237" id="message-706684340020445237">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>JEFFERSON</strong> -
+
+<strong>JF-1</strong> -
+
+Likely Slavette - 54%
+Putbye - 46%
+
+<strong>JF-2</strong> -
+
+Likely Apex - 46%
+Cinna - 37%
+Elliot - 17%
+
+<strong>JF-3</strong> -
+
+Likely Epsilon - 62%
+Computerguy - 38%
+
+<strong>JF-4</strong> -
+
+Likely Caprese - 52%
+Dan Reinhard - 48%
+
+<strong>JF-5</strong> -
+
+Likely JAPL - 58%
+Sam Adams - 42%
+
+<strong>JF-6</strong> -
+
+Likely System - 100%</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-May-20 08:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="707310100511195267" id="message-707310100511195267">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING NEWS</strong>
+
+Rep.&#39;s System and Lohengramm have Both left the Federalist Party, along with Randy. It is clear that they each think the party is incompetent, and Gramm has stated that</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/acbde1e6da6ca148a214acd6cd2c97e2.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Templar News#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-May-20 08:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="707310767682093117" id="message-707310767682093117">
+                <div class="chatlog__content">
+                    <div class="markdown">Correction to the TDRS. Randy was expelled from the party</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😎" title="😎" src="https://twemoji.maxcdn.com/2/72x72/1f60e.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-May-20 08:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="707311494441992354" id="message-707311494441992354">
+                <div class="chatlog__content">
+                    <div class="markdown">Ah, yes. Thank you, Templar</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229471299666060/a6b8b8c5ae7a19608c49997a3688d9f7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Atlas#0000" data-user-id="697229471299666060" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-May-20 02:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="707400402538332160" id="message-707400402538332160">
+                <div class="chatlog__content">
+                    <div class="markdown">This is a test for the ATLAS News Media group.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="thonk" title="thonk" src="https://cdn.discordapp.com/emojis/411953988494163978.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/697229470955995176/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="697229470955995176" >Templar News</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">07-May-20 02:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="707769509049663578" id="message-707769509049663578">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>ANNOUNCEMENT</strong>
+Very soon, The Dan Reinhard Show will be leaving Templar News and shutting down for good. This follows much talk about how our show &quot;sucks,&quot; and we simply do not have  ideas and resources that are unique enough to function without more and more people looking forward to our downfall each showing. Thank you to all who actually cared for our show, our section of Templar&#39;s website will be shitting down shortly and  the Reinhard Theatre has already had a buyer approach.
+
+Thank you,
+TDRS Staff</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="jeb" title="jeb" src="https://cdn.discordapp.com/emojis/437017827812311040.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="minedab" title="minedab" src="https://cdn.discordapp.com/emojis/404769222720487424.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇫" title="🇫" src="https://twemoji.maxcdn.com/2/72x72/1f1eb.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="💩" title="💩" src="https://twemoji.maxcdn.com/2/72x72/1f4a9.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="707770565452365824" id="message-707770565452365824">
+                <div class="chatlog__content">
+                    <div class="markdown">Sorry, folks. Our portion of the site will be <strong>shutting</strong> down</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/222060915984433152/ba0e91d4ec1de8c16353d8d554d53745.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="System#4325" data-user-id="222060915984433152"  style="color: rgb(129, 134, 137)" >Iced out Appa</span>
+
+
+        <span class="chatlog__timestamp">19-May-20 10:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="712420189253140572" id="message-712420189253140572">
+                <div class="chatlog__content">
+                    <div class="markdown">( <span class="mention" title="DisguisedJet719#5977">@DisguisedJet719</span> this can be archived for the time being )</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">19-May-20 10:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="712420908605636649" id="message-712420908605636649">
+                <div class="chatlog__content">
+                    <div class="markdown">Archived</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 46 message(s)</div>
+</div>
+
+</body>
+</html>

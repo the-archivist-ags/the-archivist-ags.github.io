@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - dx5-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">May 2020 Federal Election / dx5-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-Apr-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">01-May-20 11:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="705916288634978375" id="message-705916288634978375">
+                <div class="chatlog__content">
+                    <div class="markdown">The Candidates are:
+
+<span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> (ALP)
+<span class="mention" title="Sandoval#9670">@sandoval</span> (F)
+Socialists can replace Jogod, who withdrew
+<span class="mention" title="Svem Bremder#0810">@Svem Bremder</span> (CL)
+
+Please ask any questions if you are a resident of Dixie<span class="chatlog__edited-timestamp" title="01-May-20 11:59 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="705918565114445825" id="message-705918565114445825">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Sandoval#9670">@sandoval</span> why should we vote for you over your opponents</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:14 AM</span>
+
+            <div class="chatlog__message " data-message-id="705920058647642122" id="message-705920058647642122">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote"><span class="mention" title="Sandoval#9670">@sandoval</span> why should we vote for you over your opponents
+</div><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span>  
+
+
+I have a proven track record within the state of Dixie as an Assemblyman, as well as within the Federal Cabinet as Secretary of Transportation. I have passed several large bills during my time in the Assembly and I would like to bring that energy and momentum to the House of Representatives.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/403344599332159488/048dc988d8616735e0d135607d3adc4c.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="QsMxRecon38❄#9754" data-user-id="403344599332159488"  style="color: rgb(0, 149, 255)" >State Leg. Ethan Matthias</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:41 AM</span>
+
+            <div class="chatlog__message " data-message-id="705926804128399361" id="message-705926804128399361">
+                <div class="chatlog__content">
+                    <div class="markdown">Sven, why did you continuously missed votes in the house, and why you should be elected if you were expelled for failing to vote?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="705928642168881223" id="message-705928642168881223">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Svem Bremder#0810">@Svem Bremder</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/606541981945954305/43102960409ecb163549461bb23fe3d0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Svem Bremder#0810" data-user-id="606541981945954305" >Svem Bremder</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:50 AM</span>
+
+            <div class="chatlog__message " data-message-id="705929253371510864" id="message-705929253371510864">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Sven, why did you continuously missed votes in the house, and why you should be elected if you were expelled for failing to vote?
+</div>(because OOC my account was deleted)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="705929590001893456" id="message-705929590001893456">
+                <div class="chatlog__content">
+                    <div class="markdown">Your “account was deleted”?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705929614295302265" id="message-705929614295302265">
+                <div class="chatlog__content">
+                    <div class="markdown">Is that slang?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705929660801876022" id="message-705929660801876022">
+                <div class="chatlog__content">
+                    <div class="markdown">And what it is “OOC”?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705929680166846544" id="message-705929680166846544">
+                <div class="chatlog__content">
+                    <div class="markdown">Is it a foreign word?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705929892021272636" id="message-705929892021272636">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Svem Bremder#0810">@Svem Bremder</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="705930042466631821" id="message-705930042466631821">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe he is discussing some sort of video game he plays. He must&#39;ve been playing too much and that&#39;s why he missed so many votes. After his account was deleted, he wanted to try to get back into politics.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="705938219384045652" id="message-705938219384045652">
+                <div class="chatlog__content">
+                    <div class="markdown">(he did it in parentheses you clown asses <span class="mention" title="rat randy!!!!!!!#0001">@rat!!!!!!!</span> <span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span>)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="705938549538684978" id="message-705938549538684978">
+                <div class="chatlog__content">
+                    <div class="markdown">(He should prob answer the question outside of parentheses tho)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="705938571554717706" id="message-705938571554717706">
+                <div class="chatlog__content">
+                    <div class="markdown">Did you just call me a “clown ass”? And how does someone speak in parantheses?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705939034366804040" id="message-705939034366804040">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Trash#3738">@teras h ffr od</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/273990668358254603/401c0aba9655a73671894dc55a124299.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Anarchist#0361" data-user-id="273990668358254603"  style="color: rgb(26, 188, 156)" >OrDeR</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:14 AM</span>
+
+            <div class="chatlog__message " data-message-id="705950187805474839" id="message-705950187805474839">
+                <div class="chatlog__content">
+                    <div class="markdown">What is your platform for this position?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:25 AM</span>
+
+            <div class="chatlog__message " data-message-id="705953112380145675" id="message-705953112380145675">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">What is your platform for this position?
+</div><span class="mention" title="Anarchist#0361">@OrDeR</span>  
+
+My platform is focused on continuing my environmental work on the federal level as well as continuing past efforts regarding criminal justice reform and aiding small business growth. I will work with fellow members of the House in finding creative ways to shrink the federal government’s role in regulation while providing avenues by which the states can better help themselves in these areas.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:57 AM</span>
+
+            <div class="chatlog__message " data-message-id="705961181445095444" id="message-705961181445095444">
+                <div class="chatlog__content">
+                    <div class="markdown">I would like to add on to this response. As the coronavirus pandemic continues to spread and affect our society and economy the Congress must oversee that minimal damage is done. Be it through further stimulus or a continued steady hand, I will absolutely see to it that the people of this nation are represented well in navigating these treacherous times.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/273990668358254603/401c0aba9655a73671894dc55a124299.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Anarchist#0361" data-user-id="273990668358254603"  style="color: rgb(26, 188, 156)" >OrDeR</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="705977258623631360" id="message-705977258623631360">
+                <div class="chatlog__content">
+                    <div class="markdown">If elected will you vote to reinstate John Smith as speaker despite his lack of leadership?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:24 AM</span>
+
+            <div class="chatlog__message " data-message-id="705982922112499813" id="message-705982922112499813">
+                <div class="chatlog__content">
+                    <div class="markdown">I consider John a valuable colleague and friend, however I will have to seriously look at each contender when deciding who to vote for as speaker.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="705991030721478661" id="message-705991030721478661">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello, I just wanted to introduce my self. I am a political outsider. I am a progressive fighting for change. UBI(Universal Basic Income), RCV(Ranked Choice Voting) and M4A are my top priorities. I will fight for the people of Dixie and if you have any questions I will answer!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="706124581269667932" id="message-706124581269667932">
+                <div class="chatlog__content">
+                    <div class="markdown">ew, big government</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="706152404709802046" id="message-706152404709802046">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong> <span class="mention" title="o7#3948">@o7</span> has been submitted as the Socialists replacement for Jogod</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="jeb" title="jeb" src="https://cdn.discordapp.com/emojis/437017827812311040.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706152551451590666" id="message-706152551451590666">
+                <div class="chatlog__content">
+                    <div class="markdown">(Also, stop with parentheses, or you will be jailed)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="706153864650555493" id="message-706153864650555493">
+                <div class="chatlog__content">
+                    <div class="markdown">Opinion on- this mess?</div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/705580941984137236/706153864419737620/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/705580941984137236/706153864419737620/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="706154423805804614" id="message-706154423805804614">
+                <div class="chatlog__content">
+                    <div class="markdown">I’m not sure it’s even worth the brain power to conjure up some sort of response to a person who wishes health to a brutal dictator, but then again is it surprising to see that come from a person who’s name includes the word “Soviet”?
+
+I’d like to hear from our new entry in the race, <span class="mention" title="o7#3948">@o7</span> , on his thoughts regarding his comrade in arms.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="706161449285714032" id="message-706161449285714032">
+                <div class="chatlog__content">
+                    <div class="markdown">What are your opinions on a carbon tax, or, if you wish to preserve the single-tax system, reverse carbon tax that gives deductions based on lowered carbon emissions?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="706163721575202867" id="message-706163721575202867">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">What are your opinions on a carbon tax, or, if you wish to preserve the single-tax system, reverse carbon tax that gives deductions based on lowered carbon emissions?
+</div><span class="mention" title="1877KarsForKids#6916">@Justice Jed Marshall</span>  
+
+
+Great question! I actually instituted a reverse carbon tax within Dixie through my Green Industry Investment Act as a member of the Assembly, and this authored legislation has also been passed in Jefferson. I believe that this does more to incentivize individual companies to reduce emissions as the demand and availability of green energy rises throughout the nation. Especially here in Dixie where the fossil fuel industry has a large foothold we must do more to encourage non-carbon energy growth.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329322175444156417/2423a1a19fb3a7b1e6c60db03c8d4cff.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="o7#3948" data-user-id="329322175444156417"  style="color: rgb(255, 0, 0)" >o7</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="706275090719047792" id="message-706275090719047792">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello everyone, will start responding tomorrow, a bit busy atm</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="706275286202974238" id="message-706275286202974238">
+                <div class="chatlog__content">
+                    <div class="markdown">You are gonna sleep here?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706275303290568825" id="message-706275303290568825">
+                <div class="chatlog__content">
+                    <div class="markdown">I mean okay- but</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇱" title="🇱" src="https://twemoji.maxcdn.com/2/72x72/1f1f1.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇲" title="🇲" src="https://twemoji.maxcdn.com/2/72x72/1f1f2.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇦" title="🇦" src="https://twemoji.maxcdn.com/2/72x72/1f1e6.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇴" title="🇴" src="https://twemoji.maxcdn.com/2/72x72/1f1f4.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329322175444156417/2423a1a19fb3a7b1e6c60db03c8d4cff.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="o7#3948" data-user-id="329322175444156417"  style="color: rgb(255, 0, 0)" >o7</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="706278997750972559" id="message-706278997750972559">
+                <div class="chatlog__content">
+                    <div class="markdown"><img class="emoji emoji--large" alt="yodasleep" title="yodasleep" src="https://cdn.discordapp.com/emojis/667519809348435968.png"></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:20 AM</span>
+
+            <div class="chatlog__message " data-message-id="706419992069144606" id="message-706419992069144606">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="rat randy!!!!!!!#0001">@rat!!!!!!!</span> just to respond to your big government comment. Yes M4A is considered a big government policy and I understand that, but most major democratic countries especially in Europe have a solid Universal Healthcare system while the US fails to provide for our citizens. I hope I can help eradicate poverty and you can not do that without a UBI to all Americans and a strong universal healthcare system. If you have any more questions, feel free to ask them.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 01:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="706486973719904266" id="message-706486973719904266">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> What is your opinion on the insurance compact which all three states have now entered? It is a partnership whereby citizens can purchase private insurance across state lines, therefore making it cheaper and easier to access across the nation.
+
+I ask this because you stated “the US fails to provide for our citizens”, which I find to be patently false. Here we have abolished the income tax federally, empowering people to go out and have <em>choices</em> regarding their health and insurance in the free market. I do say we provide for our constituents by offering a market of choice, not by taxing and instituting a poorly run government healthcare system which fails to live up to the high standards Americans have become accustomed to.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="706524341403385896" id="message-706524341403385896">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" style="color: rgb(16, 255, 0); background-color: rgba(16, 255, 0, 0.1);">@sandoval</span> Abolishing programs that allow money for programs does not make much sense. And, what about those with no income, do they still have &quot;choices&quot; on the free market. This does not make sense, less taxes sounds good but it really just rewards the rich. Why not instead just give a Universal Basic Income of 1,000 a month to each and every citizen. Which could be paid for with a VAT tax which also major countries have. Also on your fact of M4A, Medicare is a human right and the free market should not determine whether some has the right to live. The healthcare systems in many highly respected democratic countries such as Denmark are working for the people. We need to stop favoring corporations, and favor the people. The people are suffering, and abolishing income tax does not help the poor as much as it helps the rich. The high standards should be that every American should be cared for.<span class="chatlog__edited-timestamp" title="03-May-20 04:18 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="706526221336444958" id="message-706526221336444958">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" style="color: rgb(16, 255, 0); background-color: rgba(16, 255, 0, 0.1);">@sandoval</span> and regarding your first question, I do believe that the insurance compact for now is the step in the right direction, but does not fully solve the corporate greed. As I said above, the &quot;free&quot; market does not account for those who have no major income. So although it would lower the price, plenty will not be able to have good quality healthcare, and good quality healthcare should be a right for all Americans not just the rich.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="706530351123529790" id="message-706530351123529790">
+                <div class="chatlog__content">
+                    <div class="markdown">How do you propose paying for a UBI and M4A?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="706532680405221478" id="message-706532680405221478">
+                <div class="chatlog__content">
+                    <div class="markdown">Well one, a Value Added Tax of 10% except in essential products such as food, toilet paper, etc. Raising that to a 20%-30% on luxury goods such as fancy cars. Also defunding of the military industrial complex. And adding back income tax which takes away a lot of the country’s income. I also disagree with a Wealth Tax which is usually how the socialists propose a M4A because that promotes having more material things rather than investing and saving. Also, I believe in a trickle up economy rather than a trickle down. We need to put the money into the people’s hand they well spend it in the economy which will help the economy and trickle up and the UBI will eventually start paying partially for its self.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="706533106944835664" id="message-706533106944835664">
+                <div class="chatlog__content">
+                    <div class="markdown">So you are proposing an additional tax?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706533157997903913" id="message-706533157997903913">
+                <div class="chatlog__content">
+                    <div class="markdown">Additionally, would a nation-wide VAT require a constitutional amendment, like the income tax and the land value tax did, and why?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706533174997680248" id="message-706533174997680248">
+                <div class="chatlog__content">
+                    <div class="markdown">How is it responsible to create new taxes in the midst of a pandemic like this?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="706533262386003989" id="message-706533262386003989">
+                <div class="chatlog__content">
+                    <div class="markdown">We would wait until after the pandemic</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="706533856836190208" id="message-706533856836190208">
+                <div class="chatlog__content">
+                    <div class="markdown">Medicare is most definitely <em>not</em> a human right. Access to healthcare <em>is</em> a human right. I suggest you learn the different between positive and negative rights. Furthermore a VAT is not going to cover the exorbitant cost of  M4A and a UBI, do you have any proposal as to how this would work? I would suggest basing your evidence on the efficacy of a Medicare for all system on something other than small, homogenous European countries. <em>This district alone</em> is larger in both area and population and far more diverse than most European nations. We must grapple with these uniquely American issues as we analyze the best approach.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706534115973005373" id="message-706534115973005373">
+                <div class="chatlog__content">
+                    <div class="markdown">Socialism does not scale up to a country like the United States with a very unique government system.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="706534221132464198" id="message-706534221132464198">
+                <div class="chatlog__content">
+                    <div class="markdown">I am not a socialist</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706534297305219092" id="message-706534297305219092">
+                <div class="chatlog__content">
+                    <div class="markdown">UBI is a across party lines idea</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="706534358286336060" id="message-706534358286336060">
+                <div class="chatlog__content">
+                    <div class="markdown">You are also proposing we reintroduce an income tax? I did not call you socialist, I am calling M4A a socialist policy.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="706534580248641588" id="message-706534580248641588">
+                <div class="chatlog__content">
+                    <div class="markdown">Amidst this pandemic I think we see that Medicare should not accessible it should be a right to all citizens</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706534891378180097" id="message-706534891378180097">
+                <div class="chatlog__content">
+                    <div class="markdown">Accessibility isn’t true for all Americans, as I said many Americans are below the poverty line and can not afford to not only pay for Medicare but also pay for food. Why should someone have to choose between food and Healthcare</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="706535033158238280" id="message-706535033158238280">
+                <div class="chatlog__content">
+                    <div class="markdown">You’re correct in saying that UBI is across party lines, but most propose it as a replacement to welfare programs like Medicare for all. Why should we institute the two programs simultaneously? Which entitlements or welfare programs should we replace with the UBI system?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="706535099276984370" id="message-706535099276984370">
+                <div class="chatlog__content">
+                    <div class="markdown">The poorest people are the most at risk for medical problems and yet they have to choose whether they give into the corporate “free” market or provide for their families.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Socialist" title="Socialist" src="https://cdn.discordapp.com/emojis/695762683617869824.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="706535403292983366" id="message-706535403292983366">
+                <div class="chatlog__content">
+                    <div class="markdown">I do not agree with the concept of positive rights which inevitably leads to moral quandaries. We are increasing access to healthcare through a free market. And exactly as Jed just said, on the right a UBI is touted as a replacement not an addition</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="706535522251702334" id="message-706535522251702334">
+                <div class="chatlog__content">
+                    <div class="markdown">I propose it as a semi replacement of the programs.   Means tested usually seems to not work out. And that’s why I prefer a UBI.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="706535903648284682" id="message-706535903648284682">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you have any cost/revenue estimates for a VAT tax and a UBI?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="706536101229101136" id="message-706536101229101136">
+                <div class="chatlog__content">
+                    <div class="markdown">Can I send a link?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="706536460421038140" id="message-706536460421038140">
+                <div class="chatlog__content">
+                    <div class="markdown">Sure</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="706536513344634922" id="message-706536513344634922">
+                <div class="chatlog__content">
+                    <div class="markdown">This is Andrew Yangs form of UBI, I do have some criticisms on his ideas but overall I agree with him on UBI <a href="https://taxfoundation.org/andrew-yang-value-added-tax-universal-basic-income/">https://taxfoundation.org/andrew-yang-value-added-tax-universal-basic-income/</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill" style="background-color: rgba(0,148,255,255)"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+                            <div class="chatlog__embed-author">
+
+                                <span class="chatlog__embed-author-name">
+                                    <a class="chatlog__embed-author-name-link" href="https://taxfoundation.org/author/kkaufman/">Kevin Kaufman</a>
+                                </span>
+                            </div>
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://taxfoundation.org/andrew-yang-value-added-tax-universal-basic-income/"><div class="markdown">Does Andrew Yang’s “Freedom Dividend” Proposal Add Up?</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Analysis of 2020 Democratic presidential candidate Andrew Yang&#39;s proposed &quot;Freedom Dividend.&quot; See more about the Yang universal basic income (UBI) proposal.</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://files.taxfoundation.org/20190724123153/linkedin-In-Stream_Wide___3240px-Andrew_Yang_talking_about_urban_entrepreneurship_at_Techonomy_Conference_2015_in_Detroit_MI-e1563985927618.jpg">
+                                <img class="chatlog__embed-thumbnail" src="https://files.taxfoundation.org/20190724123153/linkedin-In-Stream_Wide___3240px-Andrew_Yang_talking_about_urban_entrepreneurship_at_Techonomy_Conference_2015_in_Detroit_MI-e1563985927618.jpg" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="706537918147330150" id="message-706537918147330150">
+                <div class="chatlog__content">
+                    <div class="markdown">This proposal includes taxing capital gains as regular income, a $40 per ton carbon tax, which is big and will absolutely affect the middle class, and a tax on financial transactions. To me this is ridiculous as it won’t even cover half of the $1,000 per month “freedom dividend” and a budget neutral version, in my opinion, isn’t worth the effort. It was a little disingenuous to say earlier that a VAT will cover the $1,000 UBI when this analysis says it won’t even cover a third of the cost alone.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="706537961071837195" id="message-706537961071837195">
+                <div class="chatlog__content">
+                    <div class="markdown">Doesn’t your article say that the only way to fund it would be to cut the income to $750 a month and raise the VAT to 22%? How does this support your position that a 10% VAT could pay for both M4A and UBI?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="706538244166254662" id="message-706538244166254662">
+                <div class="chatlog__content">
+                    <div class="markdown">Keep in mind that this is just the UBI. An M4A system is a whole other trillion dollar program which has no way of being funded without a Constitutional amendment.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="706538606034157598" id="message-706538606034157598">
+                <div class="chatlog__content">
+                    <div class="markdown">Secretary Sandoval, parts of your party support UBI - do you? If you do, what would your system look like, and how would it be funded?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="706539089930748075" id="message-706539089930748075">
+                <div class="chatlog__content">
+                    <div class="markdown">I think we could find common ground here, and maybe think a multi party solution. I am open for change, but believe no citizen should fear going without food or healthcare.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="706539721836331018" id="message-706539721836331018">
+                <div class="chatlog__content">
+                    <div class="markdown">I can support the implementation of a UBI if it is done correctly. This means it would act as a replacement for most other current welfare programs, and will enable the recipients to spend it on the free market. This type of UBI will be cheaper to implement as we severely cut spending which enables this program to be put into place.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706539874681094255" id="message-706539874681094255">
+                <div class="chatlog__content">
+                    <div class="markdown">I agree with <span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> that we can find common ground in our goals. I look forward to putting aside blatant partisanship when I enter Congress.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706540117103345752" id="message-706540117103345752">
+                <div class="chatlog__content">
+                    <div class="markdown">I do have a question for my opponent here, does he support a carbon tax?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="706541705331212308" id="message-706541705331212308">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes I would be able to compromise and say get rid of the current welfare programs except Healthcare and Social Security. I do support a carbon tax. The environment is at a point of no return and now we can only save not restore. So it is of necessary need that we promote green energy. I propose having a lesser carbon tax so it does not impact the middle class as much as it does the corporate. As of now I propose a $750 per ton but I am open to compromise to make sure this does not hurt our middle class which I belong in.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="706542891312349253" id="message-706542891312349253">
+                <div class="chatlog__content">
+                    <div class="markdown">Wait, you are proposing a $750 per metric ton carbon tax? Certainly you have misspoken? A tax of this size would raise gas prices to around $9 a gallon.
+
+In Dixie I wrote legislation which implemented a negative carbon tax which offers tax exemptions for emission abatement. This incentivizes companies as well as makes carbon products cheaper for the middle class</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706543445363261502" id="message-706543445363261502">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe we need to guide the market in its natural progression towards a green energy future. This should be done through a serious of tax exemptions and programs which incentivize the use of renewables over fossil fuels. I do not agree with taxing an industry away.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="706544206855798784" id="message-706544206855798784">
+                <div class="chatlog__content">
+                    <div class="markdown">I agree partially, I think a slow increasing carbon tax would work better and in courage electric vehicles. Aren’t you in the long run also running an industry away?<span class="chatlog__edited-timestamp" title="03-May-20 05:34 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="706545051697807431" id="message-706545051697807431">
+                <div class="chatlog__content">
+                    <div class="markdown">We are guiding the market through a series of incentives is how I prefer to put it. Can you confirm that you would support a $750 per ton carbon tax and that you did not misspeak?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="706545407630508116" id="message-706545407630508116">
+                <div class="chatlog__content">
+                    <div class="markdown">Oh wow, I misspoke, sorry I meant $75 per ton and slowly increasing to that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="706548165012095038" id="message-706548165012095038">
+                <div class="chatlog__content">
+                    <div class="markdown">Okay whew, I think our voters are happy to hear that. What do you think of the reverse carbon tax idea?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="706550416296509510" id="message-706550416296509510">
+                <div class="chatlog__content">
+                    <div class="markdown">It is interesting but I would like to do some more research on it. Both get to the point it seems and that really is all we need.  From what you explained it seems like a good solution.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="706554173373546678" id="message-706554173373546678">
+                <div class="chatlog__content">
+                    <div class="markdown">Great! I did implement one as part of my Green Industry Investment Act here in Dixie. I believe incentives are the way to go, as they cut down on deadweight loss and increase market efficiency more so than the implementation of new taxes.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 07:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="706572429593411664" id="message-706572429593411664">
+                <div class="chatlog__content">
+                    <div class="markdown">I would like to hear from the other 2 candidates as well, neither have spoken much.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706572617041313793" id="message-706572617041313793">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="o7#3948">@o7</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706573151441649705" id="message-706573151441649705">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="DisguisedJet719#5977">@DisguisedJet719</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 07:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="706573204973420577" id="message-706573204973420577">
+                <div class="chatlog__content">
+                    <div class="markdown">(my dude)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 07:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="706573750883188866" id="message-706573750883188866">
+                <div class="chatlog__content">
+                    <div class="markdown">Wait that was the wrong person I think</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706573812514160700" id="message-706573812514160700">
+                <div class="chatlog__content">
+                    <div class="markdown">Are you Svem?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 07:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706573955896574052" id="message-706573955896574052">
+                <div class="chatlog__content">
+                    <div class="markdown">Svem dropped out earlier</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 07:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706573973365850122" id="message-706573973365850122">
+                <div class="chatlog__content">
+                    <div class="markdown">Oh</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706574029246431236" id="message-706574029246431236">
+                <div class="chatlog__content">
+                    <div class="markdown">Nvm then</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="706637853022617600" id="message-706637853022617600">
+                <div class="chatlog__content">
+                    <div class="markdown">As this debate draws to a close, what would you like to reiterate?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">04-May-20 12:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="706647964319219754" id="message-706647964319219754">
+                <div class="chatlog__content">
+                    <div class="markdown">I would like to reiterate my commitment to small government ideals, maximum liberty, cooperation with those who differ from me, and the people of DX-5. It has been a wonderful debate and I wish the best of luck to my opponents!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 86 message(s)</div>
+</div>
+
+</body>
+</html>

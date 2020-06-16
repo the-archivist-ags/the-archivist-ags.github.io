@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - jefferson-governor-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">State Elections Channels / jefferson-governor-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-May-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="718600303489974353" id="message-718600303489974353">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>June State Election</strong>
+
+The Candidates are: 
+
+<span class="mention" title="Just a Pot Leaf#1799">@The Governor (JAPL)</span>  (AL) 
+<span class="mention" title="Astreae#6164">@His Holiness, the Lewd Pope</span> (L)
+<span class="mention" title="Slavette#0420">@Traitor of the right wing</span> (NR)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:05 AM</span>
+
+            <div class="chatlog__message " data-message-id="718601456768385126" id="message-718601456768385126">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello all! I look forward to answering your questions and debating! Feel free to ask me or my colleagues anything</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 02:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="718641682693881886" id="message-718641682693881886">
+                <div class="chatlog__content">
+                    <div class="markdown">Before we begin with the questions, I&#39;d like to say thank you all for the opportunity to stand here before you today and make the case that I be the one to hold the executive office in your names once again.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="718652725558116383" id="message-718652725558116383">
+                <div class="chatlog__content">
+                    <div class="markdown">All candidates, why are you qualified to be governor?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="718653787375534140" id="message-718653787375534140">
+                <div class="chatlog__content">
+                    <div class="markdown">I have spent two terms as a State Legislator for the Commonwealth of Jefferson, as well as served as her Senator for a time. I have held three Federal cabinet positions as well, Commerce, Defense, and currently State.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718653839464726571" id="message-718653839464726571">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe that I am more than qualified to continue leading this wonderful state.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:40 AM</span>
+
+            <div class="chatlog__message " data-message-id="718655588816519188" id="message-718655588816519188">
+                <div class="chatlog__content">
+                    <div class="markdown">I have spent a Term as a State Legislature and am currently serving Jefferson as a Representative in Congress. I believe although I am not as qualified as the current Governor I do believe I certainly am qualified to be Governor.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:41 AM</span>
+
+            <div class="chatlog__message " data-message-id="718655788012535848" id="message-718655788012535848">
+                <div class="chatlog__content">
+                    <div class="markdown">So are you saying you are less fit to execute the office of governor of the commonwealth of Jefferson?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718655868832317500" id="message-718655868832317500">
+                <div class="chatlog__content">
+                    <div class="markdown">In comparison to Governor Rincewind?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="718656093407936603" id="message-718656093407936603">
+                <div class="chatlog__content">
+                    <div class="markdown">I mean I do not have as much experience but I do believe I certainly am close to his experience level and am well qualified to be Governor.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:44 AM</span>
+
+            <div class="chatlog__message " data-message-id="718656472799641660" id="message-718656472799641660">
+                <div class="chatlog__content">
+                    <div class="markdown">How can you say that you&#39;re close in experience when you have less than half of mine?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:44 AM</span>
+
+            <div class="chatlog__message " data-message-id="718656652814843935" id="message-718656652814843935">
+                <div class="chatlog__content">
+                    <div class="markdown">You have only served as representative for not even a full term and have only been recently elected to parliament if you remember. And I also ask  the same question as the governor.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:34 AM</span>
+
+            <div class="chatlog__message " data-message-id="718669101635076167" id="message-718669101635076167">
+                <div class="chatlog__content">
+                    <div class="markdown">First of all, I’d like to explain why I’m qualified to be Governor: I have supported and voted in favor of many bills not only in the state legislature, but in congress that have and will greatly benefit the lives of everyone Jefferson. One of the bills I’ve had a heavy hand in was the JAV act, which gave the people the right to write in a candidate,  a great step towards making a better democracy. Beyond that, my time in congress has and will continue to be productive and efficient . I have time and time again fought for the common person, and I intend to continue to do so in the highest office of the state. I aspire to have transparency to the highest degree, so I plan to hold weekly press conferences to explain why I sign or vetoed bills, and to discuss the current state of Jefferson. I think it is important to be as transparent and public about these things as much as possible, as the citizens of this state deserve to know what their government is doing. My opponent Governor Rince has not done but one single press conference!  Instead, they prefer to forget to look over the budget and then “Reverse signing” it. This travesty shows that the Governer shows absolutely no care for actually reading what they put their signature on, and I as Governer promise to provide stable, competent leadership. I don’t think it’s too much to ask of a leader to make sure everything is always correct before they make a major decision, no? A Governor who was careful and made sure he fully understands what he is signing off on would never let what had happened occur. I also believe Governor Rinces response to coronavirus was not the to the best ability that a Governor should be held to. As Governor I would’ve had more testing sites across Jefferson, I would’ve given more money to small businesses struggling in these unprecedented times and I would’ve required masks in public buildings as maids have been proven to help slow the spread of coronavirus.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718669275522400281" id="message-718669275522400281">
+                <div class="chatlog__content">
+                    <div class="markdown">I plan to work with parliament to help pass bills that will help the people of Jefferson. If elected Governor I will continue to slow and help Jefferson with the ongoing coronavirus pandemic by doing what I’ve outlined the Governor has failed to do. Hear this loud and clear: I will not rest as Governor until I can create the best Jefferson I can as Governor. 
+I plan to create bills and pass them through the state legislature to help with Jefferson’s schools, Help our Infrastructure and create more high quality jobs. What we need in Jefferson is a Governor of Action and I will be that Governor if elected.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/201576253784850433/2db1c92358f2a0d8bbf9f66d3f9fb26f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Putbye1#8834" data-user-id="201576253784850433"  style="color: rgb(129, 134, 137)" >Mr. Apes</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:35 AM</span>
+
+            <div class="chatlog__message " data-message-id="718669405138976869" id="message-718669405138976869">
+                <div class="chatlog__content">
+                    <div class="markdown">Would you support the statewide implementation of Approval Voting in Jefferson?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:41 AM</span>
+
+            <div class="chatlog__message " data-message-id="718670841155551253" id="message-718670841155551253">
+                <div class="chatlog__content">
+                    <div class="markdown">I would prefer ranked choice voting, but yes voting reform is on my list of items on the agenda.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="718671028233961488" id="message-718671028233961488">
+                <div class="chatlog__content">
+                    <div class="markdown">I would absolutely support the statewide implementation of Approval Voting in Jefferson.  I already have by signing the Better BJ amendment. Approval voting is an absolutely wonderful way to have a more concise way of choosing who they’d want to represent them and more accurate description of people’s choices. Any amendment or bill that will expand democracy and voting rights to Jefferson I always will support as Democracy is a good thing and should always be upheld. Democracy and Voting reform are among my top issues that I will work towards bettering as Governor.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="718671133615849563" id="message-718671133615849563">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, JAPL. I&#39;m sure you&#39;re proud of that run-on sentence. But it just shows how inexperienced you are. Instead of something concise and to the point for the laypeople, you lay on fluff and buzzwords to both attack me and massively overexplain a simple issue.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718671290852179978" id="message-718671290852179978">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;d like all the people in attendance tonight to see what a fraud JAPL is tonight.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718671337136062525" id="message-718671337136062525">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;ve worked countless tired nights to provide all of you with the best.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718671420749512835" id="message-718671420749512835">
+                <div class="chatlog__content">
+                    <div class="markdown">I understand that budget was a mistake, one I corrected the next day. I don&#39;t think I need to explain that again.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718671477582331937" id="message-718671477582331937">
+                <div class="chatlog__content">
+                    <div class="markdown">Even if my opponent insists on dragging that out of nowhere in order to slander my name.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718671956374978571" id="message-718671956374978571">
+                <div class="chatlog__content">
+                    <div class="markdown">I feel for the reporter who has to transcribe that rambling.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:49 AM</span>
+
+            <div class="chatlog__message " data-message-id="718672779192565866" id="message-718672779192565866">
+                <div class="chatlog__content">
+                    <div class="markdown">I think Jefferson deserves a Governor that won’t fumble something as important as the budget, something that millions of people rely on for their livelihoods. A Governor who was effective and carefully read everything on a bill that could have a major effect on people wouldn’t have let it slip. A mistake that major should have been an obvious red flag prior to you signing it but for you it wasn’t.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:50 AM</span>
+
+            <div class="chatlog__message " data-message-id="718673112631083088" id="message-718673112631083088">
+                <div class="chatlog__content">
+                    <div class="markdown">Do I really have to explain what happened again? Something you&#39;d know if you paid the slightest attention to what&#39;s going on. Let me spell it out again for you and for the benefit of the audience.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718673638198476871" id="message-718673638198476871">
+                <div class="chatlog__content">
+                    <div class="markdown">The budget was created using old data, which is piled amongst the innumerable papers that passes through my office and that of my aides. As a consequence, the budget was crafted incorrectly. After the mistake was realized, I spent over 24 hours without sleep writing up a new budget for the people that corrected the mistake. I did that for the people, so the wouldn&#39;t even feel the effect of my decision before they woke up in the morning.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718673713314136165" id="message-718673713314136165">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you have anything else to attack me with, or are you going to return to your coaches and ask for some more dirt to sling?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718674762574069790" id="message-718674762574069790">
+                <div class="chatlog__content">
+                    <div class="markdown">Oh, a little birdie just told me something very interesting.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718674932241793165" id="message-718674932241793165">
+                <div class="chatlog__content">
+                    <div class="markdown">Did you accept lobbying money to modify a bill? How can the people trust you to do what&#39;s right when you&#39;re swayed by the prospect of dollars?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/585121229938360330/295b5a7a577776b32e0826f52366c004.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MonarchJared#5027" data-user-id="585121229938360330"  style="color: rgb(241, 196, 15)" >MonarchJared</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="718675186399969301" id="message-718675186399969301">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Just a Pot Leaf#1799">@The Governor (JAPL)</span> I believe that as you do a budget is important 100%, and Governor a Rince raised my eyebrow on this. However are you telling us, the people of Jefferson that your governorship will be 100% without fault or error? And you’ll always be the most perfect governor ever?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="718683942827458572" id="message-718683942827458572">
+                <div class="chatlog__content">
+                    <div class="markdown">Why did you say earlier “if elected Governor I will continue to <em>slow</em> and help Jefferson...”</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718683967557206107" id="message-718683967557206107">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Just a Pot Leaf#1799">@The Governor (JAPL)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718684066567946283" id="message-718684066567946283">
+                <div class="chatlog__content">
+                    <div class="markdown">Are you intending on slowing the progress we have made on the pandemic</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="718686985048293427" id="message-718686985048293427">
+                <div class="chatlog__content">
+                    <div class="markdown">Is this why you said earlier you are “not as qualified as the current governor?”</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718688422050529292" id="message-718688422050529292">
+                <div class="chatlog__content">
+                    <div class="markdown">Why should anyone vote for you when you admitted you still aren’t as qualified? Does that mean you will do <em>less</em> than a governor rince?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718688469022408727" id="message-718688469022408727">
+                <div class="chatlog__content">
+                    <div class="markdown">Let me ask, have you held a press conference yet?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718689567485591593" id="message-718689567485591593">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Just a Pot Leaf#1799">@The Governor (JAPL)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:15 AM</span>
+
+            <div class="chatlog__message " data-message-id="718724723927941150" id="message-718724723927941150">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello people of Jefferson! My name is John Richfield and I seek to get your vote for governor of this great state of Jefferson.  Why am I qualified to be governor? <span class="mention" title="Caprese#2439">@the salad</span>  I am a political activist, I seek to help all the people of Jefferson because I am one as well. I know the troubles and the pains Jeffersonians go through on a daily basis and I seek to help them in every way I possibly can. I Will increase transparency in the gubernatorial position. Gov. Rincewind hasnt done many of the press conferences both me and JAPL are planning to have if elected. Qualification isnt just experiance, qualification is knowledge and passion of and for something.. The Governors response to the Coronavirrus was llacking and we all know that. Just now when he is seeking a new term does he even bring it up as something hed like to change. Now that people of our state have died and have been in great pain because of this horrible disease and the Governors lacking response.  <span class="mention" title="Putbye1#8834">@Mr. Apes</span> I personally prefer ranked choice voting but if given the choice between our current way of doing it and AV I would choose AV every day of the week. Its a great way to give our people an even greater voice and eliminates the spoiler effect. <span class="mention" title="MonarchJared#5027">@MonarchJared</span>  no position is without fault but instances like the budget bill are just too big to overlook.  As I ve said I Will personally double check every bill that comes on my desk and take responsibility if it goes south.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/408295107285090304/ae08fcf41e129daedd40a9ec0d9c1ddc.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="d.a.barchipelago#9571" data-user-id="408295107285090304"  style="color: rgb(26, 188, 156)" >MP B**ch</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="718751348094402580" id="message-718751348094402580">
+                <div class="chatlog__content">
+                    <div class="markdown">If someone makes such as not bothering to check budget data, and then tries to unsign a bill, should they be Governor?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/408295107285090304/ae08fcf41e129daedd40a9ec0d9c1ddc.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="d.a.barchipelago#9571" data-user-id="408295107285090304"  style="color: rgb(26, 188, 156)" >MP B**ch</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:11 AM</span>
+
+            <div class="chatlog__message " data-message-id="718753813804089357" id="message-718753813804089357">
+                <div class="chatlog__content">
+                    <div class="markdown">What policies would you like to enact in office?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718753820691267605" id="message-718753820691267605">
+                <div class="chatlog__content">
+                    <div class="markdown">Would you support Jem? <a href="https://docs.google.com/document/d/1N_mcRkg6E0oaHhyg4uGWmGjUubJnzhJkfiYVBHV5lhg/edit?usp=drivesdk">https://docs.google.com/document/d/1N_mcRkg6E0oaHhyg4uGWmGjUubJnzhJkfiYVBHV5lhg/edit?usp=drivesdk</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1N_mcRkg6E0oaHhyg4uGWmGjUubJnzhJkfiYVBHV5lhg/edit?usp=drivesdk"><div class="markdown">Jem Act</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">In Jefferson Parliament date sponsor introduced A Bill To provide easy and anonymous access to mental health support those that need it.  Recalling the Jeffersonian Healthcare Service Act and Mandatory Appropriations for the State of Jefferson Act of 2019 Recalling E.O. 17 — E...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/iUlUC4u2-KSbS-BMOUvauSyMXkoect3UppeYSXpnu46uAQOOhTJH4akApXD67Lm9MHWIELBH0Q=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/iUlUC4u2-KSbS-BMOUvauSyMXkoect3UppeYSXpnu46uAQOOhTJH4akApXD67Lm9MHWIELBH0Q=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:17 AM</span>
+
+            <div class="chatlog__message " data-message-id="718755528343420940" id="message-718755528343420940">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">If someonr makes such a mistake as not bothering to check budget data and then tries to unsign a bill, should they really be Governor
+</div>
+It was a big mistake on Governor Rincewinds part. As I&#39;ve said we&#39;re all human and we all make mistakes but to not even check if the data is correct is horrible. The people of Jefferson aren&#39;t just a number or a simulation. They each have their own lives, jobs and families that they need to take care of and its the duty of the Governor to make sure their lives, jobs and families are safe and the budget is a HUGE part of that is to not be overlooked.
+
+<div class="quote">What policies would you like to enact in office?
+</div>
+The first thing I would do is an education overhaul. To expand upon the childrens talents and gifts and not just see them as clones of each other. Every child has enormous potential.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718756397734428752" id="message-718756397734428752">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Would you support Jem
+</div>
+ABSOLUTLY. How can we expect to be a fully functoining society if people cant speak about their issues. Going to a therapist is still too big of a taboo and that needs to be changed. I&#39;d support this act with all my heart.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="718852377553141770" id="message-718852377553141770">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Slavette#0420">@Traitor of the right wing</span> But people will argue that you aren’t qualified as you lost all FIVE of your previous elections. Why should you be governor if the people of Jefferson couldn’t trust you FIVE times? And... the fact you never held any public office before elected or non elected. Why should Jefferson place their trust on a person who they couldn’t trust five times <em>and</em> has absolutely no experience in partaking in government. Without the trust and necessary experience and willingness to serve the people of the state in other ways, how are you supposed to lead us?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="718859007108055150" id="message-718859007108055150">
+                <div class="chatlog__content">
+                    <div class="markdown">&quot;Lost&quot; is a strong word. I came into each of those elections an underdog. Going against people with years of political experiance whilst I was just arriving on the scene. I had to fight trouble in my private life and yet in each of those elections you say I &quot;lost&quot; I achieved things nobody wouldve expected me to. I almost &quot;usurped&quot; the longest serving congressman in our country, I had to face infighting in the now ex-Federalists right as it was election time. And I would say I achieved something. It shows that people in this state want change, change that I can give them. And with every election I lost I hope I moved my opponents atleast a bit further into what my voter base seeks in a person that represents them.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="718884984659771403" id="message-718884984659771403">
+                <div class="chatlog__content">
+                    <div class="markdown">But you still failed to win a position. And you deny that as not a lost? So you haven’t lost five races? How can you prove that you haven’t lost?<span class="chatlog__edited-timestamp" title="06-Jun-20 06:52 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="obamaprism" title="obamaprism" src="https://cdn.discordapp.com/emojis/654149062056214548.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="718885351720091718" id="message-718885351720091718">
+                <div class="chatlog__content">
+                    <div class="markdown">I didnt say I didnt lose. I said I achieved more in those elections than people expected me to.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="718885888968491048" id="message-718885888968491048">
+                <div class="chatlog__content">
+                    <div class="markdown">What have you achieved? Popular opinion was against you. So what did you achieve?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="718887140137631884" id="message-718887140137631884">
+                <div class="chatlog__content">
+                    <div class="markdown">I literally said what I achieved in my original answer</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="718901243694678016" id="message-718901243694678016">
+                <div class="chatlog__content">
+                    <div class="markdown">The JEM act has my full support, though I’d make a critical change to it. It deserves more money.
+
+It is our duty in government to take care of those who can’t care for themselves, to give voice to the voiceless. The JEM act is a critical step in making sure of that, it has my support 100%
+
+And I have a question for the candidates, is my mistake with a budget all you have to say? It was fixed within 24 hours, the newspapers were still hot by the time it was fixed.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718901644674334751" id="message-718901644674334751">
+                <div class="chatlog__content">
+                    <div class="markdown">And as to what policies I’d like to enact, My first policy will be attempting to pass the Anti-Arbitration Act once more with a new parliament, I can provide copies if you need. This is of paramount importance as it will allow workers in all industries the access to the legal system they do critically need and has been so disturbingly taken from them.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718902225145168033" id="message-718902225145168033">
+                <div class="chatlog__content">
+                    <div class="markdown">After I finish with that, I have two primary focuses. I will continue to work with workers to ensure that they continue to have the support they need in government and to change the abusive and awful policies of my predecessors. The second focus will be on Justice reform. Did you know there are 6+ supermax prisons/wings in the region of California alone? I will endeavour to close these affronts to the people as I reduce prison population and ensure a better, more rehabilitative system.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718903298584739941" id="message-718903298584739941">
+                <div class="chatlog__content">
+                    <div class="markdown">And I have a single additional question for Slavette, do you understand the mockery you made of the LGBTQ+ community you made when you came out for what seems to be cheap politician points? I sincerely hope the people see what your actions really meant.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="718913150728273921" id="message-718913150728273921">
+                <div class="chatlog__content">
+                    <div class="markdown">You see my coming out as mockery! How dare you! How dare you say that. I&#39;ve kept this secret my entire life out of fear of discrimination and now that I think that we as a society have come away from that bigotry I see the Governor of my own state see my sexuality as nothing more than mockery! Do you understand how insulting that is! As a child I thought it was a phase, as a teen I hated myself because others hated those like me and now when I finally &quot;dare&quot; to come out I am attacked! Shame on you mr. Governor shame on you!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="718913474952036492" id="message-718913474952036492">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;m bisexual myself Slavette.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718913525317238845" id="message-718913525317238845">
+                <div class="chatlog__content">
+                    <div class="markdown">But I&#39;ve never once made that something the people needed to know.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718913534687182898" id="message-718913534687182898">
+                <div class="chatlog__content">
+                    <div class="markdown">You know why?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718913592514183169" id="message-718913592514183169">
+                <div class="chatlog__content">
+                    <div class="markdown">Because it doesn&#39;t matter, my sexuality has no impact on my performance in office.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="718913652274757682" id="message-718913652274757682">
+                <div class="chatlog__content">
+                    <div class="markdown">You know why I came out mr. Governor?<span class="chatlog__edited-timestamp" title="06-Jun-20 08:46 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="718913657525764097" id="message-718913657525764097">
+                <div class="chatlog__content">
+                    <div class="markdown">I don&#39;t flaunt it to win points with single-issue voters.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="718913758902354002" id="message-718913758902354002">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you know why I came out?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="718913827210788916" id="message-718913827210788916">
+                <div class="chatlog__content">
+                    <div class="markdown">Because it was politically expedient.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718914672161456189" id="message-718914672161456189">
+                <div class="chatlog__content">
+                    <div class="markdown">No mr. Governor. It was because I saw people make jokes about bisexuality.
+I came out because I wanted to become a beacon of hope for children over Jefferson who are afraid to come out.
+I came to embrace myself and for the voters to embrace me for myself</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718914837387935814" id="message-718914837387935814">
+                <div class="chatlog__content">
+                    <div class="markdown">Lovely platitudes for someone who needs every inch they can take.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="718914996465041562" id="message-718914996465041562">
+                <div class="chatlog__content">
+                    <div class="markdown">Excuse me?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="718935248905175170" id="message-718935248905175170">
+                <div class="chatlog__content">
+                    <div class="markdown">you&#39;ve been excused</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="718937224892252311" id="message-718937224892252311">
+                <div class="chatlog__content">
+                    <div class="markdown">This is a question for all of you? But do you support the removal of gay panic defense laws? Or any other tangentially related laws that could be used to justify killing and LGBTQ+ person.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="718937631576162304" id="message-718937631576162304">
+                <div class="chatlog__content">
+                    <div class="markdown">Naturally, LGBTQ+ rights and support is paramount in our state. The gay/trans panic defense is one of the most abhorrent things to pass through our legal system. And I would support its direct banning. The people deserve better than that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="718938256976248954" id="message-718938256976248954">
+                <div class="chatlog__content">
+                    <div class="markdown">I fully support the banning of the gay/trans panic defense and it is horrible some people see it as an excuse for manslaughter. LGBTQ+ rights are a big part of my platform for Governor.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="718939012840161440" id="message-718939012840161440">
+                <div class="chatlog__content">
+                    <div class="markdown">I fully support banning of the Panic Defense. It’s an awful way to condone murder and should never be legal. The LGBTQ+ community doesn’t deserve that and no one does. As Governor protecting LGBTQ+ people and rights are among my top priorities so I’d absolutely get rid of the panic defense.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="718947857599561750" id="message-718947857599561750">
+                <div class="chatlog__content">
+                    <div class="markdown">Okay what other injustices do each of you plan to remove to protect lgbtq people. Or any other people who face injustices?<span class="chatlog__edited-timestamp" title="06-Jun-20 11:02 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="718948456428732568" id="message-718948456428732568">
+                <div class="chatlog__content">
+                    <div class="markdown">One of my biggest campaign points is Justice reform, I will be closing down all prisons with abusive practices and creating new rehabilitation programs in their place. That way our prisoners come out better people than they came in and society can reap the benefits of a safer, happier, population.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="718952337359503372" id="message-718952337359503372">
+                <div class="chatlog__content">
+                    <div class="markdown">Prisons shouldnt just be about punishing people for their wrong doings but making them better people in the process. 44% of prisoners return to jail within a year after being released. These people couldnt have been prepared for the outside world that was changing while they were in prison.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="718953502981750855" id="message-718953502981750855">
+                <div class="chatlog__content">
+                    <div class="markdown">Prisons are fundamentally flawed. More people and more people re-offend after coming out of prison, which hurts them and our society. As Governor I plan to create more vocational training to help teach prisoners skills they can use once they get out of prison. Prison should be about rehabilitating and ensuring those prisoners can become the best possible citizens they can be after they get out. Prisoners deserve to be treated humanely and as Governor I’d ensure that happens.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="718954450919882822" id="message-718954450919882822">
+                <div class="chatlog__content">
+                    <div class="markdown">I concur with my fellows here on all of these points.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718954524500426852" id="message-718954524500426852">
+                <div class="chatlog__content">
+                    <div class="markdown">Education and vocational programs are critical to ensuring a safer society and reducing recidivism.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718954776624234516" id="message-718954776624234516">
+                <div class="chatlog__content">
+                    <div class="markdown">But we can&#39;t have those without ending the abusive practices that are currently happening in our prisons. Such things as forced solitary confinement for absurd lengths of time, unsafe conditions, rough and cheap concrete construction. And the cherry on top of constant abuse by corrections officers.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718954832982966312" id="message-718954832982966312">
+                <div class="chatlog__content">
+                    <div class="markdown">We cannot have the nice things without removing the terrible things.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="718954898007523382" id="message-718954898007523382">
+                <div class="chatlog__content">
+                    <div class="markdown">Solitary confinment is torture!</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718954939740586047" id="message-718954939740586047">
+                <div class="chatlog__content">
+                    <div class="markdown">There is no other ways to put it!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="718954947546185760" id="message-718954947546185760">
+                <div class="chatlog__content">
+                    <div class="markdown">And I will not stand around and allow those things to plague our prisons any longer!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="718955735366500352" id="message-718955735366500352">
+                <div class="chatlog__content">
+                    <div class="markdown">Solitary confinement is torture. I will not stand <em>any</em> abuse of prisoners! We 100% should treat them as humanely as possible.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="718962162650972181" id="message-718962162650972181">
+                <div class="chatlog__content">
+                    <div class="markdown">why are you the best choice</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718962199997055008" id="message-718962199997055008">
+                <div class="chatlog__content">
+                    <div class="markdown">for jefferson governer?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 12:09 AM</span>
+
+            <div class="chatlog__message " data-message-id="718964691673809008" id="message-718964691673809008">
+                <div class="chatlog__content">
+                    <div class="markdown">I have the experience and the impetus to make what needs to happen happen. I have served my entire political career helping to make Jefferson a better place. I know how to handle the Federal Government from my time in the Senate.<span class="chatlog__edited-timestamp" title="07-Jun-20 12:09 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 12:11 AM</span>
+
+            <div class="chatlog__message " data-message-id="718965327354134600" id="message-718965327354134600">
+                <div class="chatlog__content">
+                    <div class="markdown">I am honest and transparent. I will always do what’s right, even if it’s hard or my party disagrees with it. I will work hard to ensure everyone in Jefferson has the best life possible, I will always do that because I am for the people, by the people.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 12:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="718975810228322375" id="message-718975810228322375">
+                <div class="chatlog__content">
+                    <div class="markdown">If you had to choose anyone else to be governer other than yourself. who would it be.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 06:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="719061545513910333" id="message-719061545513910333">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, if I had to choose someone to be governor. It’d have to be my lt gov, Caprese. I understand that if I were to ever be incapacitated or otherwise have to leave office, he’d have to leave the senate and take over.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719061755124514919" id="message-719061755124514919">
+                <div class="chatlog__content">
+                    <div class="markdown">Now I have a question for the other two candidates, what are your positions on gun control? This isn’t as hot a topic as it used to be, but it’s still an issue that interests me. Especially with the riots.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 06:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="719067087330344960" id="message-719067087330344960">
+                <div class="chatlog__content">
+                    <div class="markdown">If I had to choose someone else to be Governor it would be my Lt Governor, who I am proud to announce is <span class="mention" title="d.a.barchipelago#9571">@MP B**ch</span> he has much experience as a politician and will do what’s right for Jefferson should I not be able to do my job.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😁" title="😁" src="https://twemoji.maxcdn.com/2/72x72/1f601.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="719078933030502430" id="message-719078933030502430">
+                <div class="chatlog__content">
+                    <div class="markdown">If I had to choose someone else to be Governor of our great state I would choose out congressman from Jefferson <span class="mention" title="Epsilon966#7849">@Epsilon966</span> . He is an amazing guy and Id wish he&#39;d ran</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/408295107285090304/ae08fcf41e129daedd40a9ec0d9c1ddc.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="d.a.barchipelago#9571" data-user-id="408295107285090304"  style="color: rgb(26, 188, 156)" >MP B**ch</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="719135988986806272" id="message-719135988986806272">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you think it would have been appropriate to let the people choose the Senator to fill April&#39;s spot by letting the new Governor appoint his replacement?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="719136236203147284" id="message-719136236203147284">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe that the new Senator shouldve been chosen by the people and not the Governor.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👎" title="👎" src="https://twemoji.maxcdn.com/2/72x72/1f44e.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="719136385730347089" id="message-719136385730347089">
+                <div class="chatlog__content">
+                    <div class="markdown">The special election governing that particular race would have waited until the next Federal in July anyway, the seat needed to be filled beforehand so the people had representation before then.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="719260704624083005" id="message-719260704624083005">
+                <div class="chatlog__content">
+                    <div class="markdown">So, what are your thoughts on race realism?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="719274002001952850" id="message-719274002001952850">
+                <div class="chatlog__content">
+                    <div class="markdown">Hopefully you are all against it?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(76, 104, 118)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="719274779072266312" id="message-719274779072266312">
+                <div class="chatlog__content">
+                    <div class="markdown">Its bad because its racism trying to take cover in &quot;science&quot;. It is horrible that some people see it as an excuse for racial profiling, or use it as proof of race superiority. I believe such &quot;pseudoscience&quot; should be banned from our state<span class="chatlog__edited-timestamp" title="07-Jun-20 08:41 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/159890217539469312/adf2c6eb31ec6d47d15d3a6b606779e9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Astreae#6164" data-user-id="159890217539469312"  style="color: rgb(255, 182, 193)" >His Holiness, the Lewd Pope</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="719275003954200597" id="message-719275003954200597">
+                <div class="chatlog__content">
+                    <div class="markdown">Naturally I&#39;d be against it, I wouldn&#39;t be able to call myself a champion for worker&#39;s rights if it was conditional on race. Nay, such terrible designs have no place in our wonderful state.<span class="chatlog__edited-timestamp" title="07-Jun-20 08:42 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="719275579492270120" id="message-719275579492270120">
+                <div class="chatlog__content">
+                    <div class="markdown">It’s horrendous. It’s fake science and purely racist. We have no room for hate or fake science in our wonderful state. There is no superior race, everyone is made equal regardless of race.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278271301968330754/a5eab4b3b23716fee914ef7c4d698da0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Dallas#7562" data-user-id="278271301968330754"  style="color: rgb(255, 183, 212)" >HHS. Spkr. Rep. Dallas</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319650512666708" id="message-719319650512666708">
+                <div class="chatlog__content">
+                    <div class="markdown">What are your plans to stop climate change?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/587025766290685977/32ad0b074c79d09c00e2b0aa07112515.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Just a Pot Leaf#1799" data-user-id="587025766290685977"  style="color: rgb(0, 149, 255)" >The Governor (JAPL)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="719322580569423937" id="message-719322580569423937">
+                <div class="chatlog__content">
+                    <div class="markdown">I plan to work with car manufacturers to reduce carbon emissions. I’d also have stricter emission testing standards for cars and give tax breaks for buying and using electric or hybrid cars. I will also support legislation aimed at creating more renewable energy and I’d also hold non renewable resource companies accountable for their emissions. I’d also fund more research into climate change so we can have scientists come up with realistic ways to help slow and maybe even prevent climate change</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719323381861843094" id="message-719323381861843094">
+                <div class="chatlog__content">
+                    <div class="markdown">As the debates come to a close, I want to thank everyone for coming! I hope you heard my case as to why I should be the next Governor of Jefferson. I am a Hard working, transparent and caring candidate who will fight to ensure the lives of <em>every</em> Jefferson resident is the best it can be because with out the people, Jefferson wouldn’t be the wonderful place  it is. I am thankful for my opponents putting up a decent debate and I’m also thankful for everyone who asked these important questions, I hope you all have a wonderful day!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 102 message(s)</div>
+</div>
+
+</body>
+</html>

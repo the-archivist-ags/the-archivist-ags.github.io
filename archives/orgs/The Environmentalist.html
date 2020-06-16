@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - the-environmentalist</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / the-environmentalist</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">13-Feb-20 05:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="677569340018524209" id="message-677569340018524209">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Feb-20 07:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="677591566667481148" id="message-677591566667481148">
+                <div class="chatlog__content">
+                    <div class="markdown">Here at The Environmentalist, we will do our best to objectively rank candidates in national level elections based off of who will be best for the Environment, and why. This is for the NS-3 election.
+1 - <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> He is the candidate who has plans for improving the environment as well as having them with detail. He also claims to have a bill ready for day 1, and claims to be working on a bill in the background at the state level. While neither of these are confirmed, we see no reason to doubt these claims. His plan for carbon emission regulations on businesses will also reduce the fossil fuel emissions from our businesses, as well as his plans for reducing them on the individual level. He is a very strong environmental candidate. He been pro-environment with everything so far, and has plans for making America greener.
+2 - <span class="mention" title="Starcomet#1037">@Starcomet</span> While no specifics have been provided from the candidates, he has stated that he would support a tax incentive for nuclear energy. He also has stated support of a carbon tax, which would help reduce fossil fuel emissions as well. He is a moderately strong environmental candidate. While everything so far points to him being for the environment, he has no history and no plans put forward.
+3 - <span class="mention" title="anoneymous#1398">@Fmr. Rep. Stephen J. Garvey</span> He has stated that he would be against a green piezoelectric initiative stating that costs would be too high and considering it a &quot;not worthy investment.&quot; He has also stated that he would stay away from green policies, as well as stating that Climate Change is not a big deal. On the flip side though, he does support hydroelectric power as well as nuclear power and thinks we should move away from coal. This leads to an overall environmentally neutral candidate. Support for green initiatives is nice, but denial of the urgent need makes us a little weary</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Feb-20 09:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="677626622949457921" id="message-677626622949457921">
+                <div class="chatlog__content">
+                    <div class="markdown">The environmentalist will also do our best to keep the public informed of all environmental implications of bills that pertain to the environment. With that in mind, let&#39;s delve into the &quot;Agricultural Subsidy Reform Act&quot; and all of it&#39;s implications.
+Eco Friendly Fertilizers (EFFs): This is a good thing for the environment overall. While there are some questionable things that go into these such as fish emulsion, this is an overall win for the environment. As non-EFF fertilizers can and do result in Oxygen depletion as well as harmful pathogens in drinking water, especially when over-used.
+Organic section: We here at The Environmentalist encourage any use to stop GMO&#39;s and additional pesticides out of our agricultural products. There are pesticides that harm the water supply, soil supply, and are toxic to animals as well such as birds or fish. Getting rid of these is a wholesale win for the environment.
+Tax cut initiatives: Our only qualm here is that &quot;renewable energy&quot; is left unspecified. This could include windmills, which kill hundreds of thousands of birds each year. This should not count towards a tax cut, as killing birds should not be considered good for the environment. It should be excluded to solar, nuclear, piezoelectric, and hydro (on a case-by-case basis) power. Everything else is a clear positive for the environment. We urge the Senate to clarify renewable energy to this definition above.
+Overall, this bill gains our support as it is a clear positive for the environment. We here at The Environmentalist look forward to this bill being passed and making our environment better.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">16-Feb-20 03:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="678623338762862602" id="message-678623338762862602">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Press Conference with President Valerie</strong>
+Last night&#39;s press conference showed that Valerie as President will be a huge win for the environment. She stated that she will be willing to work internationally to combat Climate Change and that there will be an announcement regarding nuclear energy available shortly. The Environmentalist looks forward to seeing what President Valerie will to do help our environment for future generations and hopes she will be true to her word!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">16-Feb-20 06:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="678663820448628770" id="message-678663820448628770">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Forest and Wildfire Safety Act of 2020</strong>
+What this bill does is it basically allows for the federal government to help local fire departments to better fight forest fires and gives tax breaks to companies who help provide wildfire equipment. While this bill is certainly helpful, this should be taken a step further, such as in section 3.1.a.i. where it states that the basis of individuals will be voluntary. It would be better to instead to have a force that is trained and hired part time to deal with fires. That said, this will make fighting forest fires easier and, in a perfect would, would be passed with no objections as this helps us better preserve wildlife. This will be good for us and at The Environmentalist, we are excited to see this bill pass and become law.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Feb-20 08:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="679058107313422386" id="message-679058107313422386">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Advancing Nuclear Energy Act</strong>
+What this bill does is, as stated, set forth goals for achieving more nuclear power usage in the United States. Nuclear Energy is one option for the future of green energy, as we mentioned during the review of the &quot;Agricultural Subsidy Reform Act&quot; and it remains true. We do appreciate that the nuclear plants must be modernized and await the details and definitions of what a modernized plant is. We also look forward to seeing many deep geological disposal systems being rolled out in the near future in America. We encourage this over deep near-surface disposal because deep geological disposal of waste is permanent and can hold all kinds of waste, and not just &quot;light weight waste&quot; so to speak. The act also provides grants so we do not run into the problem that China has, which is a lack of specialists to work in nuclear plants.
+All this said, The Environmentalist finds no cause to oppose this act, and we look forward to seeing a greener future from America because of it!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Feb-20 09:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="680166238546034724" id="message-680166238546034724">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The goal of The Environmentalist</strong>
+It has come to the attention of The Environmentalist that we do not have a stated mission goal, in order to increase transparency, we will be doing so here:
+1) Provide the American public with a look at where politicians in elections stand on the environment and who will help the environment the most if electied.
+2) Provide the American public with an in-depth look of the environmental impact of bills being passed on the federal level so they can contact their representatives and protect the environment.
+3) Provide the American Public with insight on how we can best work together with other nations to fight climate change.
+4) Provide the American Public on methods of how to fight climate change at home
+5) Provide the American Public with the knowledge for how to protect the environment.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="680167201612890169" id="message-680167201612890169">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Upcoming Interview</strong>
+EPA <span class="mention" title="Lohengramm#2072">@death</span> Friday 8PM EST</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Feb-20 02:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="680422262553444353" id="message-680422262553444353">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>How thermal electric power can help you save on energy costs</strong>
+Thermal electric power is a way that has been developed to get power from the night sky. It uses radiative cooling in order to power your house at night. It uses the principle of how frost can accumulate on the ground at night (when temperatures are cold enough) and turns that into energy. This is pioneered by Stanford scientists Wei Li and Shanhui Fan. As of now, the device can power roughly 25miliwatts of energy per square meter. This is something that you can build at home with a simple aluminium disk and wiring into your power system, as well as something to hold the disk up. Though with improved engineering methods, such as supressing heat gain, the amount of energy you gain can be increased by about 20 times as much! So what are you waiting for, go out there and start making your own green energy devices!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Feb-20 10:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="680547330701000713" id="message-680547330701000713">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Special elections in the North</strong>
+Usually we would rank the candidates and endorse some or none. However, due to the owner <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> being in both debates, we will not comment on them. We wish all candidates the best and remind everyone to go out and vote when voting opens!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Feb-20 04:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="680631474755600424" id="message-680631474755600424">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with Lohengramm</strong>
+<a href="https://docs.google.com/document/d/1VaJ_JtNcUebJxTDdzqC4qeaFVs5ifEHvGNc2CLSVoKU/edit?usp=sharing">https://docs.google.com/document/d/1VaJ_JtNcUebJxTDdzqC4qeaFVs5ifEHvGNc2CLSVoKU/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1VaJ_JtNcUebJxTDdzqC4qeaFVs5ifEHvGNc2CLSVoKU/edit?usp=sharing"><div class="markdown">The Environmentalist interview with Lohengramm</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Arkenstone: First question: what part of your nuclear bill will provide the best incentive for bettering the environment and why?  Lohengramm: Well I think that the actual content in the bill is simply the means to achieve an end. It is clear that incentives are needed to go n...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/rsGdboTwgKWaMCBvY4w9PTlfFz7UL0YKR06rvG1czInzHz0-lTMfjWY--qkHNbBNyJQiMEjHAQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/rsGdboTwgKWaMCBvY4w9PTlfFz7UL0YKR06rvG1czInzHz0-lTMfjWY--qkHNbBNyJQiMEjHAQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😩" title="😩" src="https://twemoji.maxcdn.com/2/72x72/1f629.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Feb-20 04:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="681532829741613149" id="message-681532829741613149">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Where the Green Energy Transportation Act is now</strong>
+The Green Energy Transportation Act was introduced by John Smith under the LOTR administration. What this bill did was it helped provide a transition to electric cars and fuel cell car initiatives. With that in mind... let&#39;s see what has happened since then.
+Electric Cars: Electric Car sales have gone up and upon independent research done by The Environmentalist, it appears to be partly due to this act, but also by how fast electric cars are improving. The biggest complaint that electric car owners have is that car charging stations are few and far between. They would like to see improvements on this done.
+Fuel Cell Cars: Sales of these cars have gone up and independent research done by The Environmentalist confirms that it is similar in reasoning to electric cars. People do, as a whole, seem to prefer electric cars as a whole citing that prices for electric cars are still lower than fuel cell cars. However the makers of Fuel Cell Cars are very happy with the extra funds and are continuing to lower the prices of these cars, citing this bill as the direct cause.
+
+<em>So where are we now?</em>
+We are now in a place where cars that don&#39;t rely on fossil fuels are becoming more and more viable all the time which is a win for the environment. We hope and petition Congress to work relentlessly to push transportation that doesn&#39;t rely on fossil fuels, and instead rely on alternative methods. This bill is an excellent example of how and why these bills are a success.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="perhaps" title="perhaps" src="https://cdn.discordapp.com/emojis/604799860415397888.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Feb-20 05:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="681547268288938045" id="message-681547268288938045">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview announcement</strong>
+Tomorrow night The Environmentalist will be conducting an invertivew with <span class="mention" title="Valerie#3802">@Presidentess Valerie</span> about her executive order on piezoelectric power</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Feb-20 04:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="681900383878250506" id="message-681900383878250506">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Pollution in the drinking water</strong>
+Our drinking water has become highly contaminated. Factories have dumped chemical waste into our water supply, which does not go away easily or, in some cases, <em>ever.</em> When more water is added it can become diluted, but it doesn&#39;t ever go away. It travels downstream and can cause harm to animal and marine life. When it goes into the ocean, it can continue to cause harm to life in the ocean, which is where most life lives.
+Another way that we can and should watch out for is contamination through the sewage system. Our sewage system is poorly regulated. With this comes the effect of our feces getting into our drinking water. Other things that can get into our drinking water through a poor sewage system is animal feces, human garbage, and urine. These are not things that we want in our water.
+Get our water clean! This issue goes beyond protecting our environment and goes on to harming our citizens which no American should stand for. Push for these regulations!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">26-Feb-20 05:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="682279508409319582" id="message-682279508409319582">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview announcement</strong>
+With elections just around the corner, The Environmentalist opens its doors to any candidate that is running and wants an interview on their environmental stances. Current interviews lined up:
+<span class="mention" title="Valerie#3802">@Presidentess Valerie</span> (as previously mentioned, though this will be more on their piezoelectric bill, if she wishes to talk about more, we can add that in to our interview)
+<span class="mention" title="rat randy!!!!!!!#0001">@rat!!!!!!!</span> 
+<span class="mention" title="Caprese#2439">@the salad</span> 
+We look forward to securing a better future for our environment!<span class="chatlog__edited-timestamp" title="26-Feb-20 07:06 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">26-Feb-20 06:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="682298997859287087" id="message-682298997859287087">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with <span class="mention" title="Caprese#2439">@the salad</span></strong>
+We found the candidate to be strong for fighting Climate Change through renewables but did not seem supportive of measures for nuclear power, citing a carbon footprint that comes with it. They seem to be in favor of the environment, but lack policy detail. Transcript is available here: <a href="https://docs.google.com/document/d/19wqk-2SECES5FaHFGSV4_e8NmM12K4-MaYfNh7P0TjI/edit?usp=sharing">https://docs.google.com/document/d/19wqk-2SECES5FaHFGSV4_e8NmM12K4-MaYfNh7P0TjI/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/19wqk-2SECES5FaHFGSV4_e8NmM12K4-MaYfNh7P0TjI/edit?usp=sharing"><div class="markdown">Interview with Caprese for JF-5</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Arkenstone: First off, I would like to thank you for joining us here. You have stated that you will be running for the JF-5 seat. What has made you decide to run?  Caprese: I have decided to run because I know that my constituents support a free market, yet want to do somethin...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/SxFSbT0YhxEs0v6pdif8QklIsEGim29B2NBn8KMkhjfmsONHxLGqaajZQ-L-YoGYZldZs4I0xQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/SxFSbT0YhxEs0v6pdif8QklIsEGim29B2NBn8KMkhjfmsONHxLGqaajZQ-L-YoGYZldZs4I0xQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">26-Feb-20 07:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="682312545532510223" id="message-682312545532510223">
+                <div class="chatlog__content">
+                    <div class="markdown">Interview with <span class="mention" title="Waubalu#2908">@Waubalu</span>
+We found that the candidate would support bringing in solar panels to government buildings over the period of 10-15 years making our government buildings better for the environment. They also supported a carbon tax, which is something we here at &quot;The Environmentalist&quot; would like to see pushed in the future. Transcript is available here: 
+<a href="https://docs.google.com/document/d/1ZGf2I_w2Xj2--pEbNLM1DK-_dy5r0tWFcKJjE5q7NPE/edit?usp=sharing">https://docs.google.com/document/d/1ZGf2I_w2Xj2--pEbNLM1DK-_dy5r0tWFcKJjE5q7NPE/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1ZGf2I_w2Xj2--pEbNLM1DK-_dy5r0tWFcKJjE5q7NPE/edit?usp=sharing"><div class="markdown">Interview with Waubalu for DX-2</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Arkenstone: Thank you for reaching out to us about wanting an interview. Just for the record, where will you be running in office?  Waubalu: In dixie, 2nd district.  Arkenstone: Thank you. I assume that you will be pushing legislation to combat climate change, yes?  Waubalu: Y...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/0vjuNKdnaxTLRXdbbC9diaOFmVokXTyGIvyZL469-01J0kE8cBSApQhGsntkvrLtb0NSxRdylA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/0vjuNKdnaxTLRXdbbC9diaOFmVokXTyGIvyZL469-01J0kE8cBSApQhGsntkvrLtb0NSxRdylA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/8fa8eda1ab26bfd3287d3c02bb4203c4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Feb-20 04:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="682629217174683717" id="message-682629217174683717">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Veritas Poll Results</strong>
+We are happy to see that more people are citing the environment (specifically Climate Change) as a major issue of theirs. The Environmentalist would like to think this is due to our efforts to bring awareness to issues in the environment. We hope that Climate Change starts to be on the radar for more people, and that our efforts are not in vain here.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-Mar-20 03:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="683871501665173603" id="message-683871501665173603">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Climate Change denial in Congress</strong>
+Representative anonemous has made it clear, stating on the House floor that he believes that Climate Change is not real. Saying this was not a ploy to get votes. We here at The Environmentalist are announcing that whoever runs from the ALP-SP caucus against this man will recieve a sizable portion of our funding, as well as, our help to make sure that someone who espouses the scientific nonsense, which is that Climate Change is not real. We hope that the Federalist Parties and Conservative Parties will do their part in not endorsing this man. Anyone who endorses this man, will be considered to be backing a scientifically unfounded position. Climate Change is the #4 concern among American voters. We hope that all involved will do the right thing.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇫" title="🇫" src="https://twemoji.maxcdn.com/2/72x72/1f1eb.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="hyperthink" title="hyperthink" src="https://cdn.discordapp.com/emojis/413841161824894987.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤔" title="🤔" src="https://twemoji.maxcdn.com/2/72x72/1f914.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇼" title="🇼" src="https://twemoji.maxcdn.com/2/72x72/1f1fc.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇴" title="🇴" src="https://twemoji.maxcdn.com/2/72x72/1f1f4.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇳" title="🇳" src="https://twemoji.maxcdn.com/2/72x72/1f1f3.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇬" title="🇬" src="https://twemoji.maxcdn.com/2/72x72/1f1ec.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Mar-20 08:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="685584854632366111" id="message-685584854632366111">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with Kamala Harris</strong>
+This candidate is just about everything we could ask for in a candidate. We hope to see them in the Senate shortly. Here is the transcript:
+<a href="https://docs.google.com/document/d/1yHsJ0SnPVLSd2tMG36JzK1t55ofttD3uYle8aSatL3U/edit?usp=sharing">https://docs.google.com/document/d/1yHsJ0SnPVLSd2tMG36JzK1t55ofttD3uYle8aSatL3U/edit?usp=sharing</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Mar-20 02:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="686942723055288342" id="message-686942723055288342">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Update on influence</strong>
+We are more than happy to report that the influnce of the &quot;The Environmentalist&quot; is continuing to be on the rise. We have swayed public opinion from around 7% thinking that Climate Change is the most prevalent problem facing America to 15% and having it being the second most prevalent issue in American Politics.
+On the front of getting candidates in, all 3 candidates that we funded (MTRX gaming, Lohengramm, and Luke DeGroot) are all now in public office. We might be a new organization but our influence is strong and we pledge to be continue to be strong in order to help America not only be more aware of environmental issues, but also convince them that this is a serious problem. We pledge to continue to do this heading forward and hope you are all excited to see how we progress as well!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Mar-20 08:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="687027097570508930" id="message-687027097570508930">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Flood Prevention Act</strong>
+One of the first things that stands out is that this appears to be a dumbed down version of the National Flood Insurance Act of 1968 which can be read here: <a href="https://www.fema.gov/media-library/assets/documents/7277">https://www.fema.gov/media-library/assets/documents/7277</a>
+$50,000,000 is nothing considering the National Flood Insurance Act allows to $1,000,000,000 <em>per flood</em> with the approval of the President. $50,000,000 is nothing. Per deployment of the National Guard we run into the problem of this is already the case. We do not need a bill that does what is already happening, there is no point to that. The last thing we want to point out is that this does not include Northern coastal regions. We have no clue why this is, but it shows how hurried this bill was.
+While we like the intent and purpose behind this bill, we find this bill to be useless and underwhelming at best, and terrible at worst as this would override the much higher budget provided by the National Flood Insurance Act of 1968. We do not recommend this bill, but do look forward to seeing other attempts at helping the environment.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Mar-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="687038581285716066" id="message-687038581285716066">
+                <div class="chatlog__content">
+                    <div class="markdown">The flood prevention act has changed it&#39;s funding from $50,000,000 to $850,000,000. Given that changes were made post-ex-facto on our last post, we will now be including a copy of the bill below:
+<a href="https://docs.google.com/document/d/1MHfJF1mJRff7qc3CXv7ivNOQLQTfi7DbM7DcIIoYyOQ/edit?usp=sharing">https://docs.google.com/document/d/1MHfJF1mJRff7qc3CXv7ivNOQLQTfi7DbM7DcIIoYyOQ/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1MHfJF1mJRff7qc3CXv7ivNOQLQTfi7DbM7DcIIoYyOQ/edit?usp=sharing"><div class="markdown">Copy of Flood Prevention Act</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Be it enacted by the Congress of these United States assembled, A Bill To invest in flood prevention technologies and prevent disasters.  Section 1: Title 	This act may be referred to as the Flood Preparedness Act or the FPA. Section 2: Purpose 	To invest in the advancement of...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/J4eIyTmMCtG9vJApvYrCOsiskfI56EGiVE5vfcPAtmqWcBUBJec11iazdwVFH2DpaYwTkyx_Dw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/J4eIyTmMCtG9vJApvYrCOsiskfI56EGiVE5vfcPAtmqWcBUBJec11iazdwVFH2DpaYwTkyx_Dw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">14-Mar-20 12:46 AM</span>
+
+            <div class="chatlog__message " data-message-id="688186191744335975" id="message-688186191744335975">
+                <div class="chatlog__content">
+                    <div class="markdown">With special elections around the corner, we would like to release who we believe will be the beat for the environment.
+For the house seat: <span class="mention" title="Benja#4268">@Fmr. Rep. Benny Neutron (S-JF)</span> 
+For the state seat: <span class="mention" title="Caprese#2439">@the salad</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">15-Mar-20 03:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="688595197952655454" id="message-688595197952655454">
+                <div class="chatlog__content">
+                    <div class="markdown">The Environmentalist is happy to announce it&#39;s newest writer <span class="mention" title="Caprese#2439">@the salad</span> and welcome them on board to further our goal of being a nonpartisan pro-environment organization. We hope that this shows that continued attempt.
+With that said, you can join us here: <a href="https://discord.gg/JsapXyc">https://discord.gg/JsapXyc</a>
+Here we will provide legislators the ability to talk with us about environmental legislation and have access to our writers for discussion, as well as meeting with others to push environmental ideas. We hope that this will allow the US to become more environmentally friendly and push against the affects Climate Change much more easily.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">15-Mar-20 02:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="688750397598597282" id="message-688750397598597282">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Clean Water Act of 2020</strong>
+Millions of Americans are unknowingly drinking contaminated water and their health has been affected. Such toxic chemicals include lead being found in the water. The young and old have been sickened, and America&#39;s next generation has their minds being suppressed by such toxicity the clean water act provides a solution to this developing issue.  
+
+Through this act, oil rig owners will be noticed if their wells or rigs contaminate local water supply through identification and intervention by the EPA. Oil companies will then be asked to move their rigs to an approved  area away from drinking water supply with a 1% reduction in LVT for two years, funding to move the well(s), and recognition from the EPA for advancing clean water for Americans. If not, companies will pay the damages of contamination. 
+
+On the part of funding, $100 million will be from the HUD budget covering the cost of relocating 10 oil rigs each in Jefferson and Dixie. $50 million will be given to the north from HUD for decontamination of water. Finally $100 million dollars will be given to the North from HUD to repair the sewage system in the North. All modernization and repairs will be supervised and identified by the EPA to ensure they meet quality standards.
+
+The Environmentalist urged congress to pass this vital law because American lives are at risk, and it is congress&#39; job to properly represent and fight for their constituents. 
+- <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 04:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="689509122260992071" id="message-689509122260992071">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Nuclear Energy Expansion Act</strong>
+This seems like another version of the earlier Nuclear Act by Lohengramm but without the state level nuclear education program. That being said, nuclear energy is the form of energy that produces the least amount of waste, and this will expand it even further. This is an undoubted good thing for the environment. While nuclear power may not be a permanent solution, combating Climate Change requires solutions that can mitigate climate change starting now. That is what nuclear power does, it slows the amount of carbon that is released into the atmosphere much more effectively than any other method we have right now.
+That said, we do have a concern about the storage of nuclear waste. The storage method of nuclear waste is not specified in the bill, we would like to see an amendment specifying the storage to be in deep underground storage methods. While we do not believe Rep. Emperio intended for this oversight, we would like to see this corrected before the bill becomes law.
+- <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 05:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="689520663333175311" id="message-689520663333175311">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Update to the Nuclear Energy Expansion Act Review</strong>
+The author of bill, <span class="mention" title="Emperio#5902">@hamster harry!!!!!!</span> has indicated that there is a plan for long term storage of nuclear waste and as such, we drop our concern about nuclear waste.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 07:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="689560070945505285" id="message-689560070945505285">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Partnership with American Association for Energy</strong>
+The American Association for Energy has made it clear to us that their goal will be to focus on renewable energies and, as such, we have decided to enter into a mutually beneficial partnership that will help push the energy sector in a way that continues to be clean for the environment.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Mar-20 06:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="689902211295084585" id="message-689902211295084585">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Special Election Endorsement</strong>
+We here at The Environmentalist believe that <span class="mention" title="Deleted User#0000">@Deleted User</span> is the most environmentally friendly candidate in this election. We hope to see him win.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteNay" title="VoteNay" src="https://cdn.discordapp.com/emojis/406279998803017728.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Mar-20 11:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="689975990570451059" id="message-689975990570451059">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with Rep. Randy</strong>
+No commentary, just a transcript this time: <a href="https://docs.google.com/document/d/19f-Xsid0s4pnwqxj2pFStK3XphM9AuhN_IFKeuurMok/edit?usp=sharing">https://docs.google.com/document/d/19f-Xsid0s4pnwqxj2pFStK3XphM9AuhN_IFKeuurMok/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/19f-Xsid0s4pnwqxj2pFStK3XphM9AuhN_IFKeuurMok/edit?usp=sharing"><div class="markdown">Interview with Rep. Randy</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Arkentone: Okay, so you indicated that you wanted to clear up some things about your flood bill, is that correct? If so, what specifically do you want cleared up?  Randy: It was written about in the news, and there was some conflict over the purpose of it and how it would be e...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/1-U6dt6lTLs93EHkWVrnKSFrr-7m2OK5OY8Hbi796AOyPtsVc2tjSbELcNCno7-r9YkVMi0OvQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/1-U6dt6lTLs93EHkWVrnKSFrr-7m2OK5OY8Hbi796AOyPtsVc2tjSbELcNCno7-r9YkVMi0OvQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Mar-20 07:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="691012374131376148" id="message-691012374131376148">
+                <div class="chatlog__content">
+                    <div class="markdown">The Environmentalist has conversed amongst itself and have decided that in the special elections <span class="mention" title="RecoveryMode#9996">@RecoveryMode</span> and <span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> are the best candidates for the environment in this election, we hope that the electorate agrees with us.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Mar-20 03:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="691481695332990986" id="message-691481695332990986">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>COVID-19&#39;s affect on Climate Change</strong>
+With the outbreak of COVID-19, we have decided to look into how all of this quarantining will have effects on the environment, as well as the disease spreading to wildlife. One of the things that having us practice social distancing is having an effect on us through lowering our carbon emissions. What this is showing is that people can work from home and therefore reduce their carbon footprint by not travelling as much. Or instead of taking a cab, you can take a bike. These sorts of little steps are exactly how we can begin fighting climate change. We hope to see steps like these to continue to be taken after the pandemic has been taken care of.
+- <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Mar-20 05:02 AM</span>
+
+            <div class="chatlog__message " data-message-id="691512193010892901" id="message-691512193010892901">
+                <div class="chatlog__content">
+                    <div class="markdown">As part of our partnership with the American Association of Energy, we will be posting this statement jointly with this:
+<strong>Statement on the Nuclear Energy Expansion Act (NEEA)</strong>
+Nuclear energy is a powerful, effective, efficient, and less environmentally impacting source than most other fossil fuels. We believe this bill is well written, comprehensive, and practical. While nuclear energy may not be the perfect solution for now, it is a great and better option, compared to others. We believe that this is a stride towards combating the pollution of the environment, especially in an age where our needs and population are constantly increasing.
+We would recommend more use of hydro power as well, a powerful and effective source, while even less environmentally deterring.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Mar-20 10:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="691768580798283836" id="message-691768580798283836">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>New Writer</strong>
+We are excited to announce <span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> as our third writer in the organization as we continue to show that we are a bipartisan force for the environment, welcome!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Mar-20 02:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="692386098541756498" id="message-692386098541756498">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Open to interviews</strong>
+We are now opening up for interviews for people in Congress or in the executive office at all levels! Pleasecontact us here if you want an interview, want more information, or would like to talk about environmental legislation! All talks will be done through the application zoom until further notice in an attempt to curb the spread of the COVID-19 virus <a href="https://discord.gg/JsapXyc">https://discord.gg/JsapXyc</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">31-Mar-20 05:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="694581253772673115" id="message-694581253772673115">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>New Plastic-Eating Bacteria May Save the Planet</strong>
+Plastic products commonly made of polyurethane, a synthetic chemical compound, end up in the landfill. But the days of plastic in the landfill may soon come to the end as German scientists discovered a new bacteria strain. This strain is the only one ever observed being capable of eating plastic. The scientists identified the bacteria Pseudomonas putida in the soil where there was lots of plastic waste. It fed on polyurethane diol, which is usually applied to materials to protect them from corrosion. &quot;The bacteria can use these compounds as a sole source of carbon, nitrogen and energy,&quot; said Hermann Heipieper, study author and senior scientist at the Helmholtz Center for Environmental Research in Leipzig, in a statement to the journal. &quot;This finding represents an important step in being able to reuse hard-to-recycle (polyurethane) products.&quot; With plastic littering on the streets, our drains, and killing our oceans, this bacteria may be the hope we need to save not only our planet, but also the human race. 
+Author - <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-Apr-20 07:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="694973232268312636" id="message-694973232268312636">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Earthquake in Jefferson</strong>
+<span class="mention">#associated-press</span> just reported that there was an earthquake in Jefferson. We hope that all stay safe and would like to quickly remind everyone how to stay safe during an earthquake.
+1) Get under cover and don&#39;t move until the shaking stops.
+2) Stay away from heavy things that can fall on you.
+3) Stay away from objects that can shatter and hurt you.
+Follow these 3 steps and you&#39;ll be safe from future earthquakes!
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="694973547470389311" id="message-694973547470389311">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Covid-19 Safety</strong> 
+Even though we are an environmental paper, I just wanna take this time to remind everyone that transmission of the virus is a real and present threat and we should all do our part by staying home and not congregating in large areas. Any time you are forced to leave your house, make sure you wash your hands whenever possible and to keep your hands away from your face. <strong>The team at the Environmentalist hopes you stay safe in the trying times ahead</strong>
+Author - <em>Aegeus Phoenix</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-Apr-20 03:19 AM</span>
+
+            <div class="chatlog__message " data-message-id="695095106063040603" id="message-695095106063040603">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>How to keep coronavirus out of your home</strong>
+As lockdowns take place across the nation, we still need to leave the house and buy groceries or help our elderly neighbors. Here are some steps to corona-proof your home. 
+1) Make a game plan. Select one person to be the errand runner to limit outside exposure. Also set up a disinfecting station to wipe down grocery bags and other packages in a low trafficked area of the house.
+2) When you are out, be sure to practice social distancing. That is, staying six feet away from others. Be sure to wipe shopping cart and basket handles. Also make sure to avoid touching your face and also wash your hands frequently
+3) When you get back home, wash your hands with soap and water for 20 seconds, disinfect groceries and other packages at the disinfecting station, and also wash fresh produce before placing it in the kitchen
+4) For disinfecting, disinfect commonly used surfaces such as door knobs, light switches, keys, phones, keyboards, remotes, table surfaces, etc. When disinfecting, use EPA-approved disinfectants like chlorax disinfectant wipes and certain Lysol sprays
+5) As for deliveries, ask workers to drop off packages at your doorstep or a designated drop off area. If you need to communicate with workers, stand at least 6 feet from the workers to maintain social distance. Pay and tip online whenever possible. After picking up mail from your mailbox, be sure to wash your hands. Also disinfect packages if possible.
+6) For laundry, wash clothes, linen, and towels at the warmest setting. Disinfect your laundry hamper, or place a removable liner in it. Do not shake dirty laundry to avoid releasing virus particles into the air.
+7) Do not invite any guests over at this time. If you must house a family member or friend, avoid shared living spaces as much as possible. If guests need to enter common areas, stay 6 feet away from them</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="695095317397504052" id="message-695095317397504052">
+                <div class="chatlog__content">
+                    <div class="markdown">8) If someone at home gets sick, first consult a doctor. Then, isolate then in another room and have a separate bathroom for them. Make sure to disinfect commonly shared surfaces every day, avoid sharing items with them, wear gloves when washing their laundry, continue to wash hands frequently, and ask them to wear a face mask if possible
+9) Supplies that are essential to maintaining a corona-free household includes EPA approved disinfectants, If you don&#39;t have disinfectants, make a bleach solution:
+Mix four teaspoons bleach per quart of water; or
+Use a 70% alcohol solution, laundry detergent, trash bags, prescription medicines (you can mail order these), canned foods — fruits, veggies, beans, dry goods — breads, pastas, nut butters, and frozen foods — meats, veggies, fruits. Make sure to have at least two to three weeks of these supplies.
+10) If you have a pet, it is okay to let them out in the backyard. Make sure to supervise them. It is okay to play with your pets, but maintain social distance from other humans. If you are sick, please ask someone else to take care of your pet if possible. If not, you can take care of your pet, but must frequently wash your hands.
+
+As for this advice sheet, <em>The Environmentalist</em> asks for you guys to print this sheet out, stick it somewhere where your household can all read it, and be sure to follow all these guidelines to slow the spread of COVID-19. All the help is needed to stop this pandemic. Thank you!
+Author - <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 09:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="695728339544965170" id="message-695728339544965170">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Announcement from The Environmentalist</strong>
+Due to the actions covered by <span class="mention">#veritas-post</span> we will be releasing <span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> as a writer, effective immediately. While we do not wish to push policies on our writers that aren&#39;t for helping the environment in general, the actions taken Phoenix have been shown to be wreckless and morally ambiguous at best. We do not wish for our organization to be tied to this sort of hate and, for that, we will be releasing him.
+We do however, hope that if he is elected, he will continue to push for policies that are friendly to the environment.
+-Joint statement by <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span>  and <span class="mention" title="Caprese#2439">@the salad</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-Apr-20 08:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="696083155865567333" id="message-696083155865567333">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with SimonTheBoss</strong>
+You can view the transcript here: <a href="https://docs.google.com/document/d/1X_gxatvb1keTxHJMVzY34ysY0pm22sGyWHBbIcwFeoI/edit?usp=sharing">https://docs.google.com/document/d/1X_gxatvb1keTxHJMVzY34ysY0pm22sGyWHBbIcwFeoI/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1X_gxatvb1keTxHJMVzY34ysY0pm22sGyWHBbIcwFeoI/edit?usp=sharing"><div class="markdown">Interview with SimonTheBoss</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Arkenstone: Thank you for accepting this interview, can you state for the record, where you will be running?  SimonTheBoss: Good afternoon! I really appreciate you guys having me for this interview! With regards to your fist question, I plan on running the district NS-3.  Arke...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/-qw1E7SxOL3qJLUIZ6siq9iqWgb4xY0TE15Dhvg6ux9KrG0EBn1mpk3moy4MD5NOehSK_kSC8A=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/-qw1E7SxOL3qJLUIZ6siq9iqWgb4xY0TE15Dhvg6ux9KrG0EBn1mpk3moy4MD5NOehSK_kSC8A=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-Apr-20 10:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="696112400755064962" id="message-696112400755064962">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with Dan Reinhard</strong>
+You can view the transcript here: 
+<a href="https://docs.google.com/document/d/1d7CUcXB_rIKQDwFnTRRS0dS9lMaVrkOWaVWpdlCKXRw/edit">https://docs.google.com/document/d/1d7CUcXB_rIKQDwFnTRRS0dS9lMaVrkOWaVWpdlCKXRw/edit</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1d7CUcXB_rIKQDwFnTRRS0dS9lMaVrkOWaVWpdlCKXRw/edit"><div class="markdown">Dan Interview</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The Environmentalist Interview with Dan Interviewed by Caprese Caprese: Hi Dan, I heard you are a candidate in Jefferson for the state elections, but for which seat?  Dan: JF-4. Nothing too big has happened during debate, one of the smoothest I’ve been in actually  Caprese: We...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/jBvIxCU4gJtKrBZJtG14khwshxH891ummfAJj9aX6AkfOZfnOHRCJQWzhomIF3TutFOS2CyEOg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/jBvIxCU4gJtKrBZJtG14khwshxH891ummfAJj9aX6AkfOZfnOHRCJQWzhomIF3TutFOS2CyEOg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 12:57 AM</span>
+
+            <div class="chatlog__message " data-message-id="696146339318464513" id="message-696146339318464513">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Interview with Poliman</strong>
+You can view the transcript here: 
+<a href="https://docs.google.com/document/d/1-9ZgpMeHSWoqP_YZoEZj47yxFkxjsD9cn-zURJmRtWA/edit?usp=sharing">https://docs.google.com/document/d/1-9ZgpMeHSWoqP_YZoEZj47yxFkxjsD9cn-zURJmRtWA/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1-9ZgpMeHSWoqP_YZoEZj47yxFkxjsD9cn-zURJmRtWA/edit?usp=sharing"><div class="markdown">Poliman interview</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Caprese: Hello, this is Caprese from “The Environmentalist”. We are interested in interviewing potential candidates in the upcoming state elections on the environment. Do you mind if we can interview you?   Poliman: Sure.  Caprese: Thank you. First, which seat are you running ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/oPqBxnHbKzoa6x1m5_GLi_QABPg6YPlWv4e7ZA-gSgRcnrfKFND-NzKN-aLFSqKhwcfvnHcOAw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/oPqBxnHbKzoa6x1m5_GLi_QABPg6YPlWv4e7ZA-gSgRcnrfKFND-NzKN-aLFSqKhwcfvnHcOAw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 01:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="697420231680720948" id="message-697420231680720948">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Dairy Dumping Dangers</strong>
+It is becoming more dire for diary farmers across the country, from New England to Wisconsin. The rapid decline in demand for cheese, butter, etc. have led to a near collapse of the dairy industry. Cooperatives have already warned farmers to cut milk production and cull cows if necessary. This week, many dairy farmers across the nation began dumping milk as processing plants are unable to accept excess milk supply due to lack of demand for production. However, dumping milk could pollute nearby streams, resulting in the death of fish. In an &quot;emergency disposal of milk for dairy farms&quot; memo from local governments stated that unpasteurized milk is considered to be process wastewater, if the dumping is not done correctly, wasted milk could get into public waterways, reducing oxygen content and killing aquatic life. Milk also has a strong odor when decomposing, so milk dumping should also take place as far as possible from neighbors.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="697420333153779722" id="message-697420333153779722">
+                <div class="chatlog__content">
+                    <div class="markdown">Author - <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Apr-20 04:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="699277852192931880" id="message-699277852192931880">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Hydropower Act</strong>
+As climate change quickens due to the overuse of fossil fuels, renewable energy sources are quickly becoming a popular alternative. One of such sources is hydropower, common visioned as a large dam with spinning turbines inside. These turbines generate electricity. With rising demand for hydroelectricity, freshman Rep. Dan Reinhard (AL-JF) recently introduced a new, ambitious bill to subsidize for fossil fuel companies to build hydroelectric dams. This bill requires $10 billion for a maximum subsidy of $900,000 per supplier. Though this bill fosters the growth of hydroelectricity and the promise of a greener United States, this bill lacks specificity on how money shall be obtained from the current federal budget. We here at The Environmentalist hope that this bill will ensure a green future for America.
+Author - <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">16-Apr-20 12:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="700131505208426559" id="message-700131505208426559">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The BABYSHARK Act</strong>
+This act will serve to help protect sharks in American waters, and to limit the hunting of sharks in general. This is something that is good for not only for shark populations, some of which are endangered, but also good for the ocean as a whole. Sharks are, what are often known as, bottom feeders, which means that, in some ways, they act as a sort of ocean floor cleaner. While we often think of sharks as these large, vicious animals, they aren&#39;t always that way.
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 04:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="702180294144295053" id="message-702180294144295053">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The PMSHA Act</strong>
+This Act is set up with the provisions to get rid of many surgeries that are harmful to many animals living within households in the United States. Theses surgeries are done by the thousands each and every year, and this looks to end them. We here are in full support of this. There is an exemption for those surgeries that would be able to be done which can be shown to help the animal medically. While this can be used as a loophole by some, we still find this necessary because theses surgeries are, in some cases, done to benefit the health of the animal, rather than the convenience of the owner. We also like the ability to crack down on doctors who would choose to ignore this order. We here at <em>The Environmentalist</em> do look forward to seeing this passed and becoming law.
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 07:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="702223947709546547" id="message-702223947709546547">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Hydropower Expansion Act of 2020</strong>
+This Act sets up a way for hydropower to be expanded within the United States. This enlists the army corps to be able to set up these power stations which assumes them to be government-run facilities, though there are private loans available as well. Given a budget of $500,000,000, and the fact that the average hydro plant costs around $1,000,000 to make, this means that there is room in the budget to make around 500 plants. A plant, on average, produces around 300 KwH, with each KwH costing around $0.005 (not a typo!) which costs $0.75 between the plants each hour (or $375/hour). We here at The Environmentalist applaud this initiative for green energy, and hope to see more in the future!
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 01:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="702493605637390347" id="message-702493605637390347">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>National Park Expansion Act</strong>
+This Act expands the definition and protection of national parks to many needed areas. Sites up for the changes include national monuments, memorials, and preserves. As for preserves, they are often treated as parks though resource extracting activities are permitted such as fishing&#39;s hunting, and mining. These activities may destroy the desecrate local environment physically or gradually. Human activity accidents may occur, causing landslides, floods, earthquakes, etc that destroy the landscape. Hunting and fishing can lead to endangered species only found in the local area to go extinct. National parks do not permit such human activity. Humans should interfere with remote nature as little as possible. We hope that a follow up bill will extend to cover all natural preserves to protect the environment and its health.
+Author - <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 04:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="702538083354148985" id="message-702538083354148985">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Earth Day</strong>
+On April 22, 1970, the world marked the first Earth Day. This year, 2020, marks the 50th anniversary of having an entire day devoted to the environment. First off we would like to start by directing you to <a href="https://www.earthday.org/">https://www.earthday.org/</a> in order to see all of the Earth Day activities that are happening there. However in this post I want to focus on what has been done to help the earth, as well as, what has happened unintentionally due to the coronavirus. We also have a surprise announcement at the end of this.
+Actions to help the earth: Since the formation of The Environmentalist there has been more green-centered legislation passed in the House in any session that is in memory, this is a good thing. While legislation does not produce direct action, this is a step in the right direction. We hope that with the upcoming May election, we can get even more environmentally friendly candidates into office.
+Unintentional affects of the virus: The earth is healing because of this virus. Emissions are down 10% in this country and in other countries emissions have dropped as much as 30%! This is a good thing and it is showing us that we don&#39;t have to be spending all of the fuel that we are currently spending. It also goes to highlight just how much a transition to clean energy can help the environment.
+Lastly, we have an announcement to make on Earth Day, for the May election we will have an official ranking system for how environmentally friendly a candidate is! You&#39;ve seen rankings like these before but they have since died out, and it is now time to start holding candidates responsible for how they vote, and we believe this is a start to this!</div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+                            <div class="chatlog__embed-author">
+
+                                <span class="chatlog__embed-author-name">
+                                    <a class="chatlog__embed-author-name-link" href="https://www.earthday.org/author/gholme4/">gholme4</a>
+                                </span>
+                            </div>
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://www.earthday.org/"><div class="markdown">Earth Day: The Official Site | Earth Day Network</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Visit the official Earth Day site to learn about the world&#39;s largest environmental movement and what you can do to make every day Earth Day.</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://www.earthday.org/wp-content/uploads/2020/03/sunrise-1756274_1920.jpg">
+                                <img class="chatlog__embed-thumbnail" src="https://www.earthday.org/wp-content/uploads/2020/03/sunrise-1756274_1920.jpg" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Apr-20 01:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="702670415973318727" id="message-702670415973318727">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Green Cars for Interstate Highways Act</strong>
+This act helps make the usage of green vehicles much easier, encouraging consumers to buy green vehicles. Green vehicles will reduce carbon emissions and this will have immediate effect on surrounding environment. The air will be much cleaner and wildlife previously diseased by dirty air from highways will find improving health. This is also good for people who live, work,and play near highways. There will be less emissions blowing towards them, so they will be breathing cleaner air. This will reduce cases of asthma, lung cancer, and if her respiratory related conditions traced to highway emissions. This act will encourage everyone that green is the way to improve the health of both environment and humans.
+Author - <em>Caprese</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Apr-20 03:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="702702070095937630" id="message-702702070095937630">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>An Update on our efforts to get the most Environmentally friendly candidates into office</strong>
+For those of you who don&#39;t know, how everyone votes and you can keep track of that. Starting on March 14th, we went under an effort to keep track of all environmental legislation that is being done at the federal level. State level is underway!
+With that in mind, we are happy to announce that we are making public a ranking system for all those who intend to run for office. We are working towards holding people more and more accountable for not protecting our environment.
+With the need for full transparency being high up for us, here is our ranking system!
+<a href="https://docs.google.com/document/d/19Ok5XevZM11Whk9J_W0eo39hWS1Q1B9RFrlqfGZwsSc/edit?usp=sharing">https://docs.google.com/document/d/19Ok5XevZM11Whk9J_W0eo39hWS1Q1B9RFrlqfGZwsSc/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/19Ok5XevZM11Whk9J_W0eo39hWS1Q1B9RFrlqfGZwsSc/edit?usp=sharing"><div class="markdown">The Environmentalist Ranking System</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Everyone starts with a rank of C (12); which is average. The goal with this is to have an objective system. Anyone with no previously held office will be given a “C” because we base these rankings on actions, not rhetoric. Anyone can talk the talk. You can go negative, but you...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/S47LJM0f2_4RpsXO9UW4r3iqh6gP1aUX5qWNcEyLRtt082CJMUf_uJK4KI_9w4GlEAMc2RcfAA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/S47LJM0f2_4RpsXO9UW4r3iqh6gP1aUX5qWNcEyLRtt082CJMUf_uJK4KI_9w4GlEAMc2RcfAA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Apr-20 03:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="702893874204377098" id="message-702893874204377098">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Jumpstarting Environmental Infrastructure in Cities Act</strong>
+For short, it is a lot more plant life around our cities, but we will cover the overarching points for you here.
+Green Infrastructure - this is basically what you think of when you think of a green city. Evapotranspirate stormwater and reduce flows to sewer systems. Stormwater harvest and reuse. Basically is approves what you think of as your stereotypical green city from a movie.
+bioswale - this is a section of vegetation on a slope.
+green roof i- s a roof that is covered, again, with vegetation.
+Permeable Paving - this is a way of paving that allows for stormwater to run off nicely using various methods.
+rain garden this is a deeper area of plantlife that prevents water buildup from heavier rains or floods
+rainwater tank - this is another way of collecting extra water to prevent water buildup and plant drowning
+Urban Forestry - you all know the city streets that have trees lining them? This is it! It&#39;s fantastic and we love it!
+
+Overall we find this hard to not approve. This is exactly the comprehensive green (and non-energy related!) bill we&#39;ve been waiting to see and cannot wait for it to pass.
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Apr-20 10:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="702996406838886400" id="message-702996406838886400">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Reforestation Act of 2020 part 1 of 2</strong>
+There are 2 major points to this bill, both of which we have some significant problems with.
+The first of which is that it requires, at max, 200 trees per acre replanted. This is a very small number. All 2 states have laws either giving money to loggers, requiring loggers, or both, to plant at least 1,000 trees per acre after they cut them down. For a reference point for how little 200 trees per acre actually is, national forest reserves have, on average, 6,500 trees per acre. If this is kept in it&#39;s current form, we would like to see this increased to, at a minimum, what states are already doing.
+The second of which, is fines. A failure to replant fine, and a fine for invasive species. $20K and $10K max, respectively. Again, we have a problem with this because fines already exist and work slightly differently. Depending on how this is to be interpreted, fines are already in the hunderds of thousands, and can get close to one million dollars in some cases. Upon asking April, it was cleared up that this is meant to be an additional fine, and not setting a new and different cap. We ask that the legislation reflect that.
+As it currently stands, we DO NOT support this bill.
+In part 2, we will be releasing a transcript from <span class="mention" title="ThanosBaby#6300">@Grindr™</span> of his concerns with the bill from a constitutional standpoint.
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 09:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="703340168958181447" id="message-703340168958181447">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Reforestation Act of 2020 part 2 of 2</strong>
+We now have a transcript from <span class="mention" title="ThanosBaby#6300">@Grindr™</span> of his constitutional concerns:
+<em>The bill as proposed by Senator April is 100% unconstitutional. When the Senator and also Secretary of the Interior April brought this bill to the President, President Valerie had immediate concerns of how this would be constitutional. The bill was then referred over to myself as Attorney General with consultation from the Solicitor General. We both came to the conclusion pretty easily that this bill had no constitutional basis. Even the an expanded usage of the interstate commerce clause wouldn&#39;t be able to justify this bill. After transmitting our finding to the President the President relayed the same to the Secretary but the Secretary had already submitted the bill, I guess they were to impatient to hear the legal advice of the DOJ. The President has told me this is what she told Secretary April, &quot;I believe it&#39;s already been submitted (and that&#39;s totally fine) but we believe it&#39;s unconstitutional. My suggestion would be mandating reforestation on federal land, if we don&#39;t already, and making a program to grant money to the states that mandate the same outside federal land, as a carrot.&quot;</em>
+
+I do find the Senators attempt here admirable as of course the intent is right and true, but this is certainly not the avenue nor place to try and do so, at least in this manner. I would suggest heavy revision to that bill to be more in line with the kind of idea as proposed by the President.
+We would like to quickly clear up that yes, there is a federal program to reimburse logging companies that do reforestation already as well as state level mandates that are done for this purpose, as we covered in the first part of this. However, we were aware of a typo we made. Pertaining to tree planting, we put &quot;max&quot; instead of &quot;min&quot; and we apologize for anyone we mislead.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703340315360362526" id="message-703340315360362526">
+                <div class="chatlog__content">
+                    <div class="markdown">While on the topic of this, if any other readers have concerns they would like to bring up, do not hesitate to contact <span class="mention" title="Caprese#2439">@the salad</span> or <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> 
+Author - <em>Arkenstone</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Apr-20 01:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="703578005821456464" id="message-703578005821456464">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Fossil Fuel Efficiency Bill</strong>
+This bill is vital to the economy as it encourages both consumers and corporations unlike to move green. More investment and adjustments of taxes in favor of green products will lower prices of these goods, so more consumers will be able to afford to go green. Corporations also shift green so the can make a profit selling green products to consumers. Despite many of the bright promises this bill holds, this bill is quite unconstitutional as the senate can not write legislations concerning adjustment in taxes. The Environmentalist praises this bill for its great intentions, but this bill may need to be reintroduced differently at a different time. 
+Author - <em>Caprese</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">30-Apr-20 03:12 AM</span>
+
+            <div class="chatlog__message " data-message-id="705240251685273620" id="message-705240251685273620">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>May 2020 Election ratings</strong>
+While the full list of candidates has not yet been released, here is how we rank everyone who is currently in office. Do note that some of these rankings may not be indicative for long-term members, because we have not factored that in. No more stalling though, here are the rankings! <a href="https://docs.google.com/document/d/1PPMPy8TdsE6447dg9hmS1qkGhxlQVcTtEMsthU9rEqs/edit?usp=sharing">https://docs.google.com/document/d/1PPMPy8TdsE6447dg9hmS1qkGhxlQVcTtEMsthU9rEqs/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1PPMPy8TdsE6447dg9hmS1qkGhxlQVcTtEMsthU9rEqs/edit?usp=sharing"><div class="markdown">The Environmentalist Rankings May 2020</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Here is where each Representative and Senator is, and how they rank according to The Environmentalist  NS-1 Emperio: C+ NS-2 Vacant NS-3 Vacant NS-4 Darby: C NS-5 Arkenstone: C+ NS-6 Jack Coulter: B- NS Senator Hagen: C- NS Senator Ddet: C+DX-1 Lohengramm: C+ DX-2 John Smith:...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/BAfnwsYANxaF3e8MMEKzyMkgE8X5wwF6keMYSnlC9BFz0z4bJpoGeXuca32unl8xKiz81luKWQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/BAfnwsYANxaF3e8MMEKzyMkgE8X5wwF6keMYSnlC9BFz0z4bJpoGeXuca32unl8xKiz81luKWQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇨" title="🇨" src="https://twemoji.maxcdn.com/2/72x72/1f1e8.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteYea" title="VoteYea" src="https://cdn.discordapp.com/emojis/406279850631102474.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/677591561609150472/574bb42739d165f3d74f6e91c07e2e3a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Environmentalist#0000" data-user-id="677591561609150472" >The Environmentalist</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-May-20 02:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="705767929630818304" id="message-705767929630818304">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>New Writer</strong>
+We would like to welcome <span class="mention" title="IndyPrez#9930">@IndyPrez</span> to our staff as we continue to be a force that is not partisan for any one party, and is just a force for pushing what is best for the environment.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="labor" title="labor" src="https://cdn.discordapp.com/emojis/404792230369558561.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">12-May-20 12:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="709540376733548555" id="message-709540376733548555">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The end of The Environmentalist</strong>
+It is with a heavy heart that I am announcing an end to The Environmentalist. Between my duties in politics I can no longer keep up the quality, nor quantity, that is the standard this organization has set. Due to this, we will be closing down. Thank you to everyone who supported us and listened to us. I hope that now, in public life, I will receive the same support I did with this organization.
+Thank you.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😳" title="😳" src="https://twemoji.maxcdn.com/2/72x72/1f633.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇫" title="🇫" src="https://twemoji.maxcdn.com/2/72x72/1f1eb.png">
+                            <span class="chatlog__reaction-count">17</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">17-May-20 06:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="711451420326494250" id="message-711451420326494250">
+                <div class="chatlog__content">
+                    <div class="markdown">Archived</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 64 message(s)</div>
+</div>
+
+</body>
+</html>

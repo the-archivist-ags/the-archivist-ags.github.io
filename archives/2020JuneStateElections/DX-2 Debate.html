@@ -1,0 +1,3053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - dx2-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">State Elections Channels / dx2-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-May-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">05-Jun-20 11:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="718598131087966378" id="message-718598131087966378">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>June State Election</strong>
+
+The Candidates are: 
+
+<span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> (AL) 
+<span class="mention" title="John Smith#4125">@John Smith</span> (NR)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="718607990596567071" id="message-718607990596567071">
+                <div class="chatlog__content">
+                    <div class="markdown">I am open to any questions, just a heads up I am going to a Black Lives Matter protest tomorrow so may not be able to answer as many questions or debate as much tomorrow.<span class="chatlog__edited-timestamp" title="06-Jun-20 12:53 AM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="nibble" title="nibble" src="https://cdn.discordapp.com/emojis/651868252242182174.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yes" title="yes" src="https://cdn.discordapp.com/emojis/717927092209319956.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:44 AM</span>
+
+            <div class="chatlog__message " data-message-id="718611268566515782" id="message-718611268566515782">
+                <div class="chatlog__content">
+                    <div class="markdown">Question for <span class="mention" title="John Smith#4125">@John Smith</span> : Your comments regarding Islam were censured by the House. Firstly, do you have anything you&#39;d like to say to the people regarding this? Secondly, do you think that your censure will affect your chances this election?<span class="chatlog__edited-timestamp" title="06-Jun-20 01:39 AM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="718692863621464128" id="message-718692863621464128">
+                <div class="chatlog__content">
+                    <div class="markdown">The censure was an attempt to blow some private statements I made completely out of proportion in order to drag my name through the mud. I hope my constituents will see past the story my opponents have crafted and see the great work I have done for Dixie and will continue to do if they re-elect me. I believe I have had a productive session and I hope to have another soon.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:35 AM</span>
+
+            <div class="chatlog__message " data-message-id="718699647136169994" id="message-718699647136169994">
+                <div class="chatlog__content">
+                    <div class="markdown">I would just like to comment on this issue as well. I do not tolerate any racism or prejudice. You came out against Islam. That is wrong. It does not matter that it was privately, you said it and should own up to it, rather then defend yourself. Playing the victim is not cool and the citizens of Dixie notice that. Please own up to what you said and call it wrong. People can change, but show that you did.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:38 AM</span>
+
+            <div class="chatlog__message " data-message-id="718700319189762128" id="message-718700319189762128">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> are you saying that it&#39;s unacceptable to be against the tenants of Islam?If so, that definitely would violate the establishment clause.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="718702190449131521" id="message-718702190449131521">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> he stated “I don’t like Islam as a faith” which is outright Islamaphobic and insensitive. People have freedom of religion and stereotyping Islam as a very conservative religion was wrong on his part. I have friends that practice Islam and they are loving and care about all people. It was wrong and it was the reason he was censured. He should apologize rather than play the victim.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="718704705055883276" id="message-718704705055883276">
+                <div class="chatlog__content">
+                    <div class="markdown">I was very clear in those statements that my issues are not with muslims and that is something I have always maintained. I understand my statements were controversial, but I value religious freedom among America&#39;s most central ideas. However, I am still free to criticize a religion, it is a set of ideas after all</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:13 AM</span>
+
+            <div class="chatlog__message " data-message-id="718724278836789318" id="message-718724278836789318">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes you do have the right to criticize, and there were no legal consequences due to your statement because of freedom of speech. I along with other just believe that your comments were insensitive towards Muslims. Also adding on to phobias, I really hope your name is supposed to be a joke. This month is pride month and Dixie should be supportive of all its citizens. Trans people go through so much hate by others and even their own self hate sometimes. We do not need to be spreading the message that Dixie is anti trans and only recognizes someone’s birth sex rather then their actual gender in their brain which they identify with. Homophobia should not be tolerated either in Dixie. I would like to hear your opinion on this, as the LGBTQIA+ community still faces hate. I hope your name is a joke but even if it is a joke you should not make jokes about a real thing that affects and belittles so many of our Transgender Americans.<span class="chatlog__edited-timestamp" title="06-Jun-20 08:14 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="718835970614624326" id="message-718835970614624326">
+                <div class="chatlog__content">
+                    <div class="markdown">Question for <span class="mention" title="John Smith#4125">@John Smith</span>: Why did you vote Yea to an amendment to the Dixie constitution to ban same sex marriage?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="718836666134954096" id="message-718836666134954096">
+                <div class="chatlog__content">
+                    <div class="markdown">I don&#39;t know why you are attacking my name, which I must admit is rather normal as it is John Smith</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="718836981408464916" id="message-718836981408464916">
+                <div class="chatlog__content">
+                    <div class="markdown">(I didn&#39;t attack your name....?)<span class="chatlog__edited-timestamp" title="06-Jun-20 03:41 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="718837188728455210" id="message-718837188728455210">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> can you pull up the specific amendment in question? I remember at one point a ban on same sex marriage was cleverly hidden in a constitutional overhaul that I accidentally voted in favor of without realizing it. I would never knowingly vote in favor of such measures. I believe that any 2 consenting adults should be able to marry each other without issue.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="718837512511946773" id="message-718837512511946773">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1FprXcpp76Q2CnsijVn33TjK_dxW62QYq4UbiH9JzCxg/edit">https://docs.google.com/document/d/1FprXcpp76Q2CnsijVn33TjK_dxW62QYq4UbiH9JzCxg/edit</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1FprXcpp76Q2CnsijVn33TjK_dxW62QYq4UbiH9JzCxg/edit"><div class="markdown">Revised Dixie Constitution</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">IN THE GENERAL ASSEMBLY OF DIXIE MAY 12, 2019 JMP, for himself and Governor Webb, introduced the following amendment; which was subsequently referred to the Dixie Senate at-large for debate and amendment.  A RESOLUTION To replace the Dixie Constitution.  WHEREAS, the current C...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/FTs0CjkHg4-t-HMqAnvto7BWHvK0id6nNg_22unM34GeMuLNNzfiYlDYf-fE5kH5QmmNZMqq_Q=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/FTs0CjkHg4-t-HMqAnvto7BWHvK0id6nNg_22unM34GeMuLNNzfiYlDYf-fE5kH5QmmNZMqq_Q=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="718838576904798218" id="message-718838576904798218">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes, this was a large constitutional overhaul passed quite a while ago that had that clause very cleverly hidden in it. I believe it was during my first term in the assembly and has since taught me to read bills much more carefully.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="718838783285395476" id="message-718838783285395476">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span> I am  discussing your name because transphobia is a real thing and so many Trans Americans are affected and attacked for their gender. Why haven’t you addressed your name?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718838906266845184" id="message-718838906266845184">
+                <div class="chatlog__content">
+                    <div class="markdown">My name is John Smith, I fail to see what that has to do with transphobia</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839037552492544" id="message-718839037552492544">
+                <div class="chatlog__content">
+                    <div class="markdown">Your name is John Smith but your nick is Just a touch of transphobia</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839071950241904" id="message-718839071950241904">
+                <div class="chatlog__content">
+                    <div class="markdown">His nick?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718839135715983360" id="message-718839135715983360">
+                <div class="chatlog__content">
+                    <div class="markdown">What’s a nick?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839207782776925" id="message-718839207782776925">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839233208516650" id="message-718839233208516650">
+                <div class="chatlog__content">
+                    <div class="markdown">I don&#39;t believe anyone named Nick is here</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839247007907880" id="message-718839247007907880">
+                <div class="chatlog__content">
+                    <div class="markdown">That is his nick ^</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718839322874478755" id="message-718839322874478755">
+                <div class="chatlog__content">
+                    <div class="markdown">You can change your nickname in discord.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="iwouldprefernotto" title="iwouldprefernotto" src="https://cdn.discordapp.com/emojis/435263374402781185.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839354402930749" id="message-718839354402930749">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> are you alright sir?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839426868052060" id="message-718839426868052060">
+                <div class="chatlog__content">
+                    <div class="markdown">Your nickname is <span class="mention" title="John Smith#4125">@John Smith</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="iwouldprefernotto" title="iwouldprefernotto" src="https://cdn.discordapp.com/emojis/435263374402781185.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839431917731853" id="message-718839431917731853">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span> Thank you for your answer</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="718839616966230166" id="message-718839616966230166">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;m aware of the chat application Discord though I do not use it</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718839659815239720" id="message-718839659815239720">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> my pleasure</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="718841765804638250" id="message-718841765804638250">
+                <div class="chatlog__content">
+                    <div class="markdown">Ignoring my previous statements which I apologize for as they were breaking down the 4th wall in which we can not do in RP. I would like to ask you a question about your LGBTQIA+ stance. Do you believe all people apart of the community should be accepted and their rights should be protected and not infringed in Dixie?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="iwouldprefernotto" title="iwouldprefernotto" src="https://cdn.discordapp.com/emojis/435263374402781185.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="obamaprism" title="obamaprism" src="https://cdn.discordapp.com/emojis/654149062056214548.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="718845101794787329" id="message-718845101794787329">
+                <div class="chatlog__content">
+                    <div class="markdown">All people are apart of the community and are entitled to all rights in Dixie. I even include the unborn as I have fought for them at every turn, including my recent passing of the Right to Life Amendment, which constitutionally ensures all Dixians have the right to life</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="718848227083943988" id="message-718848227083943988">
+                <div class="chatlog__content">
+                    <div class="markdown">The Right to Life amendment was not the correct way to deal with abortion. Women should be the one making the choice not the government which is disproportionately cis gendered straight white males. Instead the reason for most abortions is due to lack of economic stability, if we use a UBI of 1000 dollars a month for each adult over 18 and 500 dollars for each per child, they will have a better stability to care for the child and pay the medical bills of giving birth. Roe v Wade protected abortion and we should not have infringed on that case. Yes all people have the right to life but so do females. Without proper access to abortion females use other more gruesome techniques of having an abortion which could cost their life. Abortion should be legal so that women not only have privacy but they also have a safe option.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718848533876310028" id="message-718848533876310028">
+                <div class="chatlog__content">
+                    <div class="markdown">I also would like to expand sex education in schools and make birth control and other contraceptives free.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="718849894856654950" id="message-718849894856654950">
+                <div class="chatlog__content">
+                    <div class="markdown">The goal here is the preservation of life, I cannot allow murder to be openly practiced in Dixie. Roe v. Wade is arguably one of the worst Supreme court decisions in history. I&#39;m open to methods to stop the need for abortion and have helped passed such methods in Dixie with the aptly named Decreasing Abortion Act. The only safe option is to not have abortion entirely, it is the only medical procedure that has a 100% mortality rate. I understand the hardship an unwanted pregnancy can cause but when the alternative is murder we have to try to limit that hardship.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="718850019116974088" id="message-718850019116974088">
+                <div class="chatlog__content">
+                    <div class="markdown">And also in regards to your statement on LGBTQIA+ yes they have a right to life, we all know that. But do you believe that businesses can discriminate against them due to their gender identity or sexuality? Do you believe that they should be able to have their gender legally changed? Do you believe that they can legally get married? Will you advocate for LGBTQIA+ history in history classes andLGBTQIA+  sex education in health classes? It is a bigger issue than just life or death.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="perhaps" title="perhaps" src="https://cdn.discordapp.com/emojis/604799860415397888.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718850359359176725" id="message-718850359359176725">
+                <div class="chatlog__content">
+                    <div class="markdown">And do you believe that the clump of cells that can’t survive without the mother is more valuable then a women’s life?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yes" title="yes" src="https://cdn.discordapp.com/emojis/717927092209319956.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="718850832828989480" id="message-718850832828989480">
+                <div class="chatlog__content">
+                    <div class="markdown">I support current anti-discrimination laws regarding businesses, yes I believe any adult can legally change their gender, I&#39;ve already said any 2 consenting adults should be able to marry, education on civil rights movements is important but I do not think a special class for LGBTQ+ history would be necessary. And we aren&#39;t trading the mother&#39;s life for the child, we are trading a little hardship on the mother&#39;s part for the child&#39;s life</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718851014840811590" id="message-718851014840811590">
+                <div class="chatlog__content">
+                    <div class="markdown">The lives should be valued equally in our laws as all other lives are</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718851202296709210" id="message-718851202296709210">
+                <div class="chatlog__content">
+                    <div class="markdown">I do believe that in situations when the pregnancy poses a significant threat to the mother&#39;s life abortion can be necessary, and that is the only instance I believe abortion should be allowed</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="obamaprism" title="obamaprism" src="https://cdn.discordapp.com/emojis/654149062056214548.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="718851325529423892" id="message-718851325529423892">
+                <div class="chatlog__content">
+                    <div class="markdown">A “little” hardship. Carrying a baby for 9months which you may not even keep and going through the pain of labor is only a little hardship to you?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yes" title="yes" src="https://cdn.discordapp.com/emojis/717927092209319956.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="718851527124451379" id="message-718851527124451379">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span> you mean that you believe abortion is acceptable in some cases?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="no" title="no" src="https://cdn.discordapp.com/emojis/717928213627797508.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="718851683446161428" id="message-718851683446161428">
+                <div class="chatlog__content">
+                    <div class="markdown">That hardship is a necessary evil, the alternative is to end an innocent human life, to cut short all of that potential. The hardship is necessary when the alternative is murder</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718851804712140800" id="message-718851804712140800">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> abortion is only acceptable when there is a significant threat to the mother&#39;s life</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="718851897833947148" id="message-718851897833947148">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> do you believe women should have the right to terminate the life of their child for any reason?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="718852400261234768" id="message-718852400261234768">
+                <div class="chatlog__content">
+                    <div class="markdown">Pregnancy also forces women to take usually unpaid time off from work which means they are hurting not only physically from carrying a fetus but also economically. I believe that women should be the ones to make the choice. And yes women have a right to privacy about their medical records and can get an abortion if they want. They do not need to have to legally justify why. And if I was a women I don’t know if I could make that hard decision of getting an abortion, but I am a man. It is up the women to make the choice.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="no" title="no" src="https://cdn.discordapp.com/emojis/717928213627797508.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="718852626988531764" id="message-718852626988531764">
+                <div class="chatlog__content">
+                    <div class="markdown">I understand the hardship unwanted pregnancies cause, but the alternative is murder, the ending of an innocent human life. How do you justify that?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="718852852235108462" id="message-718852852235108462">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> is that a yes to my question?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="718853106636685442" id="message-718853106636685442">
+                <div class="chatlog__content">
+                    <div class="markdown">The alternative is not murder. The fetus is apart of the women and the women can choose whether they want to carry the fetus or not. A fetus can not live outside a women with current technology so therefore it is apart of the women and it is her body her choice.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🅱️" title="🅱️" src="https://twemoji.maxcdn.com/2/72x72/1f171.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇴" title="🇴" src="https://twemoji.maxcdn.com/2/72x72/1f1f4.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇰" title="🇰" src="https://twemoji.maxcdn.com/2/72x72/1f1f0.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇪" title="🇪" src="https://twemoji.maxcdn.com/2/72x72/1f1ea.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718853180229943379" id="message-718853180229943379">
+                <div class="chatlog__content">
+                    <div class="markdown">And yes that was a yes</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718853447163576441" id="message-718853447163576441">
+                <div class="chatlog__content">
+                    <div class="markdown">Do I think it is always moral, no. But I am not in the brain of each women getting an abortion. I think it is up to them to decide if it is moral, not the government.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718853964434505728" id="message-718853964434505728">
+                <div class="chatlog__content">
+                    <div class="markdown">A toddler cannot live without outside help, many elderly people need caretakers and life support devices. Self reliance is not a prerequisite for life. A fetus has completely separate genetics and eventually grows all the things a normal person has, their own heart, brain, lungs. A fetus has not sinned or done anything wrong and therefore is more innocent and precious than you or I. It is not her body, it is not her choice</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="718854494779080834" id="message-718854494779080834">
+                <div class="chatlog__content">
+                    <div class="markdown">But the family of the elderly person can choose to take them off life support. And a toddler can’t live on its own but it can live without its mother. A fetus can’t live without its mother.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/688482130702893084/f453906a38fb21b5917d7757c66bec31.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Poliman#7886" data-user-id="688482130702893084"  style="color: rgb(129, 134, 137)" >Poliman</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="718854784005832774" id="message-718854784005832774">
+                <div class="chatlog__content">
+                    <div class="markdown">Till what stage do you support abortion legally? <span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="718855509901574205" id="message-718855509901574205">
+                <div class="chatlog__content">
+                    <div class="markdown">my current stance is 24 weeks because before that a fetus can not survive outside the womb.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="718855562497884190" id="message-718855562497884190">
+                <div class="chatlog__content">
+                    <div class="markdown">And it can be for any reason</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="718855631506898954" id="message-718855631506898954">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes, because of the right to privacy.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="718856607601262623" id="message-718856607601262623">
+                <div class="chatlog__content">
+                    <div class="markdown">Are all fetuses capable of surviving outside the womb at 24 weeks? And inversely can a fetus be capable of surviving before 24 weeks?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="718857225531162675" id="message-718857225531162675">
+                <div class="chatlog__content">
+                    <div class="markdown">They are not considered “viable” until after 24 weeks.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718857508999004210" id="message-718857508999004210">
+                <div class="chatlog__content">
+                    <div class="markdown">It is approximately 50% survival rate around 24 weeks</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="718858277177524347" id="message-718858277177524347">
+                <div class="chatlog__content">
+                    <div class="markdown">But is that number universal for all fetuses?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="718859836326150244" id="message-718859836326150244">
+                <div class="chatlog__content">
+                    <div class="markdown">As technology improves I am sure that the survival rate will go up. And yes the 50% survival rate for between 23 - 25 weeks is universal.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="718859953972051969" id="message-718859953972051969">
+                <div class="chatlog__content">
+                    <div class="markdown">Can you 100% guarantee that all fetuses before 24 weeks are not alive by your definition?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="718860295023493162" id="message-718860295023493162">
+                <div class="chatlog__content">
+                    <div class="markdown">I can not 100% guarantee as most fetuses born after 20 weeks survive for a little until their organs fail as they are not enough developed.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="718860631649812560" id="message-718860631649812560">
+                <div class="chatlog__content">
+                    <div class="markdown">Then how you justify allowing them to die? We banned the death penalty because a fraction of those that receive it could be innocent, why not give the same protection we grant criminals to our children?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="718860668035530812" id="message-718860668035530812">
+                <div class="chatlog__content">
+                    <div class="markdown">I would be open to changing my stance to 20 weeks.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718860872092483674" id="message-718860872092483674">
+                <div class="chatlog__content">
+                    <div class="markdown">The earliest baby to be born and survive is 21 weeks and 5 days</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718861221562155049" id="message-718861221562155049">
+                <div class="chatlog__content">
+                    <div class="markdown">And that was in 1987.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="718864692633665578" id="message-718864692633665578">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span> Your campaign poster says that I would support abortion at any time although I stated 24 weeks. Why did you try to put words into my mouth?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="718865076286783548" id="message-718865076286783548">
+                <div class="chatlog__content">
+                    <div class="markdown">You stated that wanted to allow abortion for any reason when that poster was released, you have since changed that stance twice</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="718865177541345311" id="message-718865177541345311">
+                <div class="chatlog__content">
+                    <div class="markdown">Any reason does not equal any time</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718865358479687741" id="message-718865358479687741">
+                <div class="chatlog__content">
+                    <div class="markdown">And I did not change my stance I said I would be open to compromise and do 20 weeks as the earliest baby born was 21 weeks and 5 days.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="718865496807702570" id="message-718865496807702570">
+                <div class="chatlog__content">
+                    <div class="markdown">It was implied from your statements. You did say 24 weeks originally and later said &quot;I would be open to changing my stance to 20 weeks&quot;<span class="chatlog__edited-timestamp" title="06-Jun-20 05:35 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="718865778648023132" id="message-718865778648023132">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes because I am always open to compromise</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718865931748769823" id="message-718865931748769823">
+                <div class="chatlog__content">
+                    <div class="markdown">I want to get things done. I will even if I have to compromise.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718866051793682513" id="message-718866051793682513">
+                <div class="chatlog__content">
+                    <div class="markdown">Roe v Wade protected the right of an abortion and I will fight for that right to come back for the people of Dixie</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="718866235303002192" id="message-718866235303002192">
+                <div class="chatlog__content">
+                    <div class="markdown">I don&#39;t compromise when it comes to lives, there are times to compromise, but in this case that can mean life or death</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="718866894136016938" id="message-718866894136016938">
+                <div class="chatlog__content">
+                    <div class="markdown">There are many forms of life and we kill life all the time. Human life is valuable I agree, but a fetus is not a human yet. It isn’t a baby, it is developing into one but is not one yet.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718869420419842129" id="message-718869420419842129">
+                <div class="chatlog__content">
+                    <div class="markdown">I am heading to the Black Lives Matter rally right now so will not be able to check discord for a couple hours. If you have questions or comments, I will answer them after.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/488678023890075651/5a53892cbeb6a9480d71437a0c6dc2bb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ostland#2323" data-user-id="488678023890075651"  style="color: rgb(46, 204, 113)" >Poland</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="718870566903480330" id="message-718870566903480330">
+                <div class="chatlog__content">
+                    <div class="markdown">Why are you on discord at a debate??</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="718872636716875776" id="message-718872636716875776">
+                <div class="chatlog__content">
+                    <div class="markdown">I meant not be able to check the debate. I am sorry.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718914457136529568" id="message-718914457136529568">
+                <div class="chatlog__content">
+                    <div class="markdown">I am back from the rally. It was very empowering. I am back to answer any questions and address your concerns.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/688482130702893084/f453906a38fb21b5917d7757c66bec31.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Poliman#7886" data-user-id="688482130702893084"  style="color: rgb(129, 134, 137)" >Poliman</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718914518885072907" id="message-718914518885072907">
+                <div class="chatlog__content">
+                    <div class="markdown">What did you do at the rally?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718914844706734152" id="message-718914844706734152">
+                <div class="chatlog__content">
+                    <div class="markdown">I used my voice, stood up against the systematic racism in this country, and remembered those lives lost due to police brutality.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="718951747044900965" id="message-718951747044900965">
+                <div class="chatlog__content">
+                    <div class="markdown">I would just like to respond to Smith&#39;s rally. <span class="mention" title="John Smith#4125">@John Smith</span> I have been told time and time again that the current tax system creates enough money to run a UBI and the country even has its own UBI, I do not support changing the tax system as the system works right now. If their will not be enough funds I would defund things that are not as necessary as economic stability. The right and the left support a Universal Basic Income, as far as I have seen.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="718952963158311003" id="message-718952963158311003">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span> Haven’t you said in the past however, that a UBI in your ideal world would be in addition to other existing welfare programs?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="718957338182287442" id="message-718957338182287442">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes I have stated that, but that is in an ideal world, which probably will not happen. I would support some moving around of funds of existing means tested welfare programs to allow the UBI though. The LVT also produces excess of money and I believe the money for the UBI could come from that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="718959258368213062" id="message-718959258368213062">
+                <div class="chatlog__content">
+                    <div class="markdown">I might support a UBI if we were to majorly cut back on other welfare programs. The current does not work and I think we can both agree on that, though for different reasons</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718959946892574720" id="message-718959946892574720">
+                <div class="chatlog__content">
+                    <div class="markdown">The voting begins in 10 minutes, and although we can keep debating and hopefully we will into the end of voting, I just would like to thank <span class="mention" title="John Smith#4125">@John Smith</span> for being a good opponent, despite our differences. I know we both care about the people of DX-2 and whoever wins will work hard for each and every one of you.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 11:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="718961366043590749" id="message-718961366043590749">
+                <div class="chatlog__content">
+                    <div class="markdown">The same to you, I&#39;m going to be I&#39;m glad to finally have a real challenger, my last elections have been boring landslides. You show a genuine dedication to the public good, even if we disagree on how to help.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/306894912488603648/f5df01ad7869c5ce95d2beb9bd500b7b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Legendstorm TV/Andrew#7194" data-user-id="306894912488603648"  style="color: rgb(0, 149, 255)" >Fmr. Governor/Assemblyman Blaze</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:15 AM</span>
+
+            <div class="chatlog__message " data-message-id="719011568154574858" id="message-719011568154574858">
+                <div class="chatlog__content">
+                    <div class="markdown">What are your thoughts on the ban on abortions, except in the case of rape or harm for the mother?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:17 AM</span>
+
+            <div class="chatlog__message " data-message-id="719012123665104936" id="message-719012123665104936">
+                <div class="chatlog__content">
+                    <div class="markdown">I am pro choice and will fight for the right of privacy when it comes to abortions. A women shouldn’t have to explain herself just to get an abortion.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="trash" title="trash" src="https://cdn.discordapp.com/emojis/717480806922191008.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="719017109228748870" id="message-719017109228748870">
+                <div class="chatlog__content">
+                    <div class="markdown">So in simpler terms to answer your question, I think it should be available to all women, not just rape victims or ones where the baby may harm their life.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719018832353820672" id="message-719018832353820672">
+                <div class="chatlog__content">
+                    <div class="markdown">I grew up in a moderate household which I was taught that abortion was wrong and only a couple exceptions were a good reason. Then I educated myself and I learned more about Roe v Wade and made my own opinion. I think strongly about the right of safe abortions available to all women within 24 weeks. I think their are other options to prevent abortions rather than outright banning it. Without access to safe abortions women take it into their own hands and gruesomely do an abortion on themselves. Which in many cases also kills the mother. It is not okay. A fetus is apart of the mother and realistically the youngest a baby can survive outside the mother is 24 weeks. Abortion is not an issue that white cis gendered men should be deciding instead it should be an issue women decide. It is her body her choice. The government should not intervene in a women’s right to her body. Period.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:34 AM</span>
+
+            <div class="chatlog__message " data-message-id="719046605742800956" id="message-719046605742800956">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span> we have discussed abortion a lot during this debate, although it is a very important topic the people of Dixie have an understanding of our opinions. I would like to change the topic to the environment which I care so deeply about. What are your thoughts on nuclear power and or other ways on producing cleaner energy?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="719048831366332519" id="message-719048831366332519">
+                <div class="chatlog__content">
+                    <div class="markdown">I will answer it as well. I believe nuclear energy is necessary and safe for the environment. Nuclear produces a clean energy and can help Dixie and the nation reduce our carbon foot print. I also am supportive of wind energy and solar energy. In Dixie we have a lot of open space and could use some of it to help better our environment. Canada gets majority of their energy through hydro power, I personally do not believe hydro power is the right way to go as it damages the river and land ecosystems around the plant. I would like to know your opinion on this, and how all of us can work together to make a cleaner Dixie.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 06:25 AM</span>
+
+            <div class="chatlog__message " data-message-id="719059436001558541" id="message-719059436001558541">
+                <div class="chatlog__content">
+                    <div class="markdown">I eventually would  also like to touch on police reform, abortion again, and LGBTQIA+ support and education.<span class="chatlog__edited-timestamp" title="07-Jun-20 06:29 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="719068406451666945" id="message-719068406451666945">
+                <div class="chatlog__content">
+                    <div class="markdown">Nuclear energy is great, the more we can encourage the green energy market the better, that&#39;s why I have helped pass legislation like the Green Transportation Act, which created incentives for green vehicles. The small harms caused by green energy are far outweighed by the large harms from fossil fuels that they eliminate. I do however believe we should not use taxes, bans, or other methods of punishment to force a transition, we should use grants, tax incentives, and other means to encourage free market usage of green energy</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteYea" title="VoteYea" src="https://cdn.discordapp.com/emojis/406279850631102474.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="719068695023845417" id="message-719068695023845417">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Legendstorm TV/Andrew#7194">@Fmr. Governor/Assemblyman Blaze</span> I think I&#39;ve sufficiently answered that in this debate but I will reiterate: I support and have written full bans on abortion, the only exception being a direct threat on the mother&#39;s life</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="719296447786516491" id="message-719296447786516491">
+                <div class="chatlog__content">
+                    <div class="markdown">We agree on the issue of the environment. We will both work to help the environment and advocate for cleaner energy. I would like to switch the topic to abortion again. Although the people of Dixie know our opinions, this is a very important topic and one of our main differences. I would like to start off by responding in a bit more detail about your attacks on me in that poster. For one you stated I supported abortion at any time which is not true, you should not have assumed such thing. I have been vocal about the 24 weeks and about the reason why. I also said I would compromise to 21 weeks and 5 days as that is when the youngest fetus was born and survived. You stated that I should not compromise with lives, and to that I say, it is a life, but it is apart of the mother and fully reliant on the mother to help it grow and be able to survive when it is birthed. It is the mothers body and the mothers uterus not the governments. The mother can make the decision, not the government. Her body her choice, not the governments body. The government is also disproportionately white men, who do understand the problems women go through, especially minority women such as African American women who can not afford birth control so have higher abortion rates. Should white men decide what a women does with her body? Hell no. Period. It is a women&#39;s choice not a mans. A man does not know what it is like to carry a baby for 9 months especially a baby that is unwanted. I also would like to address the image in the poster, you used a fully grown baby as the image, you did not use a fetus, if a women gets an abortion at 15 weeks the baby will look nothing like that. Another thing that needs to be addressed is that when you answered Blaze&#39;s question you said only in the case of direct threat to the mother&#39;s life, yet earlier you stated that abortion can also happen in cases of rape. This flip flop trait is not what we need in Dixie right now. (I reached the limit I will continue this)</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719296997911298101" id="message-719296997911298101">
+                <div class="chatlog__content">
+                    <div class="markdown">You also flipped flopped on LGBTQIA+ when you voted yes on a Dixie constitution that did not allow for same sex marriage. Now you act like you are an ally to the LGBTQIA+ community. As a bi male, that is unacceptable and you need to apologize the the LGBTQIA+ community.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="719299595967922186" id="message-719299595967922186">
+                <div class="chatlog__content">
+                    <div class="markdown">I would also like to bring up some facts on how an unwanted pregnancy and lack of access to abortion and or ban on abortion affects the baby when it is born and the mother. All of this information is according to the American Psychological Association which is a trusted association. Did you know that women who are denied abortion are more likely to experience higher levels of anxiety, lower life satisfaction and lower self-esteem compared to those that have received an abortion? Did you know that unwanted pregnancy has been associated with deficits to the child&#39;s social and emotional process throughout their whole life? Did you know that that the number of unsafe abortions will increase with a ban to abortion, which puts the mother&#39;s life in harm? Did you know that unwanted pregnancy is associated with abusive relationships and forcing the women to keep the baby forces the women to stay in contact or with their abusive partner? Did you know that as I stated above a ban on abortion is particularly harmful to low-income women, rural, and women of color? I hope you are educated in all of this, to understand that a ban on abortion is not pro women. It harms women, it harms the child. We need to bring back the right of an abortion to the women of Dixie.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="719302481691017426" id="message-719302481691017426">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you think our current police force is well-equipped to tackle the challenges of today? If not, what would you do to reform it?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="719306878940610630" id="message-719306878940610630">
+                <div class="chatlog__content">
+                    <div class="markdown">I do not think the current police force is well-equipped to tackle the challenges of today. The recent death of George Floyd shows that the system needs so much work. George Floyd had a knee on his neck for 8 minutes and 46 seconds, while repeating that he can not breathe and calling for his momma. The systematic racism in the police force is seen, in my neighborhood, I watch who gets pulled over, it is majority African American, when my neighborhood is majority white. There is an issue of racism in the police force. I will tackle it through one defunding the police in the ethnic neighborhoods that have &quot;more crime&quot; because more is being caught due to the immense policing in those neighborhoods. I also would work to extend the training time to become an officer. Officers should not learn to shoot to kill and should learn more about how not discriminate. Racism and prejudice will not be tolerated in this country. The roots of racism are in Dixie with its history of African American slave labor, and these roots are still seen in Dixie. There are far too many racist cops in Dixie and I will fight for the system to be changed, and I will continue to stand with African Americans during this Black Lives Matter movement.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719306967171989536" id="message-719306967171989536">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for the question <span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="719307021597540453" id="message-719307021597540453">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for your response.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="719311112641708092" id="message-719311112641708092">
+                <div class="chatlog__content">
+                    <div class="markdown">First I will respond to the abortion claims, then to the police question. I understand that abortion is beneficial to the women that get them, they do not get them for no reason. But it still does not change the fact that murder is the alternative. A better quality of life is not worth a life that is not the women&#39;s to give. A mother or father cannot kill their infant, that we have all accepted as murder. And I&#39;d like to bring up Blackstone&#39;s ratio, which mostly has criminal justice applications but still applies to the abortion argument. The ratio is that I would rather 10 fetuses that do not count as life live before one living fetus is harmed. We cannot see universal time as fetuses a develop at least slightly differently. There are babies that will be viable before 24 weeks and ones that will not be viable until after. Not to mention there is no truly universal point at which something counts as life. The earliest possible point is conception and as we would not want to accidentally end a human life, we must treat that as an absolute. I am proud to have fought and won at eliminating abortion from Dixie and I will continue to fight to keep it gone.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="719312175281471568" id="message-719312175281471568">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes their is no universal time, that is why I suggested 24 weeks and have discussed that I am open to changing my opinion and working with specialists to determine when we should allow abortions up until, but not allowing abortion harms women.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="719313660584919052" id="message-719313660584919052">
+                <div class="chatlog__content">
+                    <div class="markdown">Moving on to the police question, with modern forensics and the rise of new policing technologies, I believe police forces are well equipped to handle today&#39;s challenges, though they are not perfect by far. Body cameras protect both police and citizens and I support legislation to mandate them, not to mention most departments are shifting towards community policing methods, which have been shown to reduce crime and close the gap between police and average citizens. The incident with George Floyd was unacceptable and I am glad to see the officer responsible being charged for his actions. However, I have worked closely with members of law enforcement in the past and the vast majority of them are good people dedicated to keeping our communities safe. We cannot allow the actions of a few bad eggs to ruin the reputations of a prominent and already stressful profession. When officers with prejudice are found, they are and should be removed from their positions. And to touch on my opponent&#39;s response, as a firearm owner myself &quot;learning to not shoot to kill&quot; is virtually impossible. In a stressful situation where lethal force is necessary it is unsafe to attempt to aim for small, non-lethal parts of the body. I would also like to note that my opponent has no source on his claim of their being too many racist police in Dixie.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="719314735815720971" id="message-719314735815720971">
+                <div class="chatlog__content">
+                    <div class="markdown">It is not the work of a few bad apples it is the work of a bad system. If it virtually impossible to learn to not shoot to kill then their first option they use should not be a fire arm. Too many African American men have died, it is not the work of a few bad cops when each couple of months their is a new incident. The system is flawed and needs change. I do agree with the body cameras and community policing, but that is not enough.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="719315363661086760" id="message-719315363661086760">
+                <div class="chatlog__content">
+                    <div class="markdown">If we were to take firearms from police then criminals with firearms would see it as open season. And the vast majority of the time in these incidents, the officer responsible is charged and goes to jail, just like now, the system works</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="719315562144202823" id="message-719315562144202823">
+                <div class="chatlog__content">
+                    <div class="markdown">I did not say take fire arms from the police I said have that not be the first or second option.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="719317059242164284" id="message-719317059242164284">
+                <div class="chatlog__content">
+                    <div class="markdown">Also you said I flip flopped on my stance on LGBT+ rights but have no evidence to back it up</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="719318055318192200" id="message-719318055318192200">
+                <div class="chatlog__content">
+                    <div class="markdown">And many times the officers are not charged. Their is a blue wall of silence where other police officers don’t report the incidents that happen. They put it under the rug and get a minor slap on the wrist. The system needs to change. Their is a reason why cops have a prejudice and it is because they were founded on racists and had the job of returning run away slaves in Dixie. A very similar star that those cops used is still used today. Then after slavery was abolished their was an exception to the slave labor saying that anyone convicted of crime can be used as slave labor, and therefore they arrested a lot of African Americans for petty crime to do their labor. Part of this still goes on today and that is why I believe the prison system needs reform too and needs to work less on punishment and free labor and be more of reform.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719318176965329207" id="message-719318176965329207">
+                <div class="chatlog__content">
+                    <div class="markdown">And you voted yes on a constitution that was against same sex marriage.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719318219567005716" id="message-719318219567005716">
+                <div class="chatlog__content">
+                    <div class="markdown">That was my evidence.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="719318368976633926" id="message-719318368976633926">
+                <div class="chatlog__content">
+                    <div class="markdown">That clause was very well hidden a document that was several pages long, I did not see it in time and so did other members of the Assembly at the time</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719318460886286387" id="message-719318460886286387">
+                <div class="chatlog__content">
+                    <div class="markdown">There is no other evidence of me being against LGBT rights</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="719318509208731678" id="message-719318509208731678">
+                <div class="chatlog__content">
+                    <div class="markdown">Okay I accept that, thank you for clarifying.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719318740831043604" id="message-719318740831043604">
+                <div class="chatlog__content">
+                    <div class="markdown">Also can you please address the poster you made against me.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319144310505573" id="message-719319144310505573">
+                <div class="chatlog__content">
+                    <div class="markdown">I am you clarified your positions the statement was implied from your words though it is mostly correct as you support abortion for any reason</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319284416774255" id="message-719319284416774255">
+                <div class="chatlog__content">
+                    <div class="markdown">Any reason does not equal any time, and you put that in your poster.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319424901054495" id="message-719319424901054495">
+                <div class="chatlog__content">
+                    <div class="markdown">Correct, the part with time was implied</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719319529179578389" id="message-719319529179578389">
+                <div class="chatlog__content">
+                    <div class="markdown">Though your statements have now clarified that</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319573777874964" id="message-719319573777874964">
+                <div class="chatlog__content">
+                    <div class="markdown">I haven’t met anyone that supports abortion at any time</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:39 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319607990681681" id="message-719319607990681681">
+                <div class="chatlog__content">
+                    <div class="markdown">I have</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719319791537750077" id="message-719319791537750077">
+                <div class="chatlog__content">
+                    <div class="markdown">But I see now that you are not one of them</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319801431851069" id="message-719319801431851069">
+                <div class="chatlog__content">
+                    <div class="markdown">Well with such a hard topic, I would not assume someone’s beliefs.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="719320841938010185" id="message-719320841938010185">
+                <div class="chatlog__content">
+                    <div class="markdown">Seeing as we only have a short time remaining, are there any new topics you wish to touch on? I am enjoying having a real opponent for once</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="719321849925861428" id="message-719321849925861428">
+                <div class="chatlog__content">
+                    <div class="markdown">I have also enjoyed this election, with debate closing in 13 minutes we could both just give some final statements.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="719322925966163988" id="message-719322925966163988">
+                <div class="chatlog__content">
+                    <div class="markdown">To the people of Dixie, I am a candidate you know and trust, I have fought hard to make life better for all Dixians while at a low cost. I hope you make the choice of someone you can count on, who has proven time and again to have your best interest at heart. My opponent is a good person, but I believe he has incorrect ideals on how to achieve our mutual goals. Goodbye and I hope to see you soon.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="719323300198875136" id="message-719323300198875136">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you to the people of Dixie! I will always stand with you and work with you to promote change. I am pro-choice, fighting for police reform and support the BLM movement, I will advocate for clean energy, put in place a UBI, and support the LGBTQIA+ community. Finally, who ever wins we will work for you, despite our differences. Vote, and make a CHANGE!! Thank you!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 131 message(s)</div>
+</div>
+
+</body>
+</html>

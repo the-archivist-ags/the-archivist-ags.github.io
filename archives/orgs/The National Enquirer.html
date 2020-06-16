@@ -1,0 +1,2251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - the-national-enquirer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / the-national-enquirer</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Deleted User#0000" data-user-id="456226577798135808" >Deleted User</span>
+
+
+        <span class="chatlog__timestamp">18-Jan-20 01:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="667908222513971210" id="message-667908222513971210">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="John Smith#4125">@John Smith</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Jan-20 04:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="667943221464137750" id="message-667943221464137750">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>President Resigns!!!!</strong>
+Another one has bit the dust. Many think the president did it because of pressure from various parties and other politicians, but we here at the National Enquirer have the real inside story. The truth is that Former President Lamport used an occult ritual involving a virgin sacrifice to curse the office of president upon his departure so that no president may complete a full term. This curse has affected the past 3 presidents, and we at the National Enquirer give the new president approximately one week before he comes down with testicular cancer or is maimed in a brutal attack, or even both, which will render him unable to serve as president. But only the future will tell what horrors await the new administration.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="667943308886278145" id="message-667943308886278145">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>written by National Enquirer Reporter Smith John</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Jan-20 12:21 AM</span>
+
+            <div class="chatlog__message " data-message-id="668973428715552809" id="message-668973428715552809">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Disgraced Governors Getting It On?</strong>
+We here at the National Enquirer have recently uncovered evidence that can be very damning to two political individuals. We have discovered through an insider source that Former Governors Blaze and Computerguy have been having an affair. This relationship dates back to when Blaze was governor and it is unknown if the late Governor Khalil may have been involved but our sources indicate the possibility. Hopefully they will stop hiding and announce their relationship to the public soon.
+<em>written by National Enquirer Reporter Smith John</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Jan-20 12:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="668982988825952256" id="message-668982988825952256">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Real Reason Garland Left Labor?</strong>
+We have uncovered evidence that Garland left the labor party because he learned that Chairman Clark was regularly having sexual relations with his secretary. It is unknown if Clark is married or if his spouse is aware of this, but Garland could not stand being the party of someone who regularly has affairs with his coworkers.
+<em>written by National Enquirer Reporter Smith John</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="THIS" title="THIS" src="https://cdn.discordapp.com/emojis/371151040298352651.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Jan-20 01:20 AM</span>
+
+            <div class="chatlog__message " data-message-id="668988364329844757" id="message-668988364329844757">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Smith&#39;s Father???</strong>
+We have reason to believe that Representative John Smith may be the illegitimate child of Representative John Boehner. There is a considerable age difference between the two and Boehner was in Dixie around the time of Smith&#39;s birth. Boehner has often assisted Smith in the political arena and Smith was among the first to welcome him back to public life. We hope they have a happy family reunion and the only question remaining is &quot;who is the mother?&quot;
+<em>written by National Enquirer Reporter Smith John</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="696969" title="696969" src="https://cdn.discordapp.com/emojis/621422960514957372.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Jan-20 01:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="668990526493687809" id="message-668990526493687809">
+                <div class="chatlog__content">
+                    <div class="markdown">The National Enquirer is based out of our office in downtown Los Angeles, if you any infotainment for potential stories, please contact us, you may even be given a financial reward!</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="668990618990673920" id="message-668990618990673920">
+                <div class="chatlog__content">
+                    <div class="markdown">*information</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Jan-20 10:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="669676910867120159" id="message-669676910867120159">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Mike Smith hospitalized after shooting himself in the foot multiple times</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">15</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Jan-20 01:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="670262308479696897" id="message-670262308479696897">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Lohengramm finally able to receive treatment on his back for carrying populist party</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="XD" title="XD" src="https://cdn.discordapp.com/emojis/655109517910212623.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Jan-20 01:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="670628541007659029" id="message-670628541007659029">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>John Boehner Target of Chinese Assassins</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇹🇼" title="🇹🇼" src="https://twemoji.maxcdn.com/2/72x72/1f1f9-1f1fc.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yikesnobackground" title="yikesnobackground" src="https://cdn.discordapp.com/emojis/549083480718573598.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">26-Jan-20 04:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="671036105616785418" id="message-671036105616785418">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Chair Clark too busy doing the dirty with his secretary to show up for Vice Presidential Hearing!</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Jan-20 02:54 AM</span>
+
+            <div class="chatlog__message " data-message-id="671186193144217611" id="message-671186193144217611">
+                <div class="chatlog__content">
+                    <div class="markdown">We would like to announce that we have recently hired <span class="mention" title="Ramen Noodle#1552">@Perms4Ruff! Free The Council!</span> as a writer and informant, look forward to articles by him!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🎉" title="🎉" src="https://twemoji.maxcdn.com/2/72x72/1f389.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Jan-20 03:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="671197594462060554" id="message-671197594462060554">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/115lXaVFGGejmhXiHyRKKr6K1jtOzdG6kMpP2kFiJMJI">https://docs.google.com/document/d/115lXaVFGGejmhXiHyRKKr6K1jtOzdG6kMpP2kFiJMJI</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/115lXaVFGGejmhXiHyRKKr6K1jtOzdG6kMpP2kFiJMJI"><div class="markdown">The National Enquirer - The Energy Star</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The National Enquirer Dixie announces they will create a rip off version of Star Wars by Rufflez  This afternoon around one o’clock Governor Cabin announced he signed off on a project to add onto his horrid career. The project is known as Energy Stars.   In his address to t...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/mHgLsJGEc5d3UlTqO2N2aMjBWhhmaGYkxyRTzVEDDD8krfHVNwaPJ9emC683zLmcbZuLvSEwOA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/mHgLsJGEc5d3UlTqO2N2aMjBWhhmaGYkxyRTzVEDDD8krfHVNwaPJ9emC683zLmcbZuLvSEwOA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="671197698552102936" id="message-671197698552102936">
+                <div class="chatlog__content">
+                    <div class="markdown">Here is Rufflez&#39;s first article with us, hope you find it as informative as usual</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Jan-20 01:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="671339692070797312" id="message-671339692070797312">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Webb Serves the Reich?</strong>
+Dixie Assemblyman John Webb has recently proposed the Eastern German Resolution, which claims certain lands currently in Poland and Russia, as German. This is a move used by the Third Reich to justify invading Russia and Poland. Is Webb a nazi? Was his father an escaped SS officer? Does he want this land for lebensraum? Only time will tell, but so far it appears his bill will fail.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="671339787877089301" id="message-671339787877089301">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>written by National Enquirer Reporter Smith John</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Jan-20 04:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="671384044105236490" id="message-671384044105236490">
+                <div class="chatlog__content">
+                    <div class="markdown">We have a new hire! Please welcome <span class="mention" title="mkay#6816">@James W. Hagen</span> to our team!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">27-Jan-20 04:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="671385275758280735" id="message-671385275758280735">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you, I will do my best to report the truth, as fast as I can.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Jan-20 08:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="671447485939712027" id="message-671447485939712027">
+                <div class="chatlog__content">
+                    <div class="markdown">We would like to say a quick disclaimer that the opinions expressed in the articles are solely of the writer and not necessarily that of the National Enquirer</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="671447501542522890" id="message-671447501542522890">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/11Omn2WqcRiN-srGbBhxLmadP9_VaYaab_jJ_hKcGDwo/edit?usp=drivesdk">https://docs.google.com/document/d/11Omn2WqcRiN-srGbBhxLmadP9_VaYaab_jJ_hKcGDwo/edit?usp=drivesdk</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/11Omn2WqcRiN-srGbBhxLmadP9_VaYaab_jJ_hKcGDwo/edit?usp=drivesdk"><div class="markdown">The National Enquirer - Garland Does It Again</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Garland Does It Again Senator Garland, for the second time, clogs toilet and floods capital building  By Rufflez  Back in October of 2019, it was reported by a media source called “The Onion” that Senator Garland had clogged a toilet so badly, it caused millions in damage...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/g9qXtRl08NOI8FlQbC4XmSC9Qny2Qo8OKuPMXOEGimLy5BW5e4A0LFMq2s6auM43a0poi4YOsQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/g9qXtRl08NOI8FlQbC4XmSC9Qny2Qo8OKuPMXOEGimLy5BW5e4A0LFMq2s6auM43a0poi4YOsQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Jan-20 03:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="671563370385899530" id="message-671563370385899530">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Federalists soon to create single party government</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Jan-20 07:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="671806002290753547" id="message-671806002290753547">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/11VeMUvoZhMSR0KYMOXmgBOtMJxSJLWx_spnGMxUSesk">https://docs.google.com/document/d/11VeMUvoZhMSR0KYMOXmgBOtMJxSJLWx_spnGMxUSesk</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/11VeMUvoZhMSR0KYMOXmgBOtMJxSJLWx_spnGMxUSesk"><div class="markdown">The National Enquirer - JMP pretends he’s still important</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The National Enquierer  JMP Pretends He is Still Important by Rufflez  This afternoon, JMP announced that he would be “introducing legislation in the Jefferson Parliament.” Who cares what it’s about, we all know JMP is not important anymore, really since he left office,...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/6BmY_jyJhzWP5FAj061h2YtGPyCfCBSct4VhoxDgjqFMUAIdjnKVHXCV-0-HlCOFlR504kXTAg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/6BmY_jyJhzWP5FAj061h2YtGPyCfCBSct4VhoxDgjqFMUAIdjnKVHXCV-0-HlCOFlR504kXTAg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="jeb" title="jeb" src="https://cdn.discordapp.com/emojis/437017827812311040.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🔥" title="🔥" src="https://twemoji.maxcdn.com/2/72x72/1f525.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="SadBernie" title="SadBernie" src="https://cdn.discordapp.com/emojis/671205278431313942.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Jan-20 10:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="671840374477684736" id="message-671840374477684736">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>President Missing?</strong>
+The president appears to have gone inactive to the public, prompting many officials to cry out against his inaction. But we here at the National Enquirer have uncovered information that may explain this absence. The president has actually been kidnapped by former president Lamport! After seeing his curse not work quickly enough to dispose of Barch, he decided to take matters into his own hands. He has claimed he will not release him until &quot;those goddamn degenerate furries are wiped out.&quot; It is unknown how Washington will respond or if these demands will be met. Stay tuned to find out!
+<em>written by National Enquirer Reporter Smith John</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="lampost" title="lampost" src="https://cdn.discordapp.com/emojis/608664571082965002.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">29-Jan-20 01:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="672076235039309824" id="message-672076235039309824">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/13FCnejlOZ9vwSjtQJwwdbqEAk15rojkRoNE73W1et0U">https://docs.google.com/document/d/13FCnejlOZ9vwSjtQJwwdbqEAk15rojkRoNE73W1et0U</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/13FCnejlOZ9vwSjtQJwwdbqEAk15rojkRoNE73W1et0U"><div class="markdown">The National Enquirer - Missing part from Bible found</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The National Enquirer  Missing Piece from Bible Found in Jerusalem - The Curse of Lamport By Rufflez  Monday afternoon, at 11:00pm EST, archeologists found the missing piece of Bible engraved in stone in the city of Jerusalem. The words seem to be the direct word of Christ, w...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/oWZjH61ZQ-Mo1l5Rcuktw_a6IrYmTktA8jmxgKm5n-YNzHGAEEYyhc3WkhJhCoz4_2hd4N6gFg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/oWZjH61ZQ-Mo1l5Rcuktw_a6IrYmTktA8jmxgKm5n-YNzHGAEEYyhc3WkhJhCoz4_2hd4N6gFg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="lampost" title="lampost" src="https://cdn.discordapp.com/emojis/608664571082965002.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">30-Jan-20 04:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="672475187324649472" id="message-672475187324649472">
+                <div class="chatlog__content">
+                    <div class="markdown">Rumors of a new Authoritarian Green party being formed by side step politician <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span>, a 27 year old amateur halo player from New Jersey, are being heard.
+However, this is not being taken seriously by either citizens or politicians, seeing not only the credibility of the politician, the qualities of said party, and the track record of minor parties.
+The National Enquirer will bring you the latest news on this subject as it comes from DC.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">30-Jan-20 07:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="672516541534961675" id="message-672516541534961675">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Bull Moose Party?</strong>
+A new party has emcee into the political arena: the Bull Moose Party. This party, a call back to the original one headed by Theodore Roosevelt in the early 1900s, has already taken members from labor along with multiple independents. We have reason to believe that the party leaders, using an occult ritual most likely involving the sacrifice of a lamb, a virgin, and a Taco Bell Crunchwrap Supreme, have been communing with the spirit of Theodore Roosevelt himself! The future of this party is uncertain, but given the track record of recent new parties, it should collapse within the next 48 hours.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-Feb-20 11:28 AM</span>
+
+            <div class="chatlog__message " data-message-id="673127509772206090" id="message-673127509772206090">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Bull Moose, arising from the ashes of a failed Left Wing</strong>
+Seeing the collapse of the Labor, Popular, and a bunch of small failed left wing parties, is Bull Moose possibly the ugly phoenix arising from them? Many believe this is the way forward for the left wing, seeing how the Federalists are so strong (through threatening or strategy we don&#39;t know). All we know is, this party will collapse or be the way out of trash for the left wing.
+Also, we invite all of you to Taco Tuesday, with free Lego packs for 10$ each.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-Feb-20 04:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="673207155532365828" id="message-673207155532365828">
+                <div class="chatlog__content">
+                    <div class="markdown">Sponsored by Taco Bell</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-Feb-20 03:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="673371390916820993" id="message-673371390916820993">
+                <div class="chatlog__content">
+                    <div class="markdown">Sponsored by Mexicans Crossing The Border</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="673371856358866965" id="message-673371856358866965">
+                <div class="chatlog__content">
+                    <div class="markdown">-
+<strong>Labor folds</strong>
+After a long awaited time, the once great Labor Party has now officially disbanded. We alike this to failed Presidents, failed leaders, and well a failed party.
+Have a good day Federalists, but wait, your time is coming as well <img class="emoji " alt="😉" title="😉" src="https://twemoji.maxcdn.com/2/72x72/1f609.png"></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Feb-20 04:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="673750013557473332" id="message-673750013557473332">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Federalist Victory</strong>
+The mighty federalists have won a landslide election! We should bow to their merciful graces as they destroy the last remnants of dissent! Seek to please our new overlords and do not hide any members of the traitorous Bull Moose Party or the Ministry of Love will come after you. WAR IS PEACE, FREEDOM IS SLAVERY, IGNORANCE IS STRENGTH</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Feb-20 10:40 AM</span>
+
+            <div class="chatlog__message " data-message-id="673840292750950400" id="message-673840292750950400">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Feds Own Us</strong>
+The people have finally chosen the <em>right</em> party (in both ways), seeing the collapse of all left wing parties.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Feb-20 07:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="673969397433368616" id="message-673969397433368616">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Barch is Stuck Inside Peach</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-Feb-20 07:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="674154931254460426" id="message-674154931254460426">
+                <div class="chatlog__content">
+                    <div class="markdown">Sponsored by Washington Peaches</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Feb-20 03:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="674997790270685204" id="message-674997790270685204">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>as we all expected</strong>
+BM is dead, bye bye <img class="emoji " alt="😄" title="😄" src="https://twemoji.maxcdn.com/2/72x72/1f604.png"></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Feb-20 06:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="675956018198478868" id="message-675956018198478868">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Valerie Becomes President</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Feb-20 03:04 AM</span>
+
+            <div class="chatlog__message " data-message-id="676262094936735757" id="message-676262094936735757">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Amy the plagiarizer got fucked</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Feb-20 06:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="677585852171288628" id="message-677585852171288628">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Public officials placed inside a cabinet</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Feb-20 06:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="677588340052197389" id="message-677588340052197389">
+                <div class="chatlog__content">
+                    <div class="markdown">It is unknown if they have air or will be let out</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">14-Feb-20 02:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="677706361894731826" id="message-677706361894731826">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Arkenstone to Sacrifice Virgin in His Own Honor</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Feb-20 09:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="680166135551098902" id="message-680166135551098902">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Reanimated Corpse to Run for House</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Feb-20 05:19 AM</span>
+
+            <div class="chatlog__message " data-message-id="681007303050264620" id="message-681007303050264620">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Did Arkenstone Assasinate Boehner</strong>
+<em>russian interference to put arkenstone in both of boners positions</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="YEA" title="YEA" src="https://cdn.discordapp.com/emojis/619664843623890944.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Feb-20 06:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="681563160922030086" id="message-681563160922030086">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Amy decides to do political euthanasia</strong>
+<em>thanos was the doctor</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Feb-20 06:57 AM</span>
+
+            <div class="chatlog__message " data-message-id="681756613610176539" id="message-681756613610176539">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>we attempted to interview Speaker Cabin</strong>
+his response: <em>You are not interviewing me ... in your closet</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Feb-20 06:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="681932390381256704" id="message-681932390381256704">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>comrade yimir has reached the supreme court</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-Mar-20 11:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="683811431375962151" id="message-683811431375962151">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>James Order admits to drinking:</strong> <em>is he an alcoholic?</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteYea" title="VoteYea" src="https://cdn.discordapp.com/emojis/406279850631102474.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Mar-20 02:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="685132696908988430" id="message-685132696908988430">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>After releasing Executive Order 65, White House source says next EO will eliminate the Jedi</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">18</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Mar-20 02:35 AM</span>
+
+            <div class="chatlog__message " data-message-id="686401805646954566" id="message-686401805646954566">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The National Enquirer Predicts NSDAP Landslide Victory</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="❓" title="❓" src="https://twemoji.maxcdn.com/2/72x72/2753.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤣" title="🤣" src="https://twemoji.maxcdn.com/2/72x72/1f923.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Mar-20 03:09 AM</span>
+
+            <div class="chatlog__message " data-message-id="686410365545742340" id="message-686410365545742340">
+                <div class="chatlog__content">
+                    <div class="markdown">The National Enquirer Predicts That The Mods Know Who Is Going To Win</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Mar-20 12:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="686555201900904508" id="message-686555201900904508">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Leaked Election Results</strong>
+Presidency - Arkenstone
+Vice Presidency - Forgot his name
+Senate: Trash</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="labor" title="labor" src="https://cdn.discordapp.com/emojis/404792230369558561.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="686555236110041149" id="message-686555236110041149">
+                <div class="chatlog__content">
+                    <div class="markdown">thats all we have for now, will bring more later</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="686555765481144331" id="message-686555765481144331">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>wait, we found out our leaker isn&#39;t a trustable source, we recall the news. thank you, and we promise to maintain this level of honesty</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Mar-20 03:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="686599996157722673" id="message-686599996157722673">
+                <div class="chatlog__content">
+                    <div class="markdown">To clarify: the senate is trash, not that Trash will win Senate</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🥖" title="🥖" src="https://twemoji.maxcdn.com/2/72x72/1f956.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Mar-20 03:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="686604059850833928" id="message-686604059850833928">
+                <div class="chatlog__content">
+                    <div class="markdown">thank you for the clarification smith, I didn&#39;t mean to suggest trash winning the senate, smh at self</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🥖" title="🥖" src="https://twemoji.maxcdn.com/2/72x72/1f956.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Mar-20 03:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="686785036166365212" id="message-686785036166365212">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Are We Living Inside a Simulation?</strong> <em>Keanu Reeves weighs in</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Mar-20 04:24 AM</span>
+
+            <div class="chatlog__message " data-message-id="686791502931689597" id="message-686791502931689597">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>I&#39;m in Jail</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="pepesaber" title="pepesaber" src="https://cdn.discordapp.com/emojis/666635195394555904.gif">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">10-Mar-20 04:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="686977783574036527" id="message-686977783574036527">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>With rising thoughts of a simulation:</strong>
+Elon Musk calls out the government for now starting to acknowledge what he thought of years ago</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="logo2" title="logo2" src="https://cdn.discordapp.com/emojis/606130396022702095.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/e557714250ab1368cf3442aceaecb127.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">15-Mar-20 01:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="688746142749556760" id="message-688746142749556760">
+                <div class="chatlog__content">
+                    <div class="markdown">Sorry for the inactivity, we were busy building a new <strong>headquarters</strong> in Kathman</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/e557714250ab1368cf3442aceaecb127.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">16-Mar-20 02:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="688943594538663967" id="message-688943594538663967">
+                <div class="chatlog__content">
+                    <div class="markdown">We understand there is some outrage over this, but we were unable to find a good location in Pyongyang</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="rage2" title="rage2" src="https://cdn.discordapp.com/emojis/607556960602161182.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 04:17 AM</span>
+
+            <div class="chatlog__message " data-message-id="690413735390478376" id="message-690413735390478376">
+                <div class="chatlog__content">
+                    <div class="markdown">We condemn the fake news said by The Shallot.
+Our organization believes in honesty and respect, as you can see in our previous articles</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="hyperthink" title="hyperthink" src="https://cdn.discordapp.com/emojis/413841161824894987.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 06:11 AM</span>
+
+            <div class="chatlog__message " data-message-id="690442314484678666" id="message-690442314484678666">
+                <div class="chatlog__content">
+                    <div class="markdown">THE SHALLOT SUCKS</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="690442321900339200" id="message-690442321900339200">
+                <div class="chatlog__content">
+                    <div class="markdown">DICK</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 06:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="690449401809731604" id="message-690449401809731604">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Shallot</strong>
+No you</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/667943218184323072/4d48c64afbd12dce2df8d436b49fc3af.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The National Enquirer#0000" data-user-id="667943218184323072" >The National Enquirer</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 01:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="690559299801448498" id="message-690559299801448498">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>We Tried Having Sex With the Shallot&#39;s Mother</strong> <em>the line was too long</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">03-Apr-20 01:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="695431661243990067" id="message-695431661243990067">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Archived</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😭" title="😭" src="https://twemoji.maxcdn.com/2/72x72/1f62d.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 66 message(s)</div>
+</div>
+
+</body>
+</html>

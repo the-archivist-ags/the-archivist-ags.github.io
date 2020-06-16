@@ -1,0 +1,3061 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - the-shallot</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / the-shallot</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Deleted User#0000" data-user-id="456226577798135808" >Deleted User</span>
+
+
+        <span class="chatlog__timestamp">19-Mar-20 09:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="690316096552698247" id="message-690316096552698247">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="1877KarsForKids#6916">@Justice Jed Marshall</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="PridePepe" title="PridePepe" src="https://cdn.discordapp.com/emojis/571044310091563008.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Mar-20 09:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="690316769767981066" id="message-690316769767981066">
+                <div class="chatlog__content">
+                    <div class="markdown">Welcome to the Shallot, the Least Trusted Name In News!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 12:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="690355535283093524" id="message-690355535283093524">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you like spreading disinformation? Mocking government officials for their hypocritical positions? Just generally making fun on Blaze or everyone who <em>chooses</em> to live in Northern? Then you should apply for the Shallot&#39;s Editorial Board, the most disingenuous board in America (or at least outside of New York)! Bound by no oath, honor or morals, you&#39;ll help us satirize the daily news. Apply here! <a href="https://discord.gg/7ZawAcx">https://discord.gg/7ZawAcx</a></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="690357229429587998" id="message-690357229429587998">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>President Valerie Announces Abolishment Of Government Revenue, Creation Of UBI In Press Conference</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">20-Mar-20 12:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="690357257502064683" id="message-690357257502064683">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/690315945415278692/690357257312927744/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/690315945415278692/690357257312927744/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 12:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="690357301382610955" id="message-690357301382610955">
+                <div class="chatlog__content">
+                    <div class="markdown">In a West Wing press conference today, President Valerie laid forth several new policies she aimed to get congressional support for. &quot;We need to abolish government revenue. It just has to get done,&quot; she explained to the reporters filling the room. &quot;We&#39;ve made great strides by repealing so many taxes - income, corporate - and lowering others, but I think it&#39;s finally time to pull the plug. No more collection of revenue!&quot; 
+
+Her other large focus was on creating of a Universal Basic Income. &quot;We need to support everyone,&quot; she explained, &quot;Fathers, mothers, those in poor economic standing. Grandparents, grandchildren, the homeless. Cats, dogs, even turtles and whatever Representative Randy is. We need universal basic income, and it needs to be truly universal! They all deserve a month income from the government!&quot; 
+
+The President was greeted with cheers from the crowd and requests for the timeline. &quot;We aim to have this passed by June,&quot; she explained. &quot;This is the future!&quot; No comment was made as to plans for funding.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 01:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="690364224043483136" id="message-690364224043483136">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Results of Election Forthcoming, Federal Elections Commission Announces for 28th year running.</strong>
+
+Members of the Federal Elections Commission announced tonight that results should be &quot;expected soon&quot; for the 1992 presidential election. &quot;We believe that they could be expected as soon as next month, and will be no later than 2025,&quot; a member of the Commission told the Shallot. 
+
+Tallying has been a continuous processing since votes were cast in November of that year, and an estimated 99.98% of votes have been counted. But slow action on the part of the FEC has postpones the release of the results thus far. &quot;I&#39;m still excited to see who wins,&quot; George W. Bush of Texas commented earlier this month. Bush, whose now-deceased father was one of the three main candidates in the race, has taken over his father&#39;s position as a contender. &quot;We have a good shot to win this,&quot; he continued. &quot;I&#39;m sure we&#39;ll hear about it soon!&quot; 
+
+One of the central issues presented to the FEC has been mismatched keys. In a story from 2013, one member explained, &quot;We&#39;ve got this giant key ring - it&#39;s got 200, maybe 250 keys on it - and we don&#39;t exactly know which key opens which ballot box. We&#39;re working to match each key, but who knows when that&#39;ll happen.&quot; An obscure regulation from 1886 requires that all ballot boxes in the city of Duluth, Minnesota to be opened simultaneously. While the FEC works to match keys, they are unable to open the ballot boxes and count the votes. 
+
+Even worse, FEC rules prevent the release of preliminary results, so nothing can be released until the votes from Duluth are counted. 
+
+Chelsea Clinton, the daughter of Democratic candidate Bill Clinton, is hopeful that we&#39;ll get news soon. &quot;I&#39;ve waited most of my life for this,&quot; she commented, &quot;and I&#39;ve got a decent good feeling that we might find out before my daughter is old enough to run for President herself.&quot;</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 05:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="690432144513957929" id="message-690432144513957929">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Shallot Demands Fight To The Death With National Enquirer To Determine Least Accurate News Source</strong>
+After recent comments from the National Enquirer with reference to the Shallot&#39;s dedication to falsehoods and disinformation, the Editorial Board has decided that it is necessary to respond in kind. &quot;I want those bastards dead,&quot; screamed one member of the Board, &quot;<em>We&#39;re</em> the kings of fake news, and them coming out with lies in regards to that is just proposterous.&quot;</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="690432775253131274" id="message-690432775253131274">
+                <div class="chatlog__content">
+                    <div class="markdown">The members of the Editorial Board have proposed a shoot out at high noon on July 4th as the proper remedy for the situation. Clyde &quot;Mad Shooter&quot; Birkenstocks, the Chief Editor, has volunteered to represent the Shallot in any such death match. &quot;I wanna be dead anyways,&quot; he explained in the company meeting, &quot;So even if we lose it&#39;s really still a win for me.&quot; 
+
+The National Enquirer has yet to respond for comment. Pussies.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 06:22 AM</span>
+
+            <div class="chatlog__message " data-message-id="690445161897000980" id="message-690445161897000980">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Brawl Breaks Out In Northern Over Math, English</strong>
+The entirety of the present members of the Northern House of Delegates were involved in a brawl on the House floor today as they began arguing over how math is done. &quot;One plus four times eight plus seven times six plus one over three plus one is clearly 28,&quot; shouted a member of the American Liberal party as he grabbed a chair and began slamming it over the head of a Conservative Party delegate.
+
+&quot;No!&quot; shouted a Federalist delegate in response, &quot;It&#39;s obviously seventy eight and a third!&quot; He then proceeded to grab the neck of the nearest American Liberal representative and started repeatedly slamming him into the ground. 
+
+Amidst the commotion, Governor Garland began hitting a Federalist representative over the head with the closest copy of Robert&#39;s Rules of Parliamentary Procedure that he could find. The fight was finally broken up when a Socialist party representative declared he had &quot;had enough&quot; and was going to &quot;fucking make like a narc and you all; its fucking 176.&quot; At this, all the members of the floor came together to pummel the member into unconsciousness, after which they agreed to stop fighting. 
+
+Doctors say that the Socialist representative is in critical condition and is not expected to survive to morning.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 06:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="690447346105843752" id="message-690447346105843752">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Correction to Previous Story</strong>
+An earlier version mis-represented the Socialist delegates&#39;s quote; he actually said &quot;fucking make like a narc and shoot you all.&quot; The Shallot strives for grammatical correctness is its misrepresentation of facts, and apologies to its readers for failures to meet these standards.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="heugh" title="heugh" src="https://cdn.discordapp.com/emojis/684888176636198945.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="690448092163604510" id="message-690448092163604510">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Official Shallot Response to The National Enquirer</strong>
+The Shallot condemns the blatant homophobia being expressed by the National Enquirer, and demands an apology to the gays and bisexuals they have insulted. The only dick the Shallot sucks is that of the National Enquirer&#39;s mother.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 02:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="690573669495210067" id="message-690573669495210067">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Prediction: Shitting Your Pants, the New Vaping</strong>
+Ever since the nicotine ban and the many vape related death cases, teens across the United States have been looking around for the next addictive craze. Many experts predicted that Mexican Black Tar Heroine, a fairly safe substance recently decriminalized in every state, would become the next teen craze, likely getting its breakthrough moment in the new app, &quot;TikTok.&quot; 
+
+Those experts however have once again been proven to be dumb adults trying to predict the unpredictable gen-z. To get a closer look and determine what may be the next craze, we decided to interview citizens who were just as immature and stupid as the teens of today.
+
+The entire staff at the National Enquirer have been constantly shitting their pants for the past few weeks. At home, at work, even at church! When asked about why they thought this craze caught on so fast, one staff member said, &quot;We all collectively forgot how pants work. How to take them off to be more specific. So we just shit our pants now.&quot; Another staffer remarked, &quot;Just doing it gives me a high - like, it&#39;s so exhilarating.&quot; We predict that the trend may catch on in the next few weeks, especially as toilet paper shortages set in.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 06:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="690621086324359168" id="message-690621086324359168">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>In Rapid Attempt To Ban Abortion, Dixie General Assembly &quot;Accidentally Legalizes&quot; Child Murder</strong>
+
+At roughly 1:07 PM EST, Dixie General Assemblyman Lohengramm submitted a bill to the Dixie State Assembly in an attempt to end all abortion in the state. The assembly, with the exception of a single liberal snowflake, immediately started sweating as they realized the could actually pass the bill. Debate on the bill lasted for 4 seconds before cloture was invoked, coincidentally the same amount of time the current Speaker lasts in bed. The bill quickly received 2/3 of the votes of the chamber and was passed without regards to a veto from the governor. 
+
+Unfortunately, errors in the Assemblyman&#39;s bill accidentally legalized the murder of all children up to the age of 96 months. &quot;It&#39;s really quite bizarre,&quot; the Assemblyman told reporters. &quot;I have no clue how that made it in there.&quot; A rapid attempt to reverse the bill was blocked by three representatives who claimed they needed to &quot;thoughtfully consider&quot; the new bill that was being proposed. When asked about the mix-up, Assemblyman Lohengramm responded, &quot;Oh well, you win some you lose some. Guess it&#39;s the law now, not much we can do about it. Plus, with all the quarantines right now, it may be needed.&quot;
+
+In other news, 4-year old Cantenbuk Lohengrimm, the son of a member of the General Assembly, was found murdered late this afternoon. No charges are expected to be brought in relations to his death.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 07:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="690639908590583819" id="message-690639908590583819">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>&quot;Balkanize The Federalist Party,&quot; Shouts Leader Of 29th Splinter Group To Break Away</strong>
+A former member of the Federalist Party has announced his intentions to break away from the original group, the 29th such declaration to be made since the party&#39;s founding. Said politician has announced the creation of the &quot;Jeffersonian Federalist Anti-Dixian Party To Support Conservatism.&quot; The break comes after the Federalist Party successfully completed talks with the Dixian Independent Conservative Party To Uphold Federalism to reintegrate that party into their ranks; the DICPTUF splintered away from the Federalist Party in late 2019 over concerns about the reintegration of the Northern Freedom Caucus of Conservative Voters to the party only six days after that group had announced its desire to form a separate party. 
+
+The new chair of the JFADPTSC has announced his intentions to run candidates in Jefferson State Districts 3 and 4, and Federal House District 3; JHD-3 is the only position which the Libertarian Workers United For States Rights holds, the first position it has won since it broke away from the federalist in January of this year. State District 4 is also one of only two districts held by the League Of Anti-Abortion Minarchists, who separated from the Federalist Party on good terms in late December. 
+
+&quot;I feel confident we can convince voters that we are the correct choice,&quot; the JFADPTSC chair explained to reporters in a press conference. &quot;The Guns and Globalism Party, the Anti-Taxation Coalition, the Fiscal Responsibility Party, the damned Conservatives - none of them represent the true spirit of Jefferson. That is what the Jeffersonian Federalist Anti-Dixian Party To Support Conservatism aims to do.&quot;</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">19</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Mar-20 07:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="691002731716018226" id="message-691002731716018226">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Announcement from the Editorial Board</strong>
+The Shallot intends to release candidate endorsements tonight at 6 o&#39;clock pm EST for the DX-1 and DX-6 special election races. Tune in then!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Mar-20 09:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="691040804403150899" id="message-691040804403150899">
+                <div class="chatlog__content">
+                    <div class="markdown">Standby for the Shallot&#39;s much-awaited endorsements, coming in just 10 minutes!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Mar-20 10:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="691043553198997506" id="message-691043553198997506">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Breaking: The Shallot Releases Endorsements for Dixie Special Elections</strong>
+Elections to fill two Dixie General Assembly seats, DX-1 and DX-6, will be held later tonight. The Shallot&#39;s Editorial Board has, after careful consideration of the candidates, made selections of who will receive the paper&#39;s coveted endorsements.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="691043736246943866" id="message-691043736246943866">
+                <div class="chatlog__content">
+                    <div class="markdown">In the DX-6 election, the editorial board has elected to endorse a lionfish, for the simple reason that it has held more political experience than all of the other candidates for this seat combined. Though the lionfish, a controversial and toxic invasive species that is a member of the Conservative party, failed to register for the election because it was too busy &quot;flapping its fins&quot; and &quot;making the sea gods cry,&quot; we implore voters to write them in in the election for this seat.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="691043922096423003" id="message-691043922096423003">
+                <div class="chatlog__content">
+                    <div class="markdown">Likewise, for the DX-1 election, we choose to endorse a candidate who was unsuccessful in gaining approval to appear on the ballot, in this case for discriminatory reasons. We believe that voters should write in the Shallot, our organization, to represent the district in the Assembly. In the wake of the Supreme Court&#39;s recent ruling in <em>Computerguy v. US,</em> we believe it is only proper that the rights to serve in political office be extended to corporations, and refusals to allow such should be considered blatant discrimination. We therefore implore voters to write the Shallot in for this position, and help us turn this into a ground-breaking election that shatters many glass ceilings for the Shallot and other corporations in their never-ending fight for political rights.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="691044312997298226" id="message-691044312997298226">
+                <div class="chatlog__content">
+                    <div class="markdown">In an attempt to maintain full transparency as to our process, officials from the Shallot will be responding to any questions about it on <span class="mention">#twitter-rp</span> for the next five minutes.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Mar-20 12:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="691449142504849420" id="message-691449142504849420">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Twitter Flame War Over Local Virus</strong>
+
+Politicians and citizens alike argued over the weekend regarding the name of a new local health crisis, &quot;Matt Virus&quot;. Some call it insensitive, others call it as they see it, but The Shallot did some digging to settle this debate once and for all.
+
+Detroit resident, Matt Cooler, is rumored to be patient zero in the epidemic sweeping Motor City. He is quoted as saying &quot;I don&#39;t know man, I been washing my hands and doing the vampire cough. Who knows how I caught it but what I do know is my baby mama had it before me.&quot; Symptoms of the new illness include pain during urination and itchy, scratchy bumps on your no-no regions. Many have pointed out the similarities between &quot;Matt Virus&quot; and herpes, however the derogatory name persists.
+
+Matts citywide have experienced harassment during this time, including the famed Detroit Lions QB Matthew Stafford, who is quoted as saying &quot;no not me, nope, never heard of Matt Virus, never had Herp- Matt Virus, nope, definitely not.&quot; The Shallot investigative team is further looking into allegations of abuse against, what some are calling, the Motown Matts.
+
+Meanwhile, Twitter is alight with arguments between those who consider the virus&#39; name an example of toxic culture, whereas others see it as a simple way to identify those responsible. One Valerie voter who tested positive wrote online &quot;read my tweet carefully. I know abuse against Matts are occurring due to this outbreak, but come on nobody can prove it&#39;s because of the name&quot;.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="691449180887187476" id="message-691449180887187476">
+                <div class="chatlog__content">
+                    <div class="markdown">Though hate crimes against Matts have risen by 419% since the virus began spreading, some experts are still in debate over the reason. &quot;This one Matt - Matt Hale - is mainly to blame for it,&quot; one criminologist told us. &quot;He&#39;s just so punchable, and the hate crime level has increased cause everyone&#39;s attacking him, not because of whatever &#39;virus.&#39;&quot;
+
+The jury is still out on whether the &quot;Matt Virus&quot; name is in good taste or not, but one thing&#39;s for sure: Matt is to blame.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 07:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="695696003671523390" id="message-695696003671523390">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>&quot;It&#39;s Just A Joke,&quot; Claims Legislator Who Proposed &quot;Slavery Part 2&quot; Bill</strong>
+Yesterday, a state legislator in the state-which-must-not-be-named proposed a bill which would require the &quot;immediate and total reforming of our society so it feels like 1859, when Dixieland was written.&quot; Groups from across the nation rapidly came out in opposition of the bill. &quot;It&#39;s horrific,&quot; a spokesman from the NAACP told the Shallot when we reached out to them. &quot;A clear violation of the 13th amendment!&quot; 
+
+On the floor to introduce the bill, the legislator gave a six-minute long speech on how the &quot;n•••••• need to be put back in their damned place&quot; and how the &quot;antebellum south was the best place to live in all human history.&quot; However, in the wake of the speech, a representative from the legislator&#39;s office told the Shallot that the bill was simply a joke. &quot;It was April the First, and the Assemblyman wanted to partake in the festivities,&quot; she told us. &quot;His comments as to the lack of value of black people were simply to make it more convincing.&quot;
+
+Even worse was the fact that the state chose to unanimously pass the bill, and the Governor quickly signed it into law. &quot;Of course,&quot; a representative of the governor told us on April 2nd, &quot;since it was passed on April 1st, it has no legal weight behind it.&quot; The legal analysts we hired from the now-defunct National Enquirer (suck on that, bitch) have not given us a definitive answer as to if this is the case.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 07:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="695699152411295848" id="message-695699152411295848">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Unrelated News: Shallot Purchases Old Mint Machinery, Plans To Forge Money To Fund Political Candidates</strong>
+The Shallot is coming across hard times, and does not have sufficient funds to donate to political endorsements. However, two months ago, we found this <em>sick</em> old machine from the U.S. Mint that allows us to print our own money. We plan to donate as much money to candidates as they desire, so long as they promise to use it to purchase ads in the Shallot so we can destroy the money (and any evidence of this &quot;counterfeiting&quot; crime we&#39;ve been reading about). 
+
+All candidates need to do is present the Shallot with bills they have written and plan to introduce if elected. Such bills need to have a serious purpose as well as a clever, grammatically correct name that forms a topical acronym. If they sign our contract promising that they will, in fact, propose these bills to their legislature if elected, their campaign will receive $15,000 of our homemade money, which they can use to buy advertising space in the Shallot. The more bills they verify with us, the more funds they will receive. 
+
+Shallot advertising rates will be equivalent to the national rates. The person who pays us the most money in advertising will receive our paper&#39;s full endorsement.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 08:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="695714388304330755" id="message-695714388304330755">
+                <div class="chatlog__content">
+                    <div class="markdown">Just to clarify, that previous story was completely true and we plan to honor the commitments made in it. Submit your bills to the Shallot&#39;s Website (<a href="https://discord.gg/7ZawAcx)">https://discord.gg/7ZawAcx)</a> to claim the funds.</div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://discord.gg/7ZawAcx)"><div class="markdown">Discord — A New Way to Chat with Friends &amp; Communities</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Discord is the easiest way to communicate over voice, video, and text.  Chat, hang out, and stay close with your friends and communities.</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://discordapp.com/assets/f7a4131e47f50b48b3f85f73c47ff1dc.png">
+                                <img class="chatlog__embed-thumbnail" src="https://discordapp.com/assets/f7a4131e47f50b48b3f85f73c47ff1dc.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 05:41 AM</span>
+
+            <div class="chatlog__message " data-message-id="696217991377059841" id="message-696217991377059841">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>official endoesementa</strong>
+The shallwur wants to endorse the bwst canfidates fowr the jpb - to tgqt ens, we endowrse the fippowing -
+Ns 1 a Janes Mensoxa 
+Nd 2 - tesd coylrer 
+Bs 3 / sinonstome
+Na 4 a thalow 
+Ns 5 - juat pixk ome ramsonly
+
+Dx -!tha fwds arw gomna win
+
+Jf - a no
+Jdb2 - no
+Jg 3- alezgut14
+Kf 4/ dazra 
+Jf5 jarred
+
+Swnate Syspril
+
+Rwmalber to vitw</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">13</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 05:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="696222382003716116" id="message-696222382003716116">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Listewsn up peafijl</strong>
+
+Thwes bean somw qywstins abowt pue ladt pist. Soh waht aif I&#39;m salgihtly inbriuated atr the chuerent monenmt? I cans stilli opeatea a bnews orgsantison jhust fibe. GHeres at teh Sghllot we ronlyy emploiu thje monst oujtsnanfing satff. WE nheverf ,maejk any misakes. I;m ghoanna usew thje bathnroom nmow.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 06:12 AM</span>
+
+            <div class="chatlog__message " data-message-id="696225735966326794" id="message-696225735966326794">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Aaluihty THJen</strong>
+
+I;lm jhst gonabh bed onest wuiht yuoll herewe foir  seocind. IUJ dointn thin that VBetsy Rosis isu thjeat great, Likehj the mnerican flag couldvbe benne wayu coolkerj, likej whjer the jfuck werw alklk thje godadam artisgs wehn trhje falg wasrf made??? Huah? Abnswe that oneu OBNama.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696227060393181345" id="message-696227060393181345">
+                <div class="chatlog__content">
+                    <div class="markdown">Lukw ? Tjis ias ao nuxh bwtrer /gums billwtd creedom myrica <a href="https://cdn.discordapp.com/attachments/690350133430583307/696226383608938586/image0.png">https://cdn.discordapp.com/attachments/690350133430583307/696226383608938586/image0.png</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/690350133430583307/696226383608938586/image0.png">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/690350133430583307/696226383608938586/image0.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 01:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="696331956866252800" id="message-696331956866252800">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>We Politely Request That Everyone Completely Forgets About Last Night</strong></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="696332200769224734" id="message-696332200769224734">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>And That For The Next Hour Everyone Just Stays Quite, Sounds Hurt To Hear</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🥳" title="🥳" src="https://twemoji.maxcdn.com/2/72x72/1f973.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🎺" title="🎺" src="https://twemoji.maxcdn.com/2/72x72/1f3ba.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="📯" title="📯" src="https://twemoji.maxcdn.com/2/72x72/1f4ef.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 01:18 AM</span>
+
+            <div class="chatlog__message " data-message-id="696514248196620288" id="message-696514248196620288">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Electoral Prediction Will Come Our Later Tongith</strong></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 01:28 AM</span>
+
+            <div class="chatlog__message " data-message-id="696516621526892665" id="message-696516621526892665">
+                <div class="chatlog__content">
+                    <div class="markdown">Juat to say &quot;fuxk youl to thw estsbkishnent, we&#39;re gomna do Dicie first</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="696518004393115747" id="message-696518004393115747">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Dixie Electoral Preidctions</strong>
+Let&#39;s get rigiht into the predcitions for the night. There&#39;s a lot that we have to covber. To perface this, we wil be using acstual percentages in our perdictions because we are&#39;t chumps.
+
+DX1: Proper good race then mate. Sandaval ran a pretty good race and his proponent did&#39;n even relly show up.
+Sandoval - 65.4632%
+Noodleman - 34.5368
+
+DX2: Mister Pseaker. Conratuglgations. You have won a feree tikket to another term.
+John Smith - 79.41124
+Theodorr - 21.58876</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">13</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696519506247286864" id="message-696519506247286864">
+                <div class="chatlog__content">
+                    <div class="markdown">DX3: Fukkng bitch Webb dopped out, No matter doe, mre Polly Wolly savbe da day.
+Polllymen - 89.5%
+Liv - idk like 10? meth is hard
+
+DX4: Grammcrackers taste gud. Noti asd ghood asd winnnig does thoo.
+Lerhlengerm - 103%
+Egg boi  - 17.937465%</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 01:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="696523352445157436" id="message-696523352445157436">
+                <div class="chatlog__content">
+                    <div class="markdown">DX5: Garbgeman adnm ratboi!!! Thery should hbvae a themne soing. THjis race was a race like a reace does radce.
+Grrrbgeman - 1039%
+RATATUEY - 5 Stars
+
+DX6: PHJoenix ishd a bird. Ehtna sounds iulike a btiucjh&#39;s nnmae.
+Ka-Kaw - 12 eghgs
+Entha - NO DICE
+
+DX7: Noit my gfod but JOGOD. hahahaha
+JGOD - 478 schmeckles
+techedit - 3 cpus</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="❤️" title="❤️" src="https://twemoji.maxcdn.com/2/72x72/2764.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 02:06 AM</span>
+
+            <div class="chatlog__message " data-message-id="696526159831105626" id="message-696526159831105626">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>NERHTERN ELKICTION PREIDCTIONS</strong>
+
+Labies and Gentlmen. We apologibe for teh conudct last night. It wads veryu nprogffesional. Weer gonan makle acuurete preidcions tonioght. UNlike the foos ober art MNerican Inquisitor adn VBerits Poops. Toynd rwo tump!
+
+NS1;
+hagendas ice cream - 69 hehehehehe
+Juanito ezbar mendoza - idk probably like a soled 2
+
+NS2&#39; 
+etd dddddet - 90 beans
+jake coolboy - 91 beanbs</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696526907981692968" id="message-696526907981692968">
+                <div class="chatlog__content">
+                    <div class="markdown">NS3$ 
+wreck it raplf - 4 trees (he like emcuramebt$
+simonmthebass - # 
+
+NS4: 
+Iron MNAn - 5 infitny stones
+SILO - 18%
+
+NS5: 
+thjere tooi nmai. im tajke a nmap and ulil do thre jefffffffffffffffffffffffffffffffffffff stade ne</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 02:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="696539439777972255" id="message-696539439777972255">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>AWwawwawke rimmese dor Jfrnfmkrdom</strong></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="696540160900202537" id="message-696540160900202537">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>JFFFERSEN LECURE PEDIOTURE</strong>
+
+jdh1: asdfhjt sou thtea awsfh ashoinje greaadest deabntae uinteh thuios onere.
+JAesdrjh -= 3874747493
+
+ajfh2pl; anafs vcoingu unn abum buianmnet r2 hbewr haverhg cpeorese 
+cajkpoe - 3- 9iurhr</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 03:11 AM</span>
+
+            <div class="chatlog__message " data-message-id="696542515985383494" id="message-696542515985383494">
+                <div class="chatlog__content">
+                    <div class="markdown">Hrsim 3 coamt geukt wamts a aujn bie je wnit gue ur amahkrmahhhahhhahhhhhhhh
+151515 16151615
+XxxxxxxxxxxxX xx/xx/100
+
+Juswu!4!! Fuej cstfrls duxk xarfurks duck caetfrils ficl carguls 
+Dumathman 0
+Zarzaxhie 103
+Pantyeiwnjfe wii214789930$4&#39;lsae9
+
+K#c/5 vesocaist paaerwstu quians
+
+e
+
+Memembbbooois -2781waq3.
+Jeeesa 1.1</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 03:19 AM</span>
+
+            <div class="chatlog__message " data-message-id="696544592945872977" id="message-696544592945872977">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>SENMATRE</strong>
+
+Smmarw
+<a href="https://cdn.discordapp.com/attachments/690350133430583307/696524576670351420/image0.png">https://cdn.discordapp.com/attachments/690350133430583307/696524576670351420/image0.png</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/690350133430583307/696524576670351420/image0.png">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/690350133430583307/696524576670351420/image0.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">13</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696544698931740772" id="message-696544698931740772">
+                <div class="chatlog__content">
+                    <div class="markdown">fusd vunnnnnifffht</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 01:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="696704843900780594" id="message-696704843900780594">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Morning everyone. Head hurts lots. Why there racoon?</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🦝" title="🦝" src="https://twemoji.maxcdn.com/2/72x72/1f99d.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 06:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="696775679127322675" id="message-696775679127322675">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Recommendations for Vice President</strong>
+To President Valerie, 
+               We strongly recommend deep consideration when selecting your nominee for Vice President. To aid you in these ends, we will be compiling a short list of essays detailing the positives we see behind several potential officers that would be our top pick.  Each of the following candidates have hand picked by us at the Shallot for their wisdom, courage and tenacity. These candidates for Vice President are the cream of the crop and you rally cannot go wrong with any one of them, but we will try to rank them nevertheless. Our top pick will be first, followed by each pick lower in our order.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🚨" title="🚨" src="https://twemoji.maxcdn.com/2/72x72/1f6a8.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696776014436630639" id="message-696776014436630639">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>1. MichiganLefty</strong>
+After one of the most prolific and active Presidencies in the history of this country, MichiganLefty is an obvious choice here. Not only would you be able to diversify your office with his opinions, but the culture he brings to the White House is just energetic and makes people want to work as hard as they can. Sure he might lean a little left, but come on, don&#39;t be scared of a little thing like that. We give this candidate the official rating of a 10/10.
+
+<strong>2. Agriculture</strong>
+Remember the guy who made the public outcry to take nearly all power away from the presidency and give it to the Secretary of Agriculture and then tried to abolish the Senate? He would be great in power. I mean, come on. His policies just speak for themselves. We give this candidate a 9.5/10</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">15</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 06:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="696778304325287966" id="message-696778304325287966">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>3. Computerguy</strong>
+As he is expected to lose his race for the Jefferson Parliament, this would be an excellent choice to keep him in political power. The Speaker of Parliament until being ousted by a unanimous vote of no confidence over his lack of activity in the body, Computerguy is well qualified for the position of Vice President, where the main job responsibility is taking no action in Congress. We give this candidate a 9/10.
+
+<strong>4. Webb</strong>
+Yes, yes, we know Webb left. But just hear us out on this one. What if you told everyone that it was a hoax and Webb is still around, he&#39;s just playing hide and seek for the rest of his term. Like, do you really need a real Vice President? Come on, this is a great option. We give this &quot;candidate&quot; an 8.9/10.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 06:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="696780096115310714" id="message-696780096115310714">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>5. Randy</strong>
+The self proclaimed rat pope. I mean, this is amazing. Who is a better Vice Presidential candidate than the founder of the nation&#39;s most prominent cult? You wouldhave so many people on your side if you do this. He can easily inspire total devotion from hundreds of thousands, if not millions, of perspective voters. We give this candidate an 8.6/10.
+
+<strong>6. The Shallot</strong>
+Fuck the ranking system we are actually number one. A whole team of the nation&#39;s most intelligent human beings who also run a media company, this is the greatest option yet! Big brain move right here. You cannot go wrong with us. Sure, we get drunk sometimes, but who doesn&#39;t? As we control the most-loved media group, we can also provide unlimited positive propaganda in favor of our nomination, or negative propaganda against anyone you nominate over us. We give this candidate an 11/10.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🐀" title="🐀" src="https://twemoji.maxcdn.com/2/72x72/1f400.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696781706325393428" id="message-696781706325393428">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>7. Rufflez</strong>
+<a href="https://cdn.discordapp.com/attachments/690350133430583307/696774351076458506/image0.png">https://cdn.discordapp.com/attachments/690350133430583307/696774351076458506/image0.png</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/690350133430583307/696774351076458506/image0.png">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/690350133430583307/696774351076458506/image0.png" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="696781965390643291" id="message-696781965390643291">
+                <div class="chatlog__content">
+                    <div class="markdown">This concludes our series of essays. We hope that President Valerie will carefully consider our recommendations, but we have full confidence that she will pick the best option.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">07-Apr-20 02:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="697079387572666469" id="message-697079387572666469">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING NEWS</strong>
+
+Veritas Post is a news organization. Like, since when was this a thing? When did they start doing this? I mean good on them for branching out and all, but like, damn. Didn&#39;t know that.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">07-Apr-20 06:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="697141283252338808" id="message-697141283252338808">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Results</strong>
+The Shallot is proud to say that approximately 0% of our predictions were incorrect! You should fully rely on the Shallot to give you your election coverage.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">08-Apr-20 06:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="697503139409952788" id="message-697503139409952788">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/690315945415278692/697503138948841532/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/690315945415278692/697503138948841532/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">20</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">09-Apr-20 06:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="697868264360902667" id="message-697868264360902667">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Jefferson Candidates Rave About Pussy and Women</strong>
+
+In the special elections, candidates have begun talking about the implications of allowing CATGIRLS, otherwise known as pussy and women into the state. Some have been skeptical of the idea and have even attacked each other over the debate but the current Governor states, &quot;Man, I just want some pussy in this state, for uh, scientific research.&quot; 
+
+The field is evenly split on the issue. One candidate claims that the current regulations on scientific research would prevent significant job growth and economic development in the state. He also insists that his previous arrest and conviction for bestiality has no bearing on his current policy position. 
+
+We here at the Shallot agree that both pussy and women are very good things to have in a state. However, we fail to understand the insistency on calling in CATGIRLS - in a state where prostitution is legal, just call the local brothel. We reached out to the research team over at the National Inquirer to see if they had any recent stats on shortages of prostitutes in the state, but then remembered that they declared bankruptcy a few weeks ago.<span class="chatlog__edited-timestamp" title="09-Apr-20 07:00 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">09-Apr-20 10:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="697928194476605506" id="message-697928194476605506">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Dixie says &quot;Screw It&quot;, Gets Rid of Governor Altogether</strong>
+
+After the ascension of Cabin to the position of Vice President, the Dixie General Assembly decided that enough was enough. When asked about the situation one assemblyman said, &quot;Well first our Governor tried to kill us and this one tried to <strong>not</strong> ban abortion, I mean they just keep getting crazier!&quot;
+
+The soon to be former Governor, Ethan, is upset at the news. However, with Dixie&#39;s recent surge in legislation that makes no sense, there was bound to be something that eliminated the Governor. Here are the current terms of the legislation according to our field researchers who may or may not be prostitutes we hired to steal from the assemblyman late at night:
+
+The position of Governor shall no longer exist and there shall rather be a position in the assembly that holds the powers of the Governor. The position will be entitled, &quot;The Chosen One.&quot; The legislation reads as follows:
+
+&quot;We have failed you Dixie. We have failed you. Dixie, Vice President Cabin is evil! It&#39;s over now, we have the high ground. The Chosen One shall destroy the sith, not join them. They shall bring balance to the force and not leave it in darkness.&quot;
+
+When asked about it, Governor Ethan only responded with, &quot;I HATE YOU.&quot; over and over while he was lying on the ground near lava with his limbs cut off.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">15</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">12-Apr-20 03:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="698908451572678686" id="message-698908451572678686">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Preschoolers Plan Mass Protests Over Changing Name of &#39;B.A.B.Y. S.H.A.R.K.S.&#39; Act</strong>
+Early on Saturday morning, Senator and President Pro Tempore James Order motioned to amend the B.A.B.Y. S.H.A.R.K.S. Act and change it&#39;s name to the &quot;Euselachii Life Protection Act,&quot; or the ELPA. After receiving 4 votes in favor, the amendment was adopted and the bill was edited to read as such. 
+
+This change has angered many preschoolers across the country, who had been closely following the bill thanks to the popular &quot;Baby Shark&quot; song. In the hours immediately following the bill&#39;s amendment, more than half a million preschoolers had signed up to take part in demonstrations across the country protesting the renaming of the bill. 
+
+The protests have largely been organized by the Korean company Pinkfong, who gained fame for their version of the Baby Shark song and were also one of the chief lobbyists behind the bill. &quot;We created the bill and gave it to congress to raise publicity for our number one song,&quot; CEO Kim Min-seok told the Shallot when we reached out for questions. &quot;Without the title, it completely fails this purpose, and the bill is useless.&quot;</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">16</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">12-Apr-20 08:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="698977150799183963" id="message-698977150799183963">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Breaking News from the Dixie Governor&#39;s Mansion</strong>
+
+Ethan gay lol</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">18</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="698978013873700994" id="message-698978013873700994">
+                <div class="chatlog__content">
+                    <div class="markdown">So we could have written an entire story about the internal ramifications of having an openly homosexual Governor in the state of Dixie, but we opted for the much more poignant and less labor intensive article as seen above.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇭" title="🇭" src="https://twemoji.maxcdn.com/2/72x72/1f1ed.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇪" title="🇪" src="https://twemoji.maxcdn.com/2/72x72/1f1ea.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇱" title="🇱" src="https://twemoji.maxcdn.com/2/72x72/1f1f1.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇵" title="🇵" src="https://twemoji.maxcdn.com/2/72x72/1f1f5.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">15-Apr-20 03:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="699815108708139069" id="message-699815108708139069">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Senate Purchases 18 New Boxes Of Rubber Stamps After Running Through All Existing Supplies</strong>
+In the midst of the coronavirus pandemic, the Senate has sent out a request for new sets of rubber stamps needed to certify bills have passed the chamber. &quot;We&#39;re simply going through them all too quickly,&quot; one senate staffer told the Shallot. &quot;At least we&#39;ve got the stamping process down pat.&quot; Though some have questioned whether these truly fall under &quot;essential supplies,&quot; sources at the Senate&#39;s stamp provider say they intend to fill the order quickly.
+
+While on Capital Hill, our reporters were able to watch they highly refined and standardized process used by the staffers to apply all the stamps needed, passing bills down rows in a long assembly line. &quot;We average an output of about 1 bill every 14 seconds,&quot; a staffer told us, &quot;and the President Pro Tempore has asked us to see if we can cut the time down to 12 seconds. We guarantee that a bill is stamped and ready to go within 30 minutes of entering our chamber, or you get your lobbying fees back!&quot;
+
+An official from the Majority Leader&#39;s office told us that they expect the stamps will last them at least two weeks.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Apr-20 03:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="701075580631777370" id="message-701075580631777370">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Jefferson Voters Fatigued After 14 Elections In As Many Days</strong>
+
+Jefferson voters are beginning to tire of the near-constant elections in their state, as they enter into the 14th such election in the past 2 weeks. These special elections have been continuously repeated as members of Jefferson Parliament and the Jefferson delegation to the House of Representatives have kept resigning and running to retain their offices. One representative has resigned 5 times so far, winning re-election every time but the last. Though not quite as high, one of the candidates running in the current elections has accounted for 3 of the recent resignations.
+
+Speaking with voters at the polls for the current election has been increasingly difficult. During the ongoing election, reporters for the Shallot have been  completely unable to find a single voter at any polling place we&#39;ve visited. Even worse, we could only find two polling officials across the 27 polling places we visited. &quot;14 elections takes a lot out of you,&quot; Ethel, one of the poll workers told us. &quot;Betty worked on 10 of &#39;em and just kinda collapsed after that last one; George was gonna be here today but is having insanely bad foot pain.&quot;
+
+Some have proposed that having this many elections is bad. &quot;Preposterous!&quot; a representative of the Governor told us. &quot;More elections means more democracy, and more democracy is always good!&quot;</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Apr-20 01:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="701232744226881566" id="message-701232744226881566">
+                <div class="chatlog__content">
+                    <div class="markdown">Interview with Mr. <span class="mention" title="Trash#3738">@teras h ffr od</span> coming up today, tomorrow, or whenever our editors get off their asses!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="701233107528974396" id="message-701233107528974396">
+                <div class="chatlog__content">
+                    <div class="markdown">It&#39;ll be so mediocre you won&#39;t be ready.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Apr-20 03:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="701443040400900177" id="message-701443040400900177">
+                <div class="chatlog__content">
+                    <div class="markdown">Interview coming right up.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Apr-20 04:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="701450168331141180" id="message-701450168331141180">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/u/0/d/16Ca_oezqaWJcfxQehv_0RelteQsacGwyNIA-YHa2ibQ/mobilebasic">https://docs.google.com/document/u/0/d/16Ca_oezqaWJcfxQehv_0RelteQsacGwyNIA-YHa2ibQ/mobilebasic</a></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇹" title="🇹" src="https://twemoji.maxcdn.com/2/72x72/1f1f9.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇪" title="🇪" src="https://twemoji.maxcdn.com/2/72x72/1f1ea.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇦" title="🇦" src="https://twemoji.maxcdn.com/2/72x72/1f1e6.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇸" title="🇸" src="https://twemoji.maxcdn.com/2/72x72/1f1f8.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇭" title="🇭" src="https://twemoji.maxcdn.com/2/72x72/1f1ed.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Apr-20 09:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="701525515453988934" id="message-701525515453988934">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>RANDY PRESIDES IN HOUSE</strong>
+&quot;Fuck.&quot; says the entire congress.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">16</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 03:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="701804917278507008" id="message-701804917278507008">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Plagiarism Police Enter House, Rep. Emperio Left A Puddle</strong>
+
+It was plagiarism checking day in the house where five men, all dressed in baby blue adidas track suits marched into the House Chamber and began demanding that they see all bills passed in the past thirty days. The Speaker, John Smith, wasn&#39;t there at the time so his SPT, MTRXGaming happily obliged and started gathering all the bills the House had passed in the past thirty days to give to the nice gentlemen. Our camera crew was there and as the event was going on we caught Rep. System and Rep. Darby laughing in a corner of the House Chamber. We could see the two of them laughing and pointing at the other side of the room.
+
+Unbeknownst to us, in the other corner of the room, Rep. Emperio was hiding behind a lamp that just so happened to be giving light to his lower half. You could see the puddle in his pants begin to form. Some suspected he is just scared of other grown men, others suspected he had plagiarized a few of his bills. We decided to go over and ask him what was going on.
+
+When we reached the Representative we immediately asked what this puddle in his pants was. He looked at our camera crew dead in the eye and after about ten seconds of nothing but eye contact and the faint sound of a man pissing his pants, the Representative made a break for it. He sprinted out of the House Chamber towards the nearest bathroom and almost made it. Unfortunately, the Representative slipped and fell when his own piss began leaking out of his pants and onto the floor.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 12:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="702306606867546203" id="message-702306606867546203">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Rat Shat</strong>
+By Edgar Allen Poo
+
+Once upon a committee dreary, while argued, weak and feary,
+Over many a quaint and curious volume of forgotten lore—
+    While they argued, nearly fighting, suddenly there came a sliding,
+As of some one gently fighting, fighting to hold his chamber door.
+&quot;&#39;Tis the liberals,&quot; Gramm muttered, &quot;fighting on the chamber floor—
+            Only this and nothing more.&quot;
+
+    Ah, distinctly I remember it was in the bleak April;
+And each separate dying bill wrought its ghost upon the floor.
+    Eagerly I wished the morrow;—vainly I had sought to borrow
+    From the laws surcease of sorrow—sorrow for the lost Lenore—
+For the rat had slid his pants, and there was shit upon the floor—
+            The committee shitless nevermore.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Apr-20 08:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="702966735539535923" id="message-702966735539535923">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Potheads, Once A Nuisance, Are The Latest Invasive Species To See Rapid Growth In Jefferson</strong>
+By The Dude, Walter Sobchak, and Theodore Donald Kerabatsos
+
+Jefferson, once a land of, um, I don&#39;t know probably something halfway decent, is now the land of the potheads. Not that their invasion should be a surprise to anyone at all, it is after all, Jefferson. But, they seem to be doing more than the typical invasive species would. They are all rather intelligent despite their slow appearance and have rallied around their leader whom they refer to as, &quot;Jeff.&quot;
+
+Our staff conspiracy theorists have two confirmed probabilities as to how the invasive species became so widespread. The first of those theories was just a picture of a cow on acid. While entertaining, we are beginning to doubt the intelligence of our conspiracy department. More information on that to come in a later story, but on to the second theory.
+
+This is the theory most of the conspiracy department rallied behind, they have a suspicion that the organization formerly known as the national enquirer got a hold of a metric fuckton of weed and found their way back into the media under the disguise of Jeff and the Jefferson Smoker. They also have a squirrel named Gerald. No one cares, but our staff writer Randy has named Gerald to be his mortal enemy. 
+
+We are still investigating this situation and will update you all as the story unfolds.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Apr-20 02:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="704325255681933404" id="message-704325255681933404">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Bored Meetings</strong>
+By Donald F. Shallot
+
+Hi, Donald F. Shallot here, owner of the Shallot. Since we are coming up on the next election I wanted to let you all in on a discussion our board was having about how we should present our predictions segment for the May federal election. We know that last time we, in a word, fucked up, and would like to try again to better ourselves and better you enjoyment of the prediction process. Enjoy.
+
+Writer 1: Alright, so, last time you got just a little drunk on the job
+
+Chris Cillizza: Yeah, yeah. I know I did.
+
+Editor 1: And you probably shouldn&#39;t have done that.
+
+Cillizza: Well, in my experience, it just makes the whole predicting process that much more accurate. I mean I went to Georgetown, I think I know what I am doing.
+
+Intern (Randy): You have a bachelors of english from Georgetown. Congratulations you spent four years studying a language that you ALREADY FUCKIN KNEW.
+
+Cillizza: (takes a shot) Listen here ratman, you&#39;re just an intern, you know nithing abuot me.
+
+Writer 2: Shit, he&#39;s drunk again.
+
+Donald F. Shallot: (slams whiskey bottle on the ground) Who&#39;s ready to rumble!!!???
+
+Cillizza: HELL YEAHJ. PREIDFTIONMS SCHIMTICTIONS.
+
+(Fight begins to break out and there are no clear audible words, just screaming and rat noises)
+
+Now, this may have not been what you expected, but we believe in transparency. Trust us, Chris Cillizza will be perfectly fine for his predictions come this election. Don&#39;t even worry about it. He wanted me to share this message with you all as an apology for last time:
+
+&quot;Peepee poopoo, i bad rhuyme schemen, hheres menme now.&quot;</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="704325269028339773" id="message-704325269028339773">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://cdn.discordapp.com/attachments/690350133430583307/704322626641985596/nm93snupy1i31.jpg">https://cdn.discordapp.com/attachments/690350133430583307/704322626641985596/nm93snupy1i31.jpg</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://cdn.discordapp.com/attachments/690350133430583307/704322626641985596/nm93snupy1i31.jpg">
+                                <img class="chatlog__embed-thumbnail" src="https://cdn.discordapp.com/attachments/690350133430583307/704322626641985596/nm93snupy1i31.jpg" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 04:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="704537907742113812" id="message-704537907742113812">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Rat Shat</strong>
+By Edgar Allen Poo
+
+Once upon a committee dreary, while argued, weak and feary,
+Over many a quaint and curious volume of forgotten lore—
+    While they argued, nearly fighting, suddenly there came a sliding,
+As of some one gently fighting, fighting to hold his chamber door.
+&quot;&#39;Tis the liberals,&quot; Gramm muttered, &quot;fighting on the chamber floor—
+            Only this and nothing more.&quot;
+
+    Ah, distinctly I remember it was in the bleak April;
+And each separate dying bill wrought its ghost upon the floor.
+    Eagerly I wished the morrow;—vainly I had sought to borrow
+    From the laws surcease of sorrow—sorrow for the lost Lenore—
+For the rat had slid his pants, and there was shit upon the floor—
+            The committee shitless nevermore.
+
+    And the silken, sad, uncertain rustling of each scared person
+Killed me — filled me with fantastic laughters never felt before;
+    So that now, to still the beating of my heart, I stood repeating
+    &quot;&#39;Tis some randy entreating exit of the committee floor—
+Some late rat entreating exit of the committee floor;—
+            This it is and nothing more.&quot;
+
+    Presently my soul grew stronger; hesitating then no longer,
+&quot;Sir,&quot; said I, &quot;or rodent, truly your attention I implore;
+    But the fact is I was watching, and so gently you came sloshing,
+    And so faintly you came shitting, shitting on the committee floor,
+That I scarce was sure I saw you&quot;—here I stood upon the committee floor;—
+            The rat left and there was nothing more.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="704537944198742146" id="message-704537944198742146">
+                <div class="chatlog__content">
+                    <div class="markdown">`
+Deep into that hallway peering, long I stood there wondering, fearing,
+Doubting, dreaming dreams no mortal ever dared to dream before;
+    But the silence was unbroken, and the stillness gave no token,
+    And the only sound was another shit hitting the floor.
+&quot;Shit,&quot; I whispered, and an echo murmured back the words, &quot;On the floor.&quot;—
+            &#39;Twas only Randy and nothing more.
+
+     Forward walking, stomach churning, all my soul within me burning,
+Soon again I heard a shitting somewhat louder than before.
+    &quot;Randy,&quot; said I, &quot;surely that is something other than fecal matter;
+      Let me see, then, what that sound was, and this mystery explore—
+Let my heart be still a moment and this mystery explore;—
+            &#39;Tis your shit on the fucking floor!&quot;
+
+     Screaming so loud I actually shuddered, when, with many a flirt and flutter,
+In there stepped a stately Randy of the saintly days of yore;
+    But his bottom half remember; covered in literal shit and pee;
+  But, with great confidence, motioned to the shit right on the floor—
+&quot;Hey dudefucker moron, I just shat right on the floor.&quot;—
+            Randy, the SPT, no more.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">18</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 10:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="704809345300430918" id="message-704809345300430918">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Rat Shat</strong>
+
+For those of you hard of hearing, I mean seeing, we have recorded a audio version of the final version of the Rat Shat by Edgar Allen Poo just for you!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/273990668358254603/401c0aba9655a73671894dc55a124299.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Anarchist#0361" data-user-id="273990668358254603"  style="color: rgb(26, 188, 156)" >OrDeR</span>
+
+
+        <span class="chatlog__timestamp">28-Apr-20 10:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="704809366771204126" id="message-704809366771204126">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/690315945415278692/704809365827354671/rat_shat.mp3">
+                        
+                            Attachment: rat_shat.mp3 (2.22 MB)
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">17</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="bowsette" title="bowsette" src="https://cdn.discordapp.com/emojis/544765732903452683.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🥵" title="🥵" src="https://twemoji.maxcdn.com/2/72x72/1f975.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/273990668358254603/401c0aba9655a73671894dc55a124299.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Anarchist#0361" data-user-id="273990668358254603"  style="color: rgb(26, 188, 156)" >OrDeR</span>
+
+
+        <span class="chatlog__timestamp">30-Apr-20 03:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="705251102047862804" id="message-705251102047862804">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://forms.gle/TMHh4E8djQinXXwGA">https://forms.gle/TMHh4E8djQinXXwGA</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://forms.gle/TMHh4E8djQinXXwGA"><div class="markdown">THICC Poll - The Shallot</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Thots/Hotties In Congressional Competition</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/3nDe0gkxzm6qU30Lq66vFMrkOXgzNafsxQkl58QOM3ZjagXq4nUPGcxXQnY6ETowglv8Iqw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/3nDe0gkxzm6qU30Lq66vFMrkOXgzNafsxQkl58QOM3ZjagXq4nUPGcxXQnY6ETowglv8Iqw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="✅" title="✅" src="https://twemoji.maxcdn.com/2/72x72/2705.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🍆" title="🍆" src="https://twemoji.maxcdn.com/2/72x72/1f346.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🍑" title="🍑" src="https://twemoji.maxcdn.com/2/72x72/1f351.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🆗" title="🆗" src="https://twemoji.maxcdn.com/2/72x72/1f197.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-May-20 06:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="705827589419302923" id="message-705827589419302923">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Election Coverage</strong>
+The Shallot is proud to announce that it will continue its tradition of offering live, unscripted, unfiltered election night coverage as the votes roll in on the final day of the election cycle.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-May-20 11:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="705902743289856001" id="message-705902743289856001">
+                <div class="chatlog__content">
+                    <div class="markdown">Congress has adjourned. Many expect congresspeople to continue their bullshit even out of office. Rejoice, for there is no more congress!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-May-20 01:09 AM</span>
+
+            <div class="chatlog__message " data-message-id="705933860453613570" id="message-705933860453613570">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Ghost Of Lamport Released From House Upon End Of Session</strong>
+The Ghost of former Speaker of the House Lamport was finally released from its hellish duty on Earth to its eternal rest today after 18 months of haunting the chambers of the House.
+
+
+Upon finishing his term as Speaker, Lamport, like every Speaker before him, agreed to leave behind a portion of his soul behind him to serve as the resident spirit of the House. 
+
+Unlike most Speakers, however, he was not soon replaced; the ethereal laws governing the spiritship require that the new spirit have served an entire term as Speaker before they can take on the role. But for 9 terms on the house, a grueling 18 months, no speaker ever lasted the entire term. &quot;It&#39;s simply been unbearable,&quot; the spirit told us yesterday. &quot;The modern speakers just kept resigning, going crazy, or ascending the presidency, all while I&#39;ve been stuck here, haunting this place for however long. Back in my day, speakers served their full, god-damned term and took over the spiritship with a few months of the last spirit beginning. It&#39;s been a year and a half!&quot;
+
+Some claim, however, that the spirit may have been part of the problem. &quot;Oh god, fuck that guy,&quot; former Speaker Matthew Hale told the Shallot. &quot;Always whining about &quot;freeing him from his hell on earth&quot; - like, yeah dude, we get it, you made a bad decision. Own up to it, dumbass!&quot; 
+
+&quot;Oh yeah, I remember the spirit,&quot; President Valerie, a Speaker of the House before her ascension to the Oval Office, told the Shallot. &quot;Always went on and on about Henry James and the evils of taxes. Much more boring and monotonous than the real Lamport.&quot;
+
+&quot;I never really understood it,&quot; former speaker Peanut told us. &quot;Like, Lamport is still alive - there he is, standing at 1 First Street right now! How can he have a ghost? Like...&quot; (our conversation was interrupted when the spirit grabbed him and pulled him away a realm void of light; the search for his whereabouts is ongoing.)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">11</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705933919350161450" id="message-705933919350161450">
+                <div class="chatlog__content">
+                    <div class="markdown">With the adjournment of the House, now-former Speaker John Smith has agreed to manifest from his soul a new spirit. Here&#39;s to a shorter term in office for that guy!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-May-20 01:18 AM</span>
+
+            <div class="chatlog__message " data-message-id="705936158860771389" id="message-705936158860771389">
+                <div class="chatlog__content">
+                    <div class="markdown">Our apologies- Peanut prefers to be referred to as &quot;Peen&quot;.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="jeb" title="jeb" src="https://cdn.discordapp.com/emojis/437017827812311040.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-May-20 08:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="706229522101436499" id="message-706229522101436499">
+                <div class="chatlog__content">
+                    <div class="markdown">Randy drops out- our experts here at the Shallot believe it could be due to the growing influence of the Centrist and their secret weapon- Ethan Matthias.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">17</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690316768606027952/2df451aee0d6238b3bb181a8b71517b4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Shallot#0000" data-user-id="690316768606027952" >The Shallot</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-May-20 01:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="707213979411546133" id="message-707213979411546133">
+                <div class="chatlog__content">
+                    <div class="markdown">The Shallot is excitdd to bring you all oyr election night coverage tonight as millins of Americans head to their polling plsces to vote.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="fasteyes" title="fasteyes" src="https://cdn.discordapp.com/emojis/442078370856042496.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">19-May-20 06:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="712355882658168832" id="message-712355882658168832">
+                <div class="chatlog__content">
+                    <div class="markdown">Archived</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇱" title="🇱" src="https://twemoji.maxcdn.com/2/72x72/1f1f1.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇴" title="🇴" src="https://twemoji.maxcdn.com/2/72x72/1f1f4.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 84 message(s)</div>
+</div>
+
+</body>
+</html>

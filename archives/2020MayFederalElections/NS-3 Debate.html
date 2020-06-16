@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - ns3-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">May 2020 Federal Election / ns3-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-Apr-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">01-May-20 11:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="705915214834434058" id="message-705915214834434058">
+                <div class="chatlog__content">
+                    <div class="markdown">The Candidates are:
+
+<span class="mention" title="ThanosBaby#6300">@Grindr™</span> (ALP)
+<span class="mention" title="MadelynMoon#7896">@MadelynMoon</span> (F)
+<span class="mention" title="XRT-17#0109">@XRT-17</span> (I)
+
+
+Please ask any questions if you are a resident of the North</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">01-May-20 11:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="705915370371940432" id="message-705915370371940432">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello! If you have any questions, please let me know.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">01-May-20 11:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="705916302635565146" id="message-705916302635565146">
+                <div class="chatlog__content">
+                    <div class="markdown">I look forward to this race and getting the chance to represent this great state in the House of Representatives once again.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="705924395868225556" id="message-705924395868225556">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ThanosBaby#6300">@Grindr™</span> What do you think your worst political mistake has been?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="705924895678136360" id="message-705924895678136360">
+                <div class="chatlog__content">
+                    <div class="markdown">Writing an entire amendment to the constitution that I didn’t fully vet for errors before it passed congress. I learned from that to always get input from your colleagues when writing legislation.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/193056653573095427/97cc178345e9cc086d551bfdb07aff70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="aaaaaaaaaaaaaaaaaaaaa#5800" data-user-id="193056653573095427"  style="color: rgb(102, 2, 60)" >gay</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:46 AM</span>
+
+            <div class="chatlog__message " data-message-id="705928176475570225" id="message-705928176475570225">
+                <div class="chatlog__content">
+                    <div class="markdown">What errors have you found with it?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="705929958299795467" id="message-705929958299795467">
+                <div class="chatlog__content">
+                    <div class="markdown">The issue was with this amendment (<a href="https://docs.google.com/document/d/1KJRhulKZPxJcG8QY3f4I2dLttTxPr9c4EFe5f4roHns/edit?usp=sharing">https://docs.google.com/document/d/1KJRhulKZPxJcG8QY3f4I2dLttTxPr9c4EFe5f4roHns/edit?usp=sharing</a> ) 
+I wanted a better check on a potential abuse of the pardon power. Still an issue I would like to address but one with much better language that doesn’t possibly do more damage than good.</div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1KJRhulKZPxJcG8QY3f4I2dLttTxPr9c4EFe5f4roHns/edit?usp=sharing"><div class="markdown">Checks on Pardons Amendment Ratification</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">A Resolution Congressman Thanos May submitted the following Resolution.    To signal the consent of the state to a constitutional amendment proposed by Congress  Resolved by the Northern People’s Congress:  		(1) The Checks on Pardons Amendment is hereby ratified.   6th Congre...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/gTF1KuLWayIWeCT2cuaUu5IC8YsbgnGt9FWn8lfN64iq_s-sVnnjMHkP5FbPZw1CHcv9zE6PDQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/gTF1KuLWayIWeCT2cuaUu5IC8YsbgnGt9FWn8lfN64iq_s-sVnnjMHkP5FbPZw1CHcv9zE6PDQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="705930387230163026" id="message-705930387230163026">
+                <div class="chatlog__content">
+                    <div class="markdown">Where do you see issues in that amendment?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:25 AM</span>
+
+            <div class="chatlog__message " data-message-id="705937928693481552" id="message-705937928693481552">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="MadelynMoon#7896">@MadelynMoon</span> Why should we trust federalists if one federalist, computerguy15, was removed as Governor due to corruption, yet he is on the national committee for the federalists? He ran away to Jefferson, maybe you will too!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="705943431645626398" id="message-705943431645626398">
+                <div class="chatlog__content">
+                    <div class="markdown">I simply believe there may be a better way to phrase that amendment then as drafted.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/126487411839467520/a7839147826d6087cf160314c2f598d3.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="0009ddet#9582" data-user-id="126487411839467520"  style="color: rgb(0, 149, 255)" >pp t te dd</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="705947441517822034" id="message-705947441517822034">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ThanosBaby#6300">@Grindr™</span> Keeping in the theme of the previous question, what do you consider your greatest triumphs while in politics?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="705947647470469130" id="message-705947647470469130">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you believe enough has been done about gun violence from the year 2018 and forward?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:05 AM</span>
+
+            <div class="chatlog__message " data-message-id="705948050077646898" id="message-705948050077646898">
+                <div class="chatlog__content">
+                    <div class="markdown">The Rainbow Health Bill that I was a co-author of and the Marsha P Johnson Transgender Assistance Act which I was the author of as well are my most honored pieces of legislation.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705948392639037520" id="message-705948392639037520">
+                <div class="chatlog__content">
+                    <div class="markdown">As long as innocent lives are lost to gun violence we will not have done enough, I support having a better analysis of what policies we can put into place to address gun violence.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/367456250323140610/b78f946d47b3869f94cc1b079aa3afdf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Justin (DF)#4258" data-user-id="367456250323140610"  style="color: rgb(238, 181, 124)" >Justin (DF)</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="705959845496356926" id="message-705959845496356926">
+                <div class="chatlog__content">
+                    <div class="markdown">Is there a politician or person who you look up to the most?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:54 AM</span>
+
+            <div class="chatlog__message " data-message-id="705960365531463692" id="message-705960365531463692">
+                <div class="chatlog__content">
+                    <div class="markdown">Mine is probably Theodore Roosevelt. He was fearless and an incredible human being and leader. He had principles and stick to them. I also look up to him for all the work he did in the National Park System and preserving American Nature</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:11 AM</span>
+
+            <div class="chatlog__message " data-message-id="705979764514750525" id="message-705979764514750525">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ThanosBaby#6300">@Grindr™</span> You are returning to Federal Politics after a while, what will your main goals be?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="705990196768014372" id="message-705990196768014372">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ThanosBaby#6300">@Grindr™</span> <span class="mention" title="MadelynMoon#7896">@MadelynMoon</span> <span class="mention" title="XRT-17#0109">@XRT-17</span> with coal and gas industries being damaging to the environment not just because of climate change, but also to air and water quality, respectively, what will you do to guarantee that people in these sectors will not lose their jobs?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="705990744598511616" id="message-705990744598511616">
+                <div class="chatlog__content">
+                    <div class="markdown">I will be honest. I cannot guarentee that these workers do not lsoe their jobs. Coal is a dying industry for many reasons and their jobs are shrinking. What will say is that isntead of abandoning them, I would call and support programs to retrain/repurpose such workers. If they can gain technical skills in another area, they will still hold jobs.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 05:15 AM</span>
+
+            <div class="chatlog__message " data-message-id="705995879370194984" id="message-705995879370194984">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Justin (DF)#4258">@Justin (DF)</span> Harvey Milk. His fighting spirit for not only queer people but his community at large was a true testament to an honest politician. I believe that if he wasn’t so horribly assassinated he would’ve gone on to really change the lives of every American in a good way.
+
+<span class="mention" title="mkay#6816">@James W. Hagen</span> I believe an area we need to have some true honest assessment of is our healthcare system. Right now the federal options and provisions are a Mosaic of programs, I belive we could provide not only adequate care but quality care to every American by just simply simplifying this system. 
+
+<span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> Job training is a must for those in what will soon be obsolete industries. Those who can still work deserve to be able to continue working especially in the similar field of energy production. The future of energy is going to demand a lot of jobs and expertise and therefore training these workers should be a top priority so that they can best integrate into the new normal rather than be left behind.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 05:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="705999955940081665" id="message-705999955940081665">
+                <div class="chatlog__content">
+                    <div class="markdown">Thanks mate</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="706199614746787991" id="message-706199614746787991">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="XRT-17#0109">@XRT-17</span> From your recent posters, I take it you like public transit?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="706201390028161146" id="message-706201390028161146">
+                <div class="chatlog__content">
+                    <div class="markdown">Very much. I think that the public transportation is underutilized in the United States. I think most of us can agree that Climate Change is a real threat. Out world is slowly becoming too polluted. One of the reasons is the use of cars. When every person drives to where they want to go, they are spreading more pollutants. Using public transportation will limit the amount of cars on the road an lessen some pollution. I also think that we need to emphasize that public transportation should shift to cleaner sources of energy, electric buses and the sort.
+
+Also, if we set up a good public transportation system, it is very helpful to the underprivileged and financially less well off people. These people may not be able to afford cars and even if they can, the cars are probably highly unreliable. When people have trouble getting places, that puts their jobs, health, and even their right to vote in danger. This is why a cheap and effective public transportation system would allow for more people to travel and save money.
+
+The current problem we have is that public transportation is either too expensive, not expansive enough, or is inefficient. As a nation, we need to fox these problems as the benefits of public transportation are plentiful. I would advocate for  federal support of a national system of public transportation that connects the entire country together, allowing for faster and efficient travel for everyone.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="706201442087600328" id="message-706201442087600328">
+                <div class="chatlog__content">
+                    <div class="markdown">Public transport during the coronavirus?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="706201623688511538" id="message-706201623688511538">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, obviously not right now. Our first priority should be eliminating the disease. I meant more so when l, hopefully, this virus ends.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="706215229259907115" id="message-706215229259907115">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="XRT-17#0109">@XRT-17</span> Do you live in Ohio or Pennsylvania?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="706217197407698974" id="message-706217197407698974">
+                <div class="chatlog__content">
+                    <div class="markdown">Currently I live in Washington DC due to my position as the National security advisor. I do have an apartment in Pittsburgh however. Unfortunately, due to the pandemic, I haven&#39;t been and to go back</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/599295644133228564/84ecb6ab45916880fc0a2a87a5c1af28.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="NYCDOT/John Darby/Sam Rimbledon#9355" data-user-id="599295644133228564" >NYCDOT/John Darby/Sam Rimbledon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="706217291645321237" id="message-706217291645321237">
+                <div class="chatlog__content">
+                    <div class="markdown">I see</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706217397006106644" id="message-706217397006106644">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you ride the DC Metro often? Of course, you don’t ride it now, but on a normal day.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="706222160515039233" id="message-706222160515039233">
+                <div class="chatlog__content">
+                    <div class="markdown">Sometimes. It usually depends on the weather. I also like to walk or bike to work as well</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/588141399883513857/28ae77cbb984b89304c0f0a855db09e3.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MadelynMoon#7896" data-user-id="588141399883513857" >MadelynMoon</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="706225893131157556" id="message-706225893131157556">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="NYCDOT/John Darby/Sam Rimbledon#9355">@NYCDOT/John Darby/Sam Rimbledon</span> A Federalist Party Member is not guilty of the crimes or controversies of their fellow party members. I find it both insulting and abhorrent that you would then generalize my entire party like that and make such an accusation that I will for some reason flee to Jefferson. 
+
+<span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> We need to address the loss of jobs by helping people find new jobs in both these new jobs being created by new energy sectors or other work fields they wish to enter into.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="706255316681097319" id="message-706255316681097319">
+                <div class="chatlog__content">
+                    <div class="markdown">If anyone to ask any of the candidates any questions, please so. Please</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706255362591948801" id="message-706255362591948801">
+                <div class="chatlog__content">
+                    <div class="markdown">If anyone wants to</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="706255431160430715" id="message-706255431160430715">
+                <div class="chatlog__content">
+                    <div class="markdown">Why are you wishing to demean those with disabilities on twitter?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="706255576996380754" id="message-706255576996380754">
+                <div class="chatlog__content">
+                    <div class="markdown">As I have already stated, the tweet was in bad taste. It should never have been tweeted. I apologize for what I have said.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:28 PM</span>
+
+            <div class="chatlog__message " data-message-id="706255854529282089" id="message-706255854529282089">
+                <div class="chatlog__content">
+                    <div class="markdown">How can our constituents trust that you won&#39;t continue to make such demeaning statements? Why should the believe that you won&#39;t say such things again?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤡" title="🤡" src="https://twemoji.maxcdn.com/2/72x72/1f921.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="706256251582939170" id="message-706256251582939170">
+                <div class="chatlog__content">
+                    <div class="markdown">All they have is my word if that means anything at all. I can&#39;t prove it to anyone. I have said I will, and that is all I can do.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706256905827516584" id="message-706256905827516584">
+                <div class="chatlog__content">
+                    <div class="markdown">Why would you compare political parties to cancer? You think it is ok to also conflate something that is the second leading cause of death in the world to political parties which are just organized groups of like minded individuals?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇨" title="🇨" src="https://twemoji.maxcdn.com/2/72x72/1f1e8.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇮" title="🇮" src="https://twemoji.maxcdn.com/2/72x72/1f1ee.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇳" title="🇳" src="https://twemoji.maxcdn.com/2/72x72/1f1f3.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇬" title="🇬" src="https://twemoji.maxcdn.com/2/72x72/1f1ec.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇪" title="🇪" src="https://twemoji.maxcdn.com/2/72x72/1f1ea.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="706257555252314222" id="message-706257555252314222">
+                <div class="chatlog__content">
+                    <div class="markdown">I personally view political parties as the core  cause of discord and hatred in our political system. In the ideal world, yes, there is nothing wrong. But clearly that isn&#39;t the case. Right now, political parties control the agenda. They do what they want without care for constituents. Political parties are the one that are causing the destruction of democracy, trust, and the peopels will in the political system. They are slowly eroding and destroying the fundemntal part of our country.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706257772424986674" id="message-706257772424986674">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, metaphors and symbolism and such exist. Comparing two things to make a point is not saying cancer isnt bad and demaing people who suffer or have in the past.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="706258740805894235" id="message-706258740805894235">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe it is a sad attempt at a metaphor and disrespectful to those who have gone through the pain of being impacted by cancer. What substantiated evidence do you have to support that political parties have &quot;Eroded&quot; democracy?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="706259480022745150" id="message-706259480022745150">
+                <div class="chatlog__content">
+                    <div class="markdown">The fact we have people a ring as mouthpiece for their party and copying and pasting in this every election. The fact that we are unable to hd a civil discourse cause the other person belongs to a different group. We used to fight over religon. But we got over that. We then fought over flags. Now we fight over political affiliation. People now don&#39;t vote on issue but rather by party.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="706262675180617739" id="message-706262675180617739">
+                <div class="chatlog__content">
+                    <div class="markdown">We have had people from opposing parties endorse members of the opposition party not based on party bu ton policy so I find your assessment to be incorrect. What individuals wish to do or act like should not be indicative of an entire system. Are you saying I am a mouthpiece for my party and providing copy and pasted answers simply because I am a party member and not an independent like yourself?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 10:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="706262726275629096" id="message-706262726275629096">
+                <div class="chatlog__content">
+                    <div class="markdown">Are you saying that people no longer fighting over religion?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="706265175463952396" id="message-706265175463952396">
+                <div class="chatlog__content">
+                    <div class="markdown">That&#39;s not what I meant. My point was the religon was the focal point of everything. But, especially in Western Europe, they loved to fighting over Flags and Nations rather rthen Catholics or Lutherans. Of course religion still plays a role.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706265314677227661" id="message-706265314677227661">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ThanosBaby#6300">@Grindr™</span> That comment wasn&#39;t directed at you. But if you are copying and pasting party responses then yes, there is a problem. That is called not thinking for yourself</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="706265520164438018" id="message-706265520164438018">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="XRT-17#0109">@XRT-17</span> and you would like to claim that religion is <em>not</em> still a focal point of everything?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="706265639756496896" id="message-706265639756496896">
+                <div class="chatlog__content">
+                    <div class="markdown">Then I do not see how there is an issue with parties, it seems you have an issue with individuals.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="706265840001089668" id="message-706265840001089668">
+                <div class="chatlog__content">
+                    <div class="markdown">I have an issue with how individuals support and use parties. In te perfect world their is nothing wrong with them, however, in the current day I do see one</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="706265860922409021" id="message-706265860922409021">
+                <div class="chatlog__content">
+                    <div class="markdown">XRT, you also endorsed someone who is part of a political party, is this not hypocritical?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="no_gru" title="no_gru" src="https://cdn.discordapp.com/emojis/607449361638490162.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266002198888578" id="message-706266002198888578">
+                <div class="chatlog__content">
+                    <div class="markdown">No. I endorsed someone based on if I agreed with how they conducted themselves and their beliefs.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266024109932634" id="message-706266024109932634">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ThanosBaby#6300">@Grindr™</span> if elected will you only do what the party tells you to?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266086139756634" id="message-706266086139756634">
+                <div class="chatlog__content">
+                    <div class="markdown">Hell no.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😳" title="😳" src="https://twemoji.maxcdn.com/2/72x72/1f633.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266110932025414" id="message-706266110932025414">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> could you clarify your previous question?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:09 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266260689911910" id="message-706266260689911910">
+                <div class="chatlog__content">
+                    <div class="markdown">I do what is best for my constituents and is aligned with my beliefs which is what my constituents voted for.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706266483990462474" id="message-706266483990462474">
+                <div class="chatlog__content">
+                    <div class="markdown">How is it that people supporting and using party support...bad? Is it bad for people of like minds to work together to achieve same or similar goals?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266594401058908" id="message-706266594401058908">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="XRT-17#0109">@XRT-17</span> you&#39;ve claimed that people who are in parties are mouthpieces for their party, yet you went and endorsed Emperio, someone who is in a party. I&#39;m asking how you can justify this, given that you state how evil political parties are.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="706267284695416884" id="message-706267284695416884">
+                <div class="chatlog__content">
+                    <div class="markdown">I never said every person is. I said people become a mouthpiece and spout whatever the party says they should. Obviously it isn&#39;t everyone. I liked what the person I endorsed said, I agreed with him on something, and feel like he would be a good candidate. What would be hypocritical is to go join a party.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="706268168787853453" id="message-706268168787853453">
+                <div class="chatlog__content">
+                    <div class="markdown">What have either of your opponents done to show that he will only toe the party line?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="706268408525750303" id="message-706268408525750303">
+                <div class="chatlog__content">
+                    <div class="markdown">Is this directed at me?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706268494588805201" id="message-706268494588805201">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="706268540851978380" id="message-706268540851978380">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="706269097230467193" id="message-706269097230467193">
+                <div class="chatlog__content">
+                    <div class="markdown">Nothing. I have nothing against <span class="mention" title="ThanosBaby#6300">@Grindr™</span> but hold them in the highest regard. My ad was meant as a general statement. As for the other candidate, they have answered one question so I can&#39;t say</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="706271439250128938" id="message-706271439250128938">
+                <div class="chatlog__content">
+                    <div class="markdown">It seems you just do not like parties but only because of the actions of specific people and not at all the actual purpose of parties or how they work.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706271903391940759" id="message-706271903391940759">
+                <div class="chatlog__content">
+                    <div class="markdown">I don&#39;t disagree. The purpose is great in theory. I feel like it has, however been corrupted in actual practice</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="706272705711702107" id="message-706272705711702107">
+                <div class="chatlog__content">
+                    <div class="markdown">How has it been corrupt? Please be specific and not general “party people bad” type statements</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="706274888213594163" id="message-706274888213594163">
+                <div class="chatlog__content">
+                    <div class="markdown">There have been many studies done that political parties elad to politization and shifting farther on the political spectrum. This shift cause a alck of compromise and ultimately a bad political enviorment.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706275087652749402" id="message-706275087652749402">
+                <div class="chatlog__content">
+                    <div class="markdown">It has gotten better after the collapse of the two party system , but still remnants remain of this type of interaction</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="706275606496804927" id="message-706275606496804927">
+                <div class="chatlog__content">
+                    <div class="markdown">So you admit this polarization has relatively been lessened for to our more fluid party dynamics today, yet still claim they are enough of a problem to be an actual threat to democracy?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="706275892632092752" id="message-706275892632092752">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="706276010278125659" id="message-706276010278125659">
+                <div class="chatlog__content">
+                    <div class="markdown">Rather absurd.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 71 message(s)</div>
+</div>
+
+</body>
+</html>

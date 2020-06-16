@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - american-association-of-energy</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / american-association-of-energy</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/182310210436726784/b5e2c7e67acc83ad64aff1fbfdd8fda1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Garland#4101" data-user-id="182310210436726784"  style="color: rgb(26, 188, 156)" >Garland</span>
+
+
+        <span class="chatlog__timestamp">16-Mar-20 05:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="689167253002125393" id="message-689167253002125393">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="mkay#6816">@James W. Hagen</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 02:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="689483604312719362" id="message-689483604312719362">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://discord.gg/fNydvAC">https://discord.gg/fNydvAC</a></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="689483649048903816" id="message-689483649048903816">
+                <div class="chatlog__content">
+                    <div class="markdown">We are a practical organization aimed at providing the public and political fields with accurate and wholesome information and suggests for progress in the energy field, addressing all concerned areas, whether it is economic or environmental.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 07:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="690465361254154270" id="message-690465361254154270">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Partnership with The <em>Environmentalist</em></strong>
+We have established a conditional partnership with the environmentalist, seeing that energy is an important part of their agenda and topic list. 
+We may release joint articles and other products in the future, while upholding the pragmatic and practical values of our organization.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Mar-20 04:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="691509495129440277" id="message-691509495129440277">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Statement on the <em>Nuclear Energy Expansion Act (NEEA)</em></strong>
+Nuclear energy is a powerful, effective, efficient, and less environmentally impacting source than most other fossil fuels. We believe this bill is well written, comprehensive, and practical. While nuclear energy may not be the perfect solution for now, it is a great and better option, compared to others. We believe that this is a stride towards combating the pollution of the environment, especially in an age where our needs and population are constantly increasing.
+We would recommend more use of hydro power as well, a powerful and effective source, while even less environmentally deterring.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-Apr-20 08:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="695169675281170462" id="message-695169675281170462">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Truth About Nuclear Energy</strong>
+People often associate nuclear energy with death, tragic, etc. due to its name relation the nuclear weapons. However, what if we told you that nuclear energy has actually been safer and caused less deaths than other forms of energy like coal?
+We will be publishing a lengthy article related to this soon, be ready!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-Apr-20 08:46 AM</span>
+
+            <div class="chatlog__message " data-message-id="695902123900141578" id="message-695902123900141578">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>State Election Candidate <em>Energy</em> Rating</strong>
+<em>A preliminary rating of candidates based on previous interactions about the field of energy as a whole</em>
+<em>We will release a new one shortly with a detailed assessment</em>
+
+NS1 - <em>NA - Conflict of Interest</em>
+NS2 - <em>Neutral</em>
+NS3 - <em>Lean Arkenstone</em>
+NS4 - <em>Neutral</em>
+NS5 - <em>Very Slight Lean ADrewster</em>
+-
+DX1 - <em>Lean Sandoval</em>
+DX2 - <em>Neutral</em>
+DX3 - <em>Neutral</em>
+DX4 - <em>Strong Lean Lohengramm</em>
+DX5 - <em>Slight Lean Trash</em>
+DX6 - <em>Neutral</em>
+DX7 - <em>Neutral</em>
+-
+JF1 - <em>NA - Only One Candidate</em>
+JF2 - <em>Lean Caprese</em>
+JF3 - <em>Neutral</em>
+JF4 - <em>Neutral</em>
+JF5 - <em>Neutral</em>
+-
+J3 Senate - <em>Neutral</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 06:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="696229980757295223" id="message-696229980757295223">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Update</strong>
+We are pleased to announce we will be releasing a series of interviews after the elections.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">07-Apr-20 05:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="697124437887287306" id="message-697124437887287306">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>INTERVIEW WITH PPT ORDER</strong>
+Highlights: <em>the assembly is too focused on restricting reproductive rights for women and fighting for a minstrel song to be the state anthem that they don&#39;t seem to care about anything else.</em> Order calls out Dixie Assembly, recieves A- Energy rating!
+<a href="https://docs.google.com/document/d/1iE3EKmsj3OVoSIo4jFPJwYmHhPMY86hY05zKtLA3YdA/edit?usp=sharing">https://docs.google.com/document/d/1iE3EKmsj3OVoSIo4jFPJwYmHhPMY86hY05zKtLA3YdA/edit?usp=sharing</a></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 10:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="697370954900439100" id="message-697370954900439100">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>INTERVIEW WITH AEGEUS PHOENIX</strong>
+Highlights: <em>supports natural gas expansion, investing in technologies regardless of viability</em> Recieves B energy rating based on the interview!
+<a href="https://docs.google.com/document/d/1pFRcZmWqk3oEV0EJa5qu_LwzssAk2FwAty0YvxvJsDk/edit?usp=sharing">https://docs.google.com/document/d/1pFRcZmWqk3oEV0EJa5qu_LwzssAk2FwAty0YvxvJsDk/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1pFRcZmWqk3oEV0EJa5qu_LwzssAk2FwAty0YvxvJsDk/edit?usp=sharing"><div class="markdown">AAOE - First Phoenix Interview</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">INTERVIEW WITH DIXIE STATE LEGISLATOR AEGEUS PHOENIX By Mr. Hagen   Q1: What is your opinion or vision for energy production in the next 25 years?  Well, fossil fuels aren&#39;t sustainable for us or our planet. So, we need to find a different source. I&#39;m moving towards solar and ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/26sELj6qq5NWvSVc8bL0Pydz7Q6ymb3wG2Fvqkbf4wr8TrIpvQkggX0FIPj9jeuOai7ZFDJPyQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/26sELj6qq5NWvSVc8bL0Pydz7Q6ymb3wG2Fvqkbf4wr8TrIpvQkggX0FIPj9jeuOai7ZFDJPyQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 02:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="697432278141370390" id="message-697432278141370390">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Review on Senate Actions</strong>
+We are disappointed with the senate, notably PPT Order, and Mjr. Ldr. Ddet, both members of the American Liberal Party, for voting nay on Poliman&#39;s nomination to the cabinet. Whats even more upsetting is seeing that in these times of crisis, they had no valid reason to deny him, and didn&#39;t even ask him a question.
+Poliman said in his hearing, quote, &#39;&#39;I believe that government regulation of the economy should be limited to where it is essential and as much as possible without violating the economic freedoms and liberty of the people. The government should work on incentivizing innovation, as well as in this current situation, incentivizing the shift towards cleaner forms of energy to protect the environment.&#39;&#39;.
+Looks like partisanship has led to the ALP denying innovation, green energy, and the protection of the environement.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">13-Apr-20 01:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="699241714577047612" id="message-699241714577047612">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">SOURCES - A Publishment by the American Association of Energy</div>
+----------------------------------------------------------------------------------------------
+<strong>Issue 1 - Hydropower - Reliable &amp; Viable.</strong>
+---
+<em>Reliability</em>
+Hydropower is overall a very reliable source, compared to other renewable sources, and even over fossil fuels such as coal due to some conditional factors.
+Hydropower facilities can quickly change from between zero output to maximum output, making them exceptionally good at meeting changing demands for electricity throughout the day.
+Besides being more efficient, hydropower runs continuously and consistently with little maintenance needed. If needed, it can actually store power: pumped storage, a type of hydropower technology, accumulates the electricity generated by other power sources like solar, wind, and nuclear for later use by storing energy in the form of water in an upper reservoir, pumped from a second reservoir at a lower elevation.
+---
+<em>Potential and Overall Viability</em>
+Hydropower is known as one of the most efficient ways to generate electricity, with it converting 90% of total energy into electricity, whereas fossil fuels often top around 50%.
+It is extremely viable, seeing the immense water infrastructure around the country, its reliability, and the techniques previously mentioned, such as pumped storage which can store energy.
+Moreover, the USA has a large potential of nonpowered dams and conduits, which if equipped with turbines, can largely expand reliable renewable energy. A study found around 54000 nonpowered dams in the United States which can be retrofitted to generate power. This would make our energy production and utilization of resources much more efficient.
+In short, Hydropower has an immense potential in the United States, to be expanded, seeing the development of various technologies which make it more viable across the nation, especially seeing the cheapness of production, which we will expand on in our next issue.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">13-Apr-20 02:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="699253927983579237" id="message-699253927983579237">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">SOURCES - A Publishment by the American Association of Energy</div>
+----------------------------------------------------------------------------------------------
+<strong>Issue 2 - Hydropower - Economics, Efforts.</strong>
+---
+<em>Economics/Costs</em>
+Hydropower is an unexpensive source for electricity, only costing around 0.85 cents to produce per kilo-watt hour. This is about half as much of nuclear, and about a fourth of the cost of natural gas in turbines, as there is no fuel cost. This is another nod to the environmental benefits, as well as economic, with the only fuel being the water running through, making this source fully &#39;&#39;green&#39;&#39;, or should we say blue, in that aspect.
+Moreover, hydropower does not experience rising or unstable fuel costs. From 1985 to 1990 the cost of operating a hydropower plant grew at less than the rate of inflation. This besides being positive economically, alludes to its longterm reliability, it being a self-dependent source, not requiring any imports/exports, or uncertain weather conditions.
+---
+<em>Efforts and Government Actions</em>
+Only around 3% of the nation&#39;s 80,000 existing dams are used to generate power. Installing turbines in existing dams would expand this powerful and cost-efficient power source. However, from 2005 to 2015 the DoE (department of energy) had spent around 1,200,000,000 dollars on research and development for other renewable sources like wind, solar, and geothermal, but only around 10 million dollars on hydropower. This is truly saddening, seeing how hydropower is much more viable and beneficial in many areas.
+Currently, there hasn&#39;t been much actions for this source, but there has been a lot done for nuclear energy, which we aim to address shortly. Senator Hagen has told us that he will be introducing a bill on this soon however, and from our interviews with Order and Phoenix, it seems as if this source is supported by most of our elected politicians.<span class="chatlog__edited-timestamp" title="13-Apr-20 02:46 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">13-Apr-20 02:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="699257541636522004" id="message-699257541636522004">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">SOURCES - A Publishment by the American Association of Energy</div>
+----------------------------------------------------------------------------------------------
+<strong>Issue 3 - Hydropower - Environment, Regulation, Misc.</strong>
+---
+<em>Environmental Effects</em>
+Hydropower leaves behind no waste. The only non-continuous sources used are small ones for maintenance, and manufacturing of the turbine system. It produces no green house gases, nor any air pollution at all. Furthermore, according to some estimates, it prevents the burning of 22 billion gallons of oil, or 120 million tonnes of coal every year! It has no fuel, except if you count water, which goes through a continuous cycle without any pollution left behind.
+---
+<em>Regulation</em>
+Federal regulations harm the growth of hydropower and the reliable renewable sector. The FERC stifles hydropower development through a complex, unpredictable, and costly licensing process. 
+We would encourage government officials who work towards implementing an efficient licensing system for the benefit of our nation.
+
+<em>Other</em>
+Hydropower reservoirs strongly boost local economies, and the lives of people. A study of one medium-sized hydropower project in Wisconsin showed that the recreational value to residents and visitors exceeded $6.5 million annually. This can be understood in how Reservoirs formed by hydroelectric dams provide many water-based recreational opportunities including fishing, water sports, boating, and water fowl hunting, hydro operators use land around reservoirs for public use, for hunting, hiking, and snow activities such as snowmobiling or skiing, with also other activities like boating, public beaches, picnic areas, fishing, canoe dockings, etc.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689483602651775018/35d815096f9fe36aeefc7e9e4ff44c55.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">14-Apr-20 01:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="699594344092663909" id="message-699594344092663909">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">AAOE - Current Politics #1</div>
+----------------------------------------------------------------------------------------------
+<strong>Analyzing the <em>Hydropower Subsidy Act</em> by Rep. Dan Reinhard</strong>
+---
+The American Association of Energy is pleased to see direction towards Hydropower, which hasn&#39;t been very actively funded or promoted by the Government before. 
+-
+Recently elected Rep. Dan Reinhard introduced a bill which reserves around 10 billion dollars of the federal budget towards &#39;&#39;the production of hydroelectric dams&#39;&#39;. We believe that this is a bit misworded in the manner that it doesn&#39;t address the construction of hydroelectric plants, but instead focuses on the building of dams. Although good, we believe that we should orient the money towards the installations of hydropower systems on nonpower dams, to ensure the efficient production of potential resources, in a less costly manner.
+-
+It gives a supplier $900,000 regardless of their extent of productions, which we believe is necessary to include, as different suppliers can have a different range of operations. Also, we believe it should be left to the Departments which have expertise in these areas to address contracts depending on the range of profits that can be made from this, to ensure an effective effect of any subsidy or loan given.
+-
+Overall, we believe this is a step in the right direction, however this bill should be amended or remade to account for various factors addressed above.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 05:12 AM</span>
+
+            <div class="chatlog__message " data-message-id="701646335442419824" id="message-701646335442419824">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">AAOE - Current Politics #1</div>
+----------------------------------------------------------------------------------------------
+<strong>Plagarism in the House?</strong>
+---
+We have always support Rep. Emperio&#39;s energy bills in the past, which have expanded nuclear energy to a great extent, and helped out the nation. However, in his latest bill, there have been allegations of plagarism, and evidence to an extent. We withdraw any endorsement of the Representative until he is cleared of any allegations as such.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 04:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="702540432768368740" id="message-702540432768368740">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Earth Day &amp; Energy</strong>
+Energy is one of the largest causes for emissions, contributing a significant percentage of the USA&#39;s emissions in the last few years. We here at the American Association of Energy don&#39;t just believe in <em>ExxonMobil</em>, we find the environment and our planet to be of utmost importance, as it is what gives us our oil <img class="emoji " alt="😉" title="😉" src="https://twemoji.maxcdn.com/2/72x72/1f609.png"> . In all seriousness, Earth Day is an important reminder of what we owe to our planet, our environment, and ourselves. Even if you don&#39;t believe in carbon emissions, sources like hydropower for example are</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702540526133575680" id="message-702540526133575680">
+                <div class="chatlog__content">
+                    <div class="markdown">very good for costs, and solar power is predicted to cost less than certain fossil fuels eventually.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 03:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="703072132782882848" id="message-703072132782882848">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">AAOE - Current Politics #1</div>
+<strong>Review on the <em>Fossil Fuel Efficiency Bill of 2020</em></strong>
+This bill firstly creates a commission to head the transitioning of fossil fuels to nuclear energy by scouting locations for expanding and creating nuclear plants. We believe this is a good step forward to make, by specifically aligning the commission to this one agenda under the supervision of the Department of Energy. Moreover, it accounts for the coronavirus problem, saying the commission will be enacted 8 months after the bill is passed, allowing for the pandemic to decrease in size before any such activity is done.
+Moreover, it gives a &#39;&#39;5% tax discount&#39;&#39; if 8% of a companys sales constitute from Nuclear Energy up to a certain date. We feel putting a limit on this till 2035 is unnecessary, as nuclear energy takes time to develop, and this should be continuous. However, we feel this isn&#39;t too significant of a factor here. It also sets up an EPA managed program to train fossil fuel industry workers for the renewable and green energy sector jobs, which we believe is essential, to help the employment rates and the people of the country.
+Furthermore, the bill distributes 66 million dollars between the states for developing green energy oriented trade schools, which can be essential in luring people towards those jobs, and giving them specific and accessible training in the sector.
+It also bans leases for new public lands after 2030, while allowing existing ones.
+Overall, we support this bill in its entirety.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">24-Apr-20 03:44 AM</span>
+
+            <div class="chatlog__message " data-message-id="703073932798066769" id="message-703073932798066769">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">AAOE - Current Politics #3</div>
+<strong>Review on the <em>Hydropower Expansion Act of 2020</em></strong>
+This bill seems to be a more comprehensive and viable version of the bill put forward in the House, while also expanding in some other essential areas.
+First of all, it starts with a section called identification. This addresses the DoE&#39;s involvement on multiple fronts to scout areas for the purpose of hydropower expansion, such as a list of public non-power dams, and to scout private areas for the same reason. It also connects the Army Corps here. We believe this is a good step towards identifying the expansions to be made.
+Secondly, it gives funding to the DoE to work with the Army Corps and other <em>necessary</em> institutions to equip publicly owned dams with hydropower systems, and also to start a flexible loan system for private companies to develop their own with &#39;&#39;minimal interest&#39;&#39;. We believe this is a necessary step to encourage hydropower development, and also increase its capibilities.
+Then it also makes multiple administrative changes, related to the licensing. It strips the FERC of licensing ability, and gives it to the DoE, probably citing discouraging licensing factors set by the FERC, which have inabled the expansion of Hydropower. It also said that the DoE must award licenses at a reasonable cost. Overall, we support the bill.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 03:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="704696650341548097" id="message-704696650341548097">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Energy Policy Approval Rating Poll</strong>
+Take the poll below to rate the federal candidates on their energy policy before the election:
+
+make sure to confirm with a checkmark, so your vote is counted on this message!
+<a href="https://forms.gle/usV6361NGLf4fkbB6">https://forms.gle/usV6361NGLf4fkbB6</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://forms.gle/usV6361NGLf4fkbB6"><div class="markdown">AAOE Energy Approval Rating Poll</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">For the Federal Government.
+REMEMBER TO VERIFY VOTE BY REACTING WITH A CHECKMARK ON THE American Association of Energy CHANNEL.</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/lUT_l8i-Qajv2iDiI1F_XlP4je9vXfvW2A2sDWRA5OtqMduF0DCKGTz08Ad6DQaRDkeKvko=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/lUT_l8i-Qajv2iDiI1F_XlP4je9vXfvW2A2sDWRA5OtqMduF0DCKGTz08Ad6DQaRDkeKvko=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="☑️" title="☑️" src="https://twemoji.maxcdn.com/2/72x72/2611.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤡" title="🤡" src="https://twemoji.maxcdn.com/2/72x72/1f921.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">29-Apr-20 08:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="704959940246372372" id="message-704959940246372372">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="pre pre--multiline nohighlight">Poll Results</div>
+<strong>poll results for energy rating | out of ten | free public poll</strong>
+
+Valerie Admin. Energy Score | <strong>6.0</strong>
+VP Cabin Energy Score | <strong>5.2</strong>
+Senate Energy Score | <strong>6.8</strong>
+PPT Order Energy Score | <strong>6.5</strong>
+Senator Ddet Energy Score | <strong>5.8</strong>
+Senator Hagen Energy Score | <strong>6.7</strong>
+Senator Zarphos Energy Score | <strong>4.0</strong>
+Senator April Energy Score | <strong>5.2</strong>
+Senator Trash Energy Score | <strong>3.8</strong>
+House Energy Score | <strong>5.3</strong>
+Speaker Smith Energy Score | <strong>3.2</strong>
+SPT Poliman Energy Score | <strong>4.2</strong>
+Mjr. Ldr. Jack Coulter | <strong>5.0</strong>
+Min. Ldr. Arkenstone | <strong>7.8</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">01-May-20 06:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="705829605902385272" id="message-705829605902385272">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Preliminary Election Predictions</strong></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705829629511991337" id="message-705829629511991337">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>DIXIE</em></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705829883011399880" id="message-705829883011399880">
+                <div class="chatlog__content">
+                    <div class="markdown">DX1 | Phoenix - 40%, Drunk - 28%, TheodoreIvy - 32%.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705830026343481406" id="message-705830026343481406">
+                <div class="chatlog__content">
+                    <div class="markdown">DX2 | Smith - 67%, BrotherLover - 33%.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705830161961975859" id="message-705830161961975859">
+                <div class="chatlog__content">
+                    <div class="markdown">DX3 | Poliman - 60%, Noodleborn - 40%.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😎" title="😎" src="https://twemoji.maxcdn.com/2/72x72/1f60e.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705830554326663229" id="message-705830554326663229">
+                <div class="chatlog__content">
+                    <div class="markdown">DX4 | Randy - 16%, Ethan - 13%, Soviet Squidward - 8%, Anoneymous - 28%, Lohen - 35%.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705830829057769573" id="message-705830829057769573">
+                <div class="chatlog__content">
+                    <div class="markdown">DX5 | Sandoval - 40%, Jogod - 25%, Kevv - 15%, Sven - 20%.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🅱️" title="🅱️" src="https://twemoji.maxcdn.com/2/72x72/1f171.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705830863883206810" id="message-705830863883206810">
+                <div class="chatlog__content">
+                    <div class="markdown">-</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705830874821689375" id="message-705830874821689375">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>NORTH</em></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705831331409428602" id="message-705831331409428602">
+                <div class="chatlog__content">
+                    <div class="markdown">NS1 | Emperio - 45%, Cylow - 36%, SamFox - 10</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="705831418764460042" id="message-705831418764460042">
+                <div class="chatlog__content">
+                    <div class="markdown">correction, samfox 19</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="American Association of Energy#0000" data-user-id="689483602651775018" >American Association of Energy</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">11-May-20 07:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="709291746835824712" id="message-709291746835824712">
+                <div class="chatlog__content">
+                    <div class="markdown">We are going to be starting a quick facts series for each form of energy soon!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="709291754385571923" id="message-709291754385571923">
+                <div class="chatlog__content">
+                    <div class="markdown">Look out!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">19-May-20 08:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="712392080374235228" id="message-712392080374235228">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>archived</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🦀" title="🦀" src="https://twemoji.maxcdn.com/2/72x72/1f980.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇫" title="🇫" src="https://twemoji.maxcdn.com/2/72x72/1f1eb.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 36 message(s)</div>
+</div>
+
+</body>
+</html>

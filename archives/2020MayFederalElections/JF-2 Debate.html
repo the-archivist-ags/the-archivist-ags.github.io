@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - jf2-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">May 2020 Federal Election / jf2-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-Apr-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="705916699383431330" id="message-705916699383431330">
+                <div class="chatlog__content">
+                    <div class="markdown">The Candidates are:
+
+<span class="mention" title="Ezra#4579">@Ezra</span> (F)
+<span class="mention" title="Elliot#8366">@Elliot</span> (C)
+<span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> (CL)
+
+
+Please ask any questions if you are a resident of Jefferson<span class="chatlog__edited-timestamp" title="02-May-20 12:04 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="705917368374788136" id="message-705917368374788136">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> What differtiates you from your opponents?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="705927483022770176" id="message-705927483022770176">
+                <div class="chatlog__content">
+                    <div class="markdown">What makes you qualified to be representative? (All candidates)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/496001981727637504/e53fb830e6261835491871007c0ea20c.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Valerie#3802" data-user-id="496001981727637504"  style="color: rgb(241, 196, 15)" >Presidentess Valerie</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="705928440116674704" id="message-705928440116674704">
+                <div class="chatlog__content">
+                    <div class="markdown">Will you defend the single tax on land value and resist the imposition of any other tax at the federal level?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:21 AM</span>
+
+            <div class="chatlog__message " data-message-id="705936974644641883" id="message-705936974644641883">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I believe there are several factors that separate me from my opponents. 
+First of all, I can guarantee you that I have an extensive record of public service as a Representative and a Senator, as well as several presidential cabinet appointments, party leadership positions in several parties, such as the Federalists, Republicans, and Democrats. 
+Second, in this political career that I continue to develop, I’ve constantly fought for the rights of the American people. I’ve introduced many bills in the House and Senate seeking to either provide more freedom for Americans everywhere or fight against unacceptable restrictions and oppressions against our own citizens.
+Third, I have an actually rather extensive agenda for what I’d like to accomplish during my term as Representative, should the people of Jefferson allow me to serve them so. With respect to my incumbent opponent Ezra, he’s done very little to actually accomplish anything during his term, having only co-sponsored 2 bills in the House and failing to submit even one original article of legislation himself. In fact, his need to be reminded to vote and his lack of discussion or debate with regards to any bill speaks to a certain sense of apathy and disregard for our political process and institutions. In fact, the only thing Ezra has mentioned in his term as Representative is his opposition to a federal minimum wage. Does Jefferson really want a whole other term with an apathetic puppet of the Federalist Party, or do they want someone who will stick up for them and give them what they deserve?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705938266662109275" id="message-705938266662109275">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Caprese#2439">@the salad</span> In addition to my extensive experience in politics that I’ve already mentioned, I would also state that I am very willing to work with other lawmakers in order to accomplish what the American people need, rather than work strictly along party lines and essentially fall in line. I have planned several bills and articles of legislation that, should I be given the opportunity, I would highly look forward to working with other politicians to implement.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="705939582847418529" id="message-705939582847418529">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Valerie#3802">@Presidentess Valerie</span> Despite my own personal views against taxes in general, taxes are a necessary tool through which our government earns the funds it needs to operate. I believe a single land value tax is appropriate enough to earn the funds our government needs to survive. Should the need arise, we should first consider modifying or cutting unnecessary programs and other “driftwood” that is clogging our political system, rather than introduce more taxes. In short: yes, I will defend a single land value tax, and resist the implementation of other taxes unless absolutely necessary.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 01:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="705943661854195822" id="message-705943661854195822">
+                <div class="chatlog__content">
+                    <div class="markdown">What are your views on healthcare? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span><span class="chatlog__edited-timestamp" title="02-May-20 01:48 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 02:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="705946988998557736" id="message-705946988998557736">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I myself as a type one diabetic have had to interact with our healthcare system from several different axes. In my opinion, I feel that many folks are held back in life by the often outrageous costs of basic medical supplies and care, and the absolute minimum quality of care that most insurances are willing to provide. Take, for instance, the price of insulin. A ten millimeter bottle of Novolog costs around $350.00 per bottle and will last about a week, assuming there aren’t any accidents such as bottles breaking and such. This means that oftentimes, without adequate medical care, a diabetic has to spend almost one and a half thousand dollars, yes, 1.5 grand a month, <em>just to continue to exist</em>. With this in mind, here’s what I believe about healthcare: we need caps on the prices of both life-dependent and life-saving medication and supplies, as well as limits on insurance premiums for people with prior conditions, chronic illnesses and conditions in low-income brackets. We need laws to prohibit insurance companies from denying these supplies to the insured. And we also need to ensure that this system works efficiently to prevent people from being denied life-saving healthcare because of government bureaucracy. I’ve had friends die waiting on approval for government-provided health benefits because our system couldn’t stamp their damn papers fast enough. For their sake, and the sake of every American dependent on our government for healthcare, we need to do better.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="706052044494209035" id="message-706052044494209035">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span>  How do you plan to address gun violence?
+<span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> What is your opinion on high insulin prices?
+<span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> What are your main agendas if elected?
+<span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span>  What can you do better or differently than the incumbent?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/201576253784850433/2db1c92358f2a0d8bbf9f66d3f9fb26f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Putbye1#8834" data-user-id="201576253784850433"  style="color: rgb(129, 134, 137)" >Mr. Apes</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 09:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="706065466015219753" id="message-706065466015219753">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> How does it feel to be a Jeffersonian hero?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/408295107285090304/ae08fcf41e129daedd40a9ec0d9c1ddc.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="d.a.barchipelago#9571" data-user-id="408295107285090304"  style="color: rgb(26, 188, 156)" >cg is corrupt (again (again))</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="706110003433701376" id="message-706110003433701376">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Ezra#4579">@Ezra</span> you have said suprisingly little in your last term. You have done nothing for those you represent. Apart from swearing in, &quot;Yea&quot;, &quot;Nay&quot; and &quot;Present&quot;:
+
+&quot;Yea on the motion&quot; - once
+&quot;Thank you&quot; - once
+&quot;Thank you, as for my vote&quot; - once
+&quot;There is no reason to have a federal minimum wage. It should be state jurisdiction. I second&quot;
+
+And this is it. Nothing else at all. Not to mention that you have not submitted a <em>single</em> bill either. Can you explain to your to constituents why you have failed them?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/408295107285090304/ae08fcf41e129daedd40a9ec0d9c1ddc.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="d.a.barchipelago#9571" data-user-id="408295107285090304"  style="color: rgb(26, 188, 156)" >cg is corrupt (again (again))</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="706165354308567111" id="message-706165354308567111">
+                <div class="chatlog__content">
+                    <div class="markdown">If elected, would you vote to reinstate the arguably incompetent Speaker Smith?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/692202852512170095/fec118fae7e48c66762903308a0c2f47.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Elliot#8366" data-user-id="692202852512170095" >Elliot</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="706192120674910228" id="message-706192120674910228">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe I am qualified for the position of JF-2 Rep. as I have the grit, determination, and pure confidence to fulfill my duties. With all due respect to my opponents, we need new leadership, and it is time to hand the torch down to a new set ideals that can bring parties together on common topics, but also fight and represent the people in an effective manner. As a Centrist, we have platform that can unite parties on key issues that people struggle with, and I believe I can uphold and dignify the position I am running for.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/692202852512170095/fec118fae7e48c66762903308a0c2f47.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Elliot#8366" data-user-id="692202852512170095" >Elliot</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="706194317890551868" id="message-706194317890551868">
+                <div class="chatlog__content">
+                    <div class="markdown">I would not reinstate Speaker Smith. He has failed to complete his duties as Speaker, for instance updating the Spreadsheet. As Speaker, there must be accountability for every leadership position, and the fact the Speaker has failed to do his job, is direct evidence and proof that he is not fit for reinstatement as Speaker of the House. It demoralized and diminishes the honor and privilege that is upheld upon that sacred position.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="minedab" title="minedab" src="https://cdn.discordapp.com/emojis/404769222720487424.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteYea" title="VoteYea" src="https://cdn.discordapp.com/emojis/406279850631102474.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="706203936167559290" id="message-706203936167559290">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> For myself, gun violence has always been an issue that I’ve wanted to address in a delicate way. On the one hand, our right to bear arms has always been an integral part of the Bill of Rights, which have been considered our most sacred rights endowed to us by the Constitution. While it is absolutely possible to address gun violence in a reasonable manner, I believe that we need to do so in a way that is consistent with the Constitution. To this end, I believe that background checks are a necessity for all firearms and that these background checks should be more rigorous for high-caliber rifles, semi- and fully automatic weapons, that gun owners should be required to register firearms at the district or State level rather than a Federal one, and that we need a registry with controls on the amount of ammunition allowed to individuals. While this may seem like a rather extensive amount of regulation for some of the more hardcore conservatives in this country, I think most of us can agree that regulating guns to a necessary and reasonable extent is something we have to do to maintain order and prosperity in America.
+
+To your second question: as I’ve said before, I myself am a type one diabetic. I have a very personal relationship with high insulin prices, and I can say without a doubt that it is something that <em>really</em> gets me fired up to do something about it. The fact that we can allow people to die because they can’t afford the medication that they need to live is a damn travesty when we live in the most economically prosperous and free country in the history of the modern world. We need to do something about that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="706206304129253376" id="message-706206304129253376">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> To your third question: I have plans to work with not only the members of my own party, but with the entirety of the House, to write and pass legislation to fix our healthcare system, to address climate change by setting reasonable regulations for air pollution by citizens and corporations, to address our economic development in the modern world which I believe has significantly fallen behind other first-world nations as of the last 30 years, and in a general sense, just try to leave the office better than I entered it. 
+
+And for your fourth question, I’d say just about everything.
+
+That was a bit of a joke, but honestly, let’s take a look at his track record: he has to be constantly reminded to vote in affairs in the House, he hasn’t authored a single piece of original legislation, he’s only co-sponsored two bills (which it’s dubious he even contributed to), and he’s barely discussed or debated anything in the House other than to make clear his opposition to a Federal minimum wage, which to seems practically dystopian. We need a Representative for the people of Jefferson that will bring their views to the table and address their concerns through appropriate legislation and action rather than be a pawn to be manipulated by their party to contribute to a conservative voting bloc in the House. I can tell you for a fact because I’ve done it before: during my previous terms as both a Senator and a Representative, I was an active member of both groups, contributing highly to committees in both, and not only discussing and debating legislation to improve it, but writing and co-authoring or sponsoring more legislation than I can remember. I can do everything better than my opponents because I <strong>have</strong> done a better job before. And I swear to you that I’ll do it again.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706207163026243604" id="message-706207163026243604">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Putbye1#8834">@Mr. Apes</span> I hate to disappoint, but I can’t say I’m familiar with an apparently heroic status. As far as I’m aware, all I’ve done is be a servant of the people in the course of my career. If the people of Jefferson would honor me so, I’ll humbly accept such praise, but all I ask is that I’m not glorified for simply behaving and performing as any representative of the American people should.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/690842077277323275/bd03c42c173e662d20e5949c25c2bc1d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ezra#4579" data-user-id="690842077277323275"  style="color: rgb(241, 196, 15)" >Ezra</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="706207432916861011" id="message-706207432916861011">
+                <div class="chatlog__content">
+                    <div class="markdown">Because of issues outside my control affecting both me and my family due to the pandemic, I will announce that I am dropping out of this race.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="706224171180359680" id="message-706224171180359680">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong><span class="mention" title="Ace#9566">@Cinna</span> has replaced Ezra as the Federalist Candidate</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="minedab" title="minedab" src="https://cdn.discordapp.com/emojis/404769222720487424.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="706224661897281596" id="message-706224661897281596">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Ace#9566">@Cinna</span> May you introduce yourself?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="706232816974823606" id="message-706232816974823606">
+                <div class="chatlog__content">
+                    <div class="markdown">(Haha, May. Because it’s May now. Funny joke.)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 09:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706241809189175348" id="message-706241809189175348">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello. I would like to start by thanking you all for your understanding of Ezra&#39;s situation. 
+While I am a fresh face in Jefferson politics, I am exactly what our great state needs in Congress. I am frightened by my opponents&#39; statements yesterday and this morning, and I wish to introduce a more transparent and actionable plan from a transparent and actionable candidate. 
+As extensive as Apex&#39;s electoral history is, his role and leadership in Classical Liberal, Republican, Democratic and Federalist parties begs the question who he will turn on next? Later in that same statement he claimed &quot;Third, I have an actually rather extensive agenda for what I’d like to accomplish during my term as Representative,&quot; attacking my predecessor while not explaining any of his &quot;extensive agenda.&quot; The plain fact is that Apex is a Lone Ranger who feels responsible to no one--not even the populous he serves.
+While I agree with Elliot that young blood is needed to revitalize Congress for the best interests of Jefferson, his policy of bringing &quot;parties together on common topics&quot; ignores the very real need for discussion over harder issues. A unity party will ONLY work if the two opposing ends stay exactly the same, are willing to compromise (which defeats the point of the party anyway), and have no sense of conscious. I am a man of conscious, and voting against it is neither safe nor right. 
+As I said, I am the transparent and actionable candidate. Here is my reasonable and actionable plan:
+1. Preserve, protect and defend the rights of the people to keep and bear arms that has been guaranteed by the Second Amendment. To do this, I will introduce a National Concealed Carry reciprocity law to allow citizens the freedom to travel while exercising their right.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706241812574240879" id="message-706241812574240879">
+                <div class="chatlog__content">
+                    <div class="markdown">2. Ensure Free and Fair elections. Election security is first and foremost in everyone&#39;s minds, and I want to put their minds at ease. I will write a bill to BAN ballot harvesting nationwide, so that there is direct chain of custody of absentee and mail-in ballots from the voter to the collector.
+3. Improve our coronavirus response and help prepare for the next time such a pandemic hits. It’s been over a month since Congress acted on this crisis. We need to introduce and pass legislation that will help American families who are suffering from the disease and from the economic crash it has caused. Many students are out of their meal plans and housing. 
+I hope you share in my love for this country; the Great State of Jefferson; and Transparent and Actionable government.
+Thank you,
+Cinna</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="706264804037492787" id="message-706264804037492787">
+                <div class="chatlog__content">
+                    <div class="markdown">Now I’d like to take a moment to respond to the questions from my fellow citizens. 
+<div class="quote">Will you defend the single tax on land value and resist the imposition of any other tax at the federal level?
+</div>Taxes are a Pandora’s box of government. The truth is once we open the doorway to more federal taxes, it becomes a Sisyphean task to keep them under control. For the good of Jefferson, for the good of its people, and for the good of this country I say (and ask you to say it with me): KEEP THE BOX CLOSED.
+This next question is from Caprese:
+<div class="quote">What makes you qualified to be representative?
+</div>To be frank, the Constitutional requirements qualify me just fine: No Person shall be a Representative who shall not have attained to the Age of twenty five Years, and been seven Years a Citizen of the United States, and who shall not, when elected, be an Inhabitant of that State in which he shall be chosen. On a more personal note, I am qualified by my passion and drive to serve the community.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 11:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="706266744548753488" id="message-706266744548753488">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">If elected, would you vote to reinstate the arguably incompetent Speaker Smith?
+</div>No. I strive for Transparent and Actionable, and Mr. Smith’s inactivity goes against those principles.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:15 AM</span>
+
+            <div class="chatlog__message " data-message-id="706282797844660254" id="message-706282797844660254">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> <span class="mention" title="Elliot#8366">@Elliot</span> <span class="mention" title="Ezra#4579">@Ezra</span> -
+To all candidates - suppose I’m the vote that decide this election. What sets each of you apart from the rest, in under 5 sentences?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="706285661736402984" id="message-706285661736402984">
+                <div class="chatlog__content">
+                    <div class="markdown">I will make a transparent and active representative, committed to stopping any new taxes. I do not waver in my beliefs. I vote for my constituents according to my conscience.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/692202852512170095/fec118fae7e48c66762903308a0c2f47.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Elliot#8366" data-user-id="692202852512170095" >Elliot</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="706285683488063528" id="message-706285683488063528">
+                <div class="chatlog__content">
+                    <div class="markdown">I have seen Jefferson and the country at its worst and best, and I understand hardship. I understand how it feels to worry about whether you will have a successful future, as I have experienced losses that can never be filled again. I have been tossed around all my life and felt that my grief must be hidden. The yelling in Congress hasn&#39;t stopped and won&#39;t stop with the same leadership now, many people will continue to feel the same way I used to experience. Jefferson can&#39;t afford poor leadership, and I bring a new approach to Congress that can only help strengthen and establish a bipartisan effort to help this state and the country as a whole.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="706286487825809447" id="message-706286487825809447">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="frostydev#6964">@frostydev</span> Well, plainly put: I refuse to blindly follow party dictates or commands. I have an unwavering commitment to fighting for the quality of life and the freedom of the American people. I have experience that neither of my opponents can even hold a candle to. I will write legislation and work with other lawmakers to craft, discuss, and enact legislation that will truly make America a better place. And I <em>will</em> leave my office better than I found it. If you were the deciding vote, I would implore you to think about your decision, and whether you’d like to vote for someone who knows what they’re doing, a last-minute Federalist replacement who just echoes party rhetoric, or a dubious Centrist without commitment to ideals.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="706286686103011388" id="message-706286686103011388">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="706286752478003241" id="message-706286752478003241">
+                <div class="chatlog__content">
+                    <div class="markdown">That&#39;s 6 sentences, Apex. Can you really say you listen to your constituents while not following directions?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="706286912716931156" id="message-706286912716931156">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, no. The last sentence was simply him explaining the other candidates</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706286985676980315" id="message-706286985676980315">
+                <div class="chatlog__content">
+                    <div class="markdown">He had five sentences of him explaining why he’s different</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="706287110805782570" id="message-706287110805782570">
+                <div class="chatlog__content">
+                    <div class="markdown">I stand by my statements</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="706287165893771354" id="message-706287165893771354">
+                <div class="chatlog__content">
+                    <div class="markdown">I appreciate your understanding, Dan. Thank you.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="706287292242722816" id="message-706287292242722816">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Ace#9566">@Cinna</span> <span class="mention" title="Elliot#8366">@Elliot</span> thanks to both of you as well</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="706287330083995734" id="message-706287330083995734">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank YOU</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/692202852512170095/fec118fae7e48c66762903308a0c2f47.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Elliot#8366" data-user-id="692202852512170095" >Elliot</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:35 AM</span>
+
+            <div class="chatlog__message " data-message-id="706287804925345943" id="message-706287804925345943">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for your question.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="706289748041531444" id="message-706289748041531444">
+                <div class="chatlog__content">
+                    <div class="markdown">No problem</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706289802676535319" id="message-706289802676535319">
+                <div class="chatlog__content">
+                    <div class="markdown">Expect more to come, as they formulate in my head</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706289825619247207" id="message-706289825619247207">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>laughs</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😐" title="😐" src="https://twemoji.maxcdn.com/2/72x72/1f610.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 12:43 AM</span>
+
+            <div class="chatlog__message " data-message-id="706289858641133658" id="message-706289858641133658">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>grins</em></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706289929612951693" id="message-706289929612951693">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>but like not an evil grin</em></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706289959895826442" id="message-706289959895826442">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>no, not a creepy one either</em></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706290042120830996" id="message-706290042120830996">
+                <div class="chatlog__content">
+                    <div class="markdown"><em>just a normal, everyday grin. nothing to see here</em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 01:24 AM</span>
+
+            <div class="chatlog__message " data-message-id="706300192630243369" id="message-706300192630243369">
+                <div class="chatlog__content">
+                    <div class="markdown">Please stop</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307256739416506368/58e5ad628413a4f2ce73eb6b2e0b1965.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Samuel Adams &#127866;#5531" data-user-id="307256739416506368"  style="color: rgb(0, 149, 255)" >Samuel Adams &#127866;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:12 AM</span>
+
+            <div class="chatlog__message " data-message-id="706342367845679145" id="message-706342367845679145">
+                <div class="chatlog__content">
+                    <div class="markdown">What do you think about gun violence in our country? How would u stop or even slow it down?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="706345812132626464" id="message-706345812132626464">
+                <div class="chatlog__content">
+                    <div class="markdown">It saddens me to hear about gun violence—I abhor murder using any weapon. But murder is not the intent of the many millions of law-abiding gun owners in Jefferson. It has always been a delicate balance of not throwing out the baby (firearm ownership rights granted by the Constitution) out with the bathwater (preventing criminals and felons from obtaining firearms). My opponent’s scheme of extensive and comprehensive rights violations in the name of a “reasonable” plan does not sit well with me. My solution is better. This: <a href="https://www.atf.gov/firearms/docs/4473-part-1-firearms-transaction-record-over-counter-atf-form-53009/download">https://www.atf.gov/firearms/docs/4473-part-1-firearms-transaction-record-over-counter-atf-form-53009/download</a> is a BATFE form 4473, which is the background check form which MUST be filled out to purchase a firearm from an FFL. I ask you to take note of the big bloc of text at the top: 
+<div class="quote">WARNING: You may not receive a firearm if prohibited by Federal or State law. The
+information you provide will be used to determine whether you are prohibited from 
+receiving a firearm. Certain violations of the Gun Control Act, 18 U.S.C. 921 et. seq., are 
+punishable by up to 10 years imprisonment and/or up to a $250,000 fine.
+</div>Attempting to buy a firearm when you are not allowed to is a crime. We will direct Federal Law Enforcement to investigate every background check denial. By prosecuting failed buyers, we will demonstrably decrease the number of firearms attempted to be purchased by felons and other prohibited persons. Coupled with the extremely rigid strawman purchasing laws already in place will give us a choke point to reduce the number of firearms in the hands of criminals.<span class="chatlog__edited-timestamp" title="03-May-20 04:34 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="706352457499934810" id="message-706352457499934810">
+                <div class="chatlog__content">
+                    <div class="markdown">A great question was posed earlier that I would like to respond to. Namely, the question:
+<div class="quote">What can you do better or differently than the incumbent?
+</div>It’s a good and fair question—the relatively low bar set by my predecessor should be blown away by whoever wins this seat. Most importantly is activity. It is negligent of an elected official to abuse their office to slack off. However, similarly abusive is Apex’s promises to bring Jefferson’s views to the table without saying what he thinks those views are. His extremist rights-infringing views on responsible firearm ownership do not define what Jefferson wants! Let’s see his track record which he touts so highly! He endorsed IndyPrez, who wanted to take away nearly all private property! He endorsed Indy TWICE! Above that, he has a history of dishonesty, even in this very debate! In his first paragraph, he said his record of service included “party leadership positions in several parties, such as the Federalists, Republicans, and Democrats.” Clearly, he forgot that the master spreadsheet records the names of all party leadership, and his name is surprisingly ABSENT from the Federalist row!
+I am here to bring Transparency and action to this office. I am different from the incumbent in that I do not accept lies, obscurity or inaction!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/201576253784850433/2db1c92358f2a0d8bbf9f66d3f9fb26f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Putbye1#8834" data-user-id="201576253784850433"  style="color: rgb(129, 134, 137)" >Mr. Apes</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="706361901478838344" id="message-706361901478838344">
+                <div class="chatlog__content">
+                    <div class="markdown">When they were still prominent, how did you react (as a private citizen or publicly)  to the governance and electoral successes of the Communists, including those associated with ex-President Poke?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="706364175017836655" id="message-706364175017836655">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for another thought-provoking question!
+Communism is in direct opposition to my values and conscious, and in opposition to the values of this State. I said earlier in this debate that to go against conscious is neither safe nor right. Attached is a screenshot from the state electoral history of Jefferson to highlight that we are absolutely against communism and authoritarian extremism.  
+I no doubt expect those closest to President Poke, such as Apex, to be either disassociating or feigning ignorance of their actions. THIS IS WHY GOVERNMENT TRANSPARENCY IS CRUCIAL! The ignorance of the populous is bliss to those in power while we are tossed around without care. This stops now. Voting for the people and voting for conscious, I will defend individual liberty and make government transparent!</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706364199269302275" id="message-706364199269302275">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/705581129436233778/706364199387004949/unknown.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/705581129436233778/706364199387004949/unknown.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706364522587357224" id="message-706364522587357224">
+                <div class="chatlog__content">
+                    <div class="markdown">unfortunately the spreadsheet was deprecated, but the data still cements and points to the will of the people during that era!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/268188337032921088/ca31648a1592e17c7e486e0b089d9dcf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Caprese#2439" data-user-id="268188337032921088"  style="color: rgb(241, 196, 15)" >the salad</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 05:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="706369040653877278" id="message-706369040653877278">
+                <div class="chatlog__content">
+                    <div class="markdown">What should we do to address climate change, and how can we work to ensure that Jefferson is prepared to handle the damage it could cause?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706369088896761866" id="message-706369088896761866">
+                <div class="chatlog__content">
+                    <div class="markdown">What other environmental positives would you enact in federal office to protect the natural wonders of Jefferson?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:14 AM</span>
+
+            <div class="chatlog__message " data-message-id="706373174937255936" id="message-706373174937255936">
+                <div class="chatlog__content">
+                    <div class="markdown">A well-taught maxim in medical schools is this: An ounce of prevention is worth a pound of cure. The preventative steps we take through strategic environmental regulations is vastly preferable to the incomprehensible impact of climate change. The first preventative measure we need to consider is the lessening of our dependency on fossil fuels in favor of carbon-neutral energy production. I am very pleased to remind the populous of the tremendous steps we have taken in this regard—the Nuclear Energy Expansion Act and Advancing Nuclear Energy Act—and I am sure I speak for the entire state when I say we look forward to seeing the fruits of our labors. 
+
+Jefferson is home to many of our wonderful National Parks. The American National park system is the largest in the world, and I intend to keep it that way. To that effect we will consider measures to keep it beautiful and enjoyable for everyone: these measures include expanding student passes to the parks for reduced rates to increase volume, allowing each park to create a memorandum of understanding with local and state law enforcement agencies for them to aid the Park Rangers when necessary, and adding funding to renew infrastructure for visitors and staff.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:28 AM</span>
+
+            <div class="chatlog__message " data-message-id="706376681773989910" id="message-706376681773989910">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span>  what is your opinion on Hydropower?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/222060915984433152/ba0e91d4ec1de8c16353d8d554d53745.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="System#4325" data-user-id="222060915984433152"  style="color: rgb(129, 134, 137)" >Iced out Appa</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="706376764338995290" id="message-706376764338995290">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Ace#9566">@Cinna</span> are you saying depending on who you are close too should be a factor in your views and your electability? And for your information Bakk was a communist.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706377117851713607" id="message-706377117851713607">
+                <div class="chatlog__content">
+                    <div class="markdown">And are you insinuating anyone who were friends with communists shouldn’t be elected ? Those are the vibes I’m picking up from your statement</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="706383348301561867" id="message-706383348301561867">
+                <div class="chatlog__content">
+                    <div class="markdown">The saying goes “you know someone by the company they keep.” I firmly believe in friendship and comradery, and the power of even polar opposites working together towards a common goal. I apologize for the wrongful perception I presented about Apex and his associations. Being friends with communists should not affect electability. I fully plan on cross-party cooperation in the House towards the common goal of advancing the government in the best way we can for the country and Jefferson. While the parties may not have the same vision for this country, we all are patriots united by the population’s mandate (given through the elections) to serve them to the best of our ability.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 08:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="706409480908439562" id="message-706409480908439562">
+                <div class="chatlog__content">
+                    <div class="markdown">Before I continue on with these debate questions, I find it absolutely necessary to address my opponent’s outrageous and incredible <strong>lies</strong>. I never held any sympathies for the Poke administration. In fact, if he were to dig up the proper records in the Supreme Court, we would find not just one, but two separate cases that <em>I myself took part in</em> against either Poke, or the Communist party of that era. Let’s review them, shall we?
+Reviewing Case 18-05, in re: <em>Poke v. United States</em>, I served as defense attorney for the United States against Poke’s incredulous double jeopardy case, delivering a defense so compelling that it caused Poke to withdraw the case entirely.
+Later on, in 18-08, I took it upon myself to take the fight to the Communists by prosecuting the North state, at the time virtually a communist sub-dictatorship of America, by prosecuting them and utilizing personal business assets as a proxy to justify such a case.
+These two cases fail to account for my long-outspoken criticism of the American Communist Party as a member of each political party I have listed, to which I can produce witnesses from each party to testify to my leadership within each one. I can say without shadow of a doubt that I have always been a crusader against communist takeover, and I will be <em>damned</em> before I let this greenhorn charlatan tarnish my legacy as a defender of the American way with outright lies and deceit. Is this really the example that you want to vote for? A politician who will feed you lines given by his superiors and <em>lie to your face from upon a stage</em>? Who’s <strong>really</strong> being dishonest here?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 08:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="706413723501461545" id="message-706413723501461545">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Putbye1#8834">@Mr. Apes</span> I would reference you to my earlier statements about how I addressed the Communist Party of America. I can assure you, I am absolutely no friend to communism, and I would gladly take up the banner against it in a heartbeat if the necessity arose.
+<span class="mention" title="Caprese#2439">@the salad</span> In order to address climate change, one of the biggest issues that has already been mentioned is the clean energy crisis that must be taken extremely seriously. But another big part of the problem would have to be the impact of animal agriculture on our climate, being not only the second-leading source of carbon emissions behind fossil fuel consumption, but also a leading cause of deforestation, water and air pollution, and large-scale biodiversity loss. In order to combat such issues, I firmly believe we need to implement a system that will reduce the excessive amount of damage caused to our environment by unchecked animal agriculture. This, in conjunction with action already taken to modernize our energy system and make it cleaner and renewable-based, should make a very significant impact on our carbon footprint, and hopefully help our world breathe a little easier.
+<span class="mention" title="April#7342">@&#39;^April^&#39;</span> As far as hydropower is concerned, I believe it’s a worthwhile investment in some cases, though I would argue that too much reliance on hydropower can result in ecological damage through the gradual destruction of aquatic habitats in rivers and wetland areas. I’ve come to agree with another colleague of mine, <span class="mention" title="Frank Underwood#1502">@Frank Underwood</span>, on the benefits of the expansion of nuclear energy: it is safe, powerful, reliable, and cost-efficient. It can be built in areas otherwise unsuitable for the development of other projects due to its rather independent fuel source, requiring very little to sustain a reaction. In addition to this, I would also highly suggest the application of research into thorium reactors: a little-explored but potentially even better source of energy for us all.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/692202852512170095/fec118fae7e48c66762903308a0c2f47.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Elliot#8366" data-user-id="692202852512170095" >Elliot</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 03:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="706512888914903052" id="message-706512888914903052">
+                <div class="chatlog__content">
+                    <div class="markdown">Although nuclear energy is a step towards cleaner energy, because it can be extremely dangerous I believe in not building any more nuclear power plants. However, nuclear plants we currently have should be kept running and stable. Cars are a major factor to greenhouse gas emissions. Increasing the amount of public transportation options across the United States would help this. Allowing many people to travel to and from places in a single vehicle, like a bus or train would definitely help slow down climate change. To go green, companies and businesses should switch to renewable energy sources, like solar energy and wind energy. Down the line, companies that don’t commit to 50% or more on renewable energy should receive a carbon tax.<span class="chatlog__edited-timestamp" title="03-May-20 03:30 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706513804179013663" id="message-706513804179013663">
+                <div class="chatlog__content">
+                    <div class="markdown">Bearing arms is a constitutional right, as per the Second Amendment. However, there needs to be some sort of checks in place to prevent violence. There must be common sense gun legislation; after all, it’s common sense. Closing the gun show loophole and not allowing certain private sellers is going to prevent deaths caused by guns.
+Universal background checks on every person attempting to purchase a firearm is necessary. If someone has a history of mental illness, or has been found guilty of violent crimes shouldn’t be sold automatic weaponry.<span class="chatlog__edited-timestamp" title="03-May-20 03:35 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706513986455208026" id="message-706513986455208026">
+                <div class="chatlog__content">
+                    <div class="markdown">These are my reponses to questions I previously saw but didn&#39;t answer...<span class="chatlog__edited-timestamp" title="03-May-20 03:34 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(0, 149, 255)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 03:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="706518234026868757" id="message-706518234026868757">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Ace#9566">@Cinna</span>  thoughts on Nuclear energy</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/224451957501329408/6046abc8e8b79eb73f75a2eb884b6fa6.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Slavette#0420" data-user-id="224451957501329408"  style="color: rgb(0, 149, 255)" >Traitor of the right wing</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="706523802036600892" id="message-706523802036600892">
+                <div class="chatlog__content">
+                    <div class="markdown">Also <span class="mention" title="Ace#9566">@Cinna</span>  thoughts on Social security</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 08:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="706590143091572747" id="message-706590143091572747">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> Stance on Nuclear Energy and Stance on Social Security?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706591544513134603" id="message-706591544513134603">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> What is your stance on Abortion?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="706602181024808971" id="message-706602181024808971">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I’m glad that you asked. To address each question in turn:
+I believe nuclear energy is a great investment for our future. It is an energy source that, when compared to many other sources of energy, simply outpaces every other energy source in almost every way. In terms of cost, while a nuclear power plant can carry a seemingly hefty price tag,  bear in mind that in terms of energy output and cost-per-unit of energy, a nuclear power plant will undoubtedly pay for itself within its service lifetime, and then some, often producing much more energy than other forms of clean energy sources when the construction costs are compared. While a nuclear power plant does produce nuclear waste, this waste product is significantly easier to deal with when compared to fossil fuels, and the construction of a nuclear power plant is not restricted by terrain, geographical placement, and wind patterns in the same way that cleaner sources of energy are limited, meaning that we can build nuclear power plants almost anywhere with minimal concern for any downsides— though it is important to take care of them properly to ensure our safety.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="706602590514970719" id="message-706602590514970719">
+                <div class="chatlog__content">
+                    <div class="markdown">What is your opinion on fracking and natural gas production? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="706603778668888067" id="message-706603778668888067">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> If it’s all right with you, I’ll be addressing your questions in the order they were asked, just for clarity.
+
+As far as social security is concerned, I believe that it is fundamentally a good idea to have security nets in place for our citizens. However, as with almost anything handled by the government, I’m sure there’s room for improvement so that we can make the system more efficient so it will work as best as possible for our citizens. I think it would be a good idea to work with other lawmakers to pass legislation improving our social security system, but I will admit that I don’t have immediate plans to address it at this time.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="706607390010769409" id="message-706607390010769409">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> Now, as for the big A-word: abortion. I refuse to back down from this topic and I will make my view <em>very</em> clear about this topic: <strong>I will defend a woman’s right to choose til my dying breath.</strong> I wouldn’t change my opinion if you held a gun to my head and demanded it. A woman should have every right to make a decision about a pregnancy that could impact her life in ways that are irreversible. We can all agree that children are absolutely a blessing, but oftentimes are a blessing that is unbearable for many when we take into account career aspirations, responsibilities, personal issues, and and any other common life situations that young women may deal with. That is why I believe that women should absolutely be allowed to terminate a pregnancy up until the 20th week with no extenuating circumstances required or questions asked, and any time after the 20th week for health reasons, rape cases, or otherwise extraordinary circumstances. I am sick and tired of conservatives trying to take away bodily autonomy from women by forcing their so-called “pro-life” world views on women. It is disgraceful to force a woman to carry an unwanted child to term. Where’s the consideration for her? What if she wants to become a doctor, or a lawyer, or some other hefty aspiration? You are placing a massive life responsibility on a woman by giving her no recourse in such a situation and essentially telling her that she cannot make the decision to reject an unwanted child, not only destroying the hopes and dreams of the mother in course, but also setting that child up for a life of hardship and struggle should their mother not fully embrace such a responsibility.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="706610077313794099" id="message-706610077313794099">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> As for fracking and natural gas production: relating back to my stance on clean energy, I’d prefer if we could start researching more effective alternatives for our current natural gas extraction methods, as fracking is not only known to present health risks to populations in areas near fracking wells, but also can cause unforeseen ecological damage and potentially even geological destabilization. I also believe that creating legislation that encourages the reduction of household consumption of natural gas where possible, such as incentivizing people to shift to electric ranges, heaters, and other household appliances that don’t utilize natural gas, would be an effective alternative to reducing our natural gas consumption and, hopefully, reduce the necessity for fracking.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="706610097438195752" id="message-706610097438195752">
+                <div class="chatlog__content">
+                    <div class="markdown">What is your opinion on the death penalty? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706610300522201129" id="message-706610300522201129">
+                <div class="chatlog__content">
+                    <div class="markdown">How can we bring back manufacturing jobs? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706610370332196875" id="message-706610370332196875">
+                <div class="chatlog__content">
+                    <div class="markdown">How can we create more jobs? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706611424385958031" id="message-706611424385958031">
+                <div class="chatlog__content">
+                    <div class="markdown">What will you do to increase production of livesaving drugs? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706611507231851048" id="message-706611507231851048">
+                <div class="chatlog__content">
+                    <div class="markdown">How can we create jobs in the renewable energy sector? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="706611724580552745" id="message-706611724580552745">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I believe that the death penalty is an egregious overreach of the state. Since in principle the government is operated by the people, for the people, the death penalty is merely a step away from a mob lynching. The state should not have the authority to force such a permanent and irreversible punishment on a criminal, even for the most egregious of crimes. With this in mind, it should be a necessity to reform our prison systems in order to accommodate for a higher volume of prisoners, as well as consider the possibility of rehabilitating some of them.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706613466479329391" id="message-706613466479329391">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> In order to bring back manufacturing jobs, I believe that one of the first things that we must do is incentivize companies to come back to America. While we enjoy one of the greatest domains for employee rights in the world, this apparent blessing is also, unfortunately, a silent curse. The simple fact of the matter is, how can we entice multi-billion dollar valued companies to bring manufacturing jobs back to America, and keep our presently-developed system of labor protections, when the potential risk these companies see is too great? Well, in order to create such an incentive, it is necessary to entice these companies with reasonable policies to benefit them and suggest to them that America can indeed be yet again a massively lucrative source of manufacturing.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="706615453119676568" id="message-706615453119676568">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> As for creating more jobs in general, while I believe we need to incentivize companies to bring back raw manufacturing jobs to America, the necessity for service-based jobs still exists and will always exist in any nation. While I think we can lure many companies back to America and make it appealing to them to set up shop here, the only way we can do so is by working with them and creating a positive economic atmosphere for them to do their business here, not by driving them away with high taxes, excessive regulation, and other factors that will only lead them to go elsewhere.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="706620648457502720" id="message-706620648457502720">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> In order to increase the production of lifesaving drugs, I believe that, again, one of the best things we can do is incentivize their production. People will be more inclined to do something when pulled towards doing it by a reward, rather than pushed by the threat of punishment and reprimand. If we can suggest to companies through incentives that they can make their profits by production of these life-saving drugs and medications, while at the same time creating a reasonable limit to the price at which they can be sold, then we can ensure that those suffering from life-threatening illnesses and diseases can get the treatments that they need while companies will still see it as a worthwhile endeavor to produce them.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706621850758807554" id="message-706621850758807554">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> In order to create jobs in the renewable energy sector, of course we first need to have the facilities to accommodate them and provide them with jobs. Maintenance staff, plant operators, supervisors, and more necessary employees for energy works can only be employed when there’s a need for them, right? I believe the first and most important step to creating more jobs, then, is to construct the necessary facilities needed to employ them. As an example, my suggestion for the creation of more nuclear power plants should hypothetically create thousands of new jobs for people to serve in and make a living, as well as provide for our nation in the midst of an approaching energy crisis.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="706622047362744471" id="message-706622047362744471">
+                <div class="chatlog__content">
+                    <div class="markdown">What can we do to prevent school shootings? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> 
+
+What is your stance on Immigration? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> 
+
+Do you believe in more rehabilitive justice or punitive justice? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> 
+
+What do you believe we can do to slow the frequency of natural disaster?
+<span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span>
+
+Opinion on CATGIRLs?
+<span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="706622280842870807" id="message-706622280842870807">
+                <div class="chatlog__content">
+                    <div class="markdown">The ultimate energy goal for our society should be 100% clean, renewable energy generation. Unfortunately, technology does not permit us to leap right to perfectly carbon-neutral sources, and though alternatives such as wide-scale hydroelectric generation are becoming more and more viable, the fact of the matter is that we cannot attain that goal today. Does this mean that we should fall back on filthy coal and oil for our energy needs? Certainly not! Nuclear energy is a safe and cost-effective method of energy production that our country can encourage and use TODAY. I love the tremendous progress past congresses have had in pushing through two very important laws to facilitate and foster the use of Nuclear energy. I know there are some fears around the use of Nuclear reactors for energy—let me address them and calm them: radiation is NOT nuclear death cooties, and the radiation produced in areas surrounding nuclear plants is negligible to anyone except physicists. American scientists and engineers make sure that our country is safe. On a per-kilawatt hour basis, Coal and Oil are orders of magnitude more deadly to produce and upkeep.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="706627211247222795" id="message-706627211247222795">
+                <div class="chatlog__content">
+                    <div class="markdown">Social security is a very well-meant program: it should be our societal duty to take care for the widows, orphans, and those who can’t provide for themselves. The inner workings of social security, however, are too obfuscative for the people to understand. When the tax dollars are put into the system, where does it get invested? Is the system widely known and understood? You should be able to understand the government and what it’s doing. My office will publish a comprehensive guide to social security and WHAT the tax dollars do, from collection to disbursement. Bringing transparency to government is key!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="706628857935167519" id="message-706628857935167519">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> Preventing school shootings is a rather complex and tricky subject. There are oftentimes a host of different factors that play into why school shootings happen, such as radical ideological influence, unresolved trauma, sometimes even personal vendettas. But I think the most consistent thing between all school shootings is a need for mental help. If we can get to troubled kids and provide the help that they need before such tragedies happen, then I believe a majority of these cases can be prevented. To this end, I would support measures to extend counseling services in schools to accommodate school students seeking mental help. Besides this, I believe law enforcement should be empowered to investigate reports of online activity related to such events, as in the past a significant percentage of school shooting events were preceded by posts on social media that could have allowed law enforcement to predict and prevent when such events were likely to occur.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="706630789432868908" id="message-706630789432868908">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I believe immigration in general is a benefit to America as a whole. On the topic of illegal immigration, I don’t support it and I believe we shouldn’t support programs that outright benefit illegal immigrants. But there is a clear need for improvement to our system given the massive influx of immigrants, whether legal or illegal, to our country. I think what needs to happen is that we should improve our immigration system to streamline the process and make it easier for more immigrants to enter the country legally, so that illegal immigrants don’t have to be a problem in the first place. We should also modify or even abolish groups such as I.C.E. that routinely destroy lives, families, and dreams in the name of the law, and make it easier for currently illegal immigrants to obtain citizenship and become legal residents of this country.<span class="chatlog__edited-timestamp" title="03-May-20 11:19 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706632357980930058" id="message-706632357980930058">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> My honest opinion is that we need to focus more on rehabilitating criminals and providing them with the ability to get their lives back on track. On a personal note, my very own parents happen to be felons, and have struggled since before I was born to get back to a place that they once were. It’s unreasonably difficult to find jobs, get a place to live, socialize, and even be a normal human being just because of a prior conviction. We need to help criminals to find a new place in society after serving their time, and make sure that they don’t feel tempted to just fall back into the same lifestyle again, lest the vicious cycle be doomed to repeat itself.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706633335606345829" id="message-706633335606345829">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> While natural disasters are a part of the world we live in, I believe not only their frequency, but also their intensity, can be reduced with the proper addressing of climate change. Besides this, we should also invest in predictive forecasting technology in order to be better prepared for the possibility of intense storms, hurricanes, and other destructive weather events. We shouldn’t just focus on slowing the frequency of natural disasters; we also need to focus on measures to save lives in the inevitable event that they do happen.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706634317983383623" id="message-706634317983383623">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> As for my opinion on CATGIRLs, while I love sci-fi as well as anime, I morally cannot condone the real-life realization of such extensive genetic modification and manipulation. It is unethical, inhumane, and overall not an avenue that we should subject ourselves to the moral complications of pursuing. I believe genetic modification can be a force for progress and improvement, to do it merely for cosmetic applications and enjoyment or entertainment is wrong.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706634344453898280" id="message-706634344453898280">
+                <div class="chatlog__content">
+                    <div class="markdown">Opinions on the current speed of medical drug approval? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span><span class="chatlog__edited-timestamp" title="03-May-20 11:32 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="706635461887787018" id="message-706635461887787018">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I think the FDA needs to be changed to allow new drugs to be tested and approved faster. The current speed at which life-improving drugs and treatments are currently approved is appalling, and we could do so much better to allow people access to these treatments at a much faster pace in order to increase their quality of life. While it is true that some drugs and treatments have risks associated with their use, people should have the sense to realize the risks associated with the usage of a brand new or even experimental drug or treatment and make an informed decision accordingly.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="706635554292498452" id="message-706635554292498452">
+                <div class="chatlog__content">
+                    <div class="markdown">What should we do in Israel to help deal with the conflict between the Israelis and the Palestinians? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/340225991727120384/af2a376e593a0dce3d16379191ff4d67.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Epsilon966#7849" data-user-id="340225991727120384"  style="color: rgb(129, 134, 137)" >Epsilon966</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="706637843874971648" id="message-706637843874971648">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span> <span class="mention" title="Ace#9566">@Cinna</span> What is your opinion on the US&#39;s withdrawal from NATO? What is your opinion on the United Nations?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="706637958631129130" id="message-706637958631129130">
+                <div class="chatlog__content">
+                    <div class="markdown">What’s your opinion on the anti vaccine movement that’s really sprouted in the last 5-10 years? <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="706638504989294595" id="message-706638504989294595">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> My opinion of the Israeli-Palestinian conflict, and in a broader sense the tensions in the Middle East as a whole, is a rather controversial one. Simply put: I don’t believe America <em>should</em> intervene in the first place. Whether or not Israel is a valid state and if it deserves to sit the land in which it occupies is, in my opinion, a conflict that is far removed from American affairs and doesn’t hold any relevance to the problems that America faces today. Let’s get ourselves and our affairs sorted out before we go off into the world trying to sort out other countries’s complex socio-political problems.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="706639169832747023" id="message-706639169832747023">
+                <div class="chatlog__content">
+                    <div class="markdown">In response to Epsilon’s question concerning NATO and the United Nations: Leaving a gathering of friends does not diminish the friendship. America still has an amazing track record of international trade, cooperation and defense. Pulling out of NATO does not diminish our moral obligation to aid our allies, but it allows us to do so on OUR terms. As for the United Nations, It is a brilliant organization that has a long and steady history of brokering international relations and cooperation. I passionately support all of the Sustainable Development Goals, and want to continue providing assistance to crucial problems in our world today such as child hunger and gender equality.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="706640461699481602" id="message-706640461699481602">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Epsilon966#7849">@Epsilon966</span> I can’t say that I approve or disapprove too terribly much about the US’s withdrawal from NATO. While in the past, NATO has typically been an organization in opposition to the spread of communism lead primarily by the United States, lately it would seem that it’s pragmatic purpose has become facilitating peaceful cooperation and interaction in the thirty-odd years since the fall of the Soviet Union. We remain allies with, and retain close ties to, the countries we were aligned with in such a pact, and should we choose to rejoin such an organization or remain separate from it does not change our stances with regards to who we already maintain close ties to.
+
+As for your question about the United Nations, while the organization has been a force for good in many aspects, I believe that it has some underlying issues and concerns that must be addressed. To name one of those issues, the history of UN Peacekeepers committing human rights violations in areas where they have been involved. Besides this, while the UN facilities peaceful discourse between the nations of the world and I believe is worth keeping around, it needs changes in order to be more effective.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706640857268224050" id="message-706640857268224050">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> I wholeheartedly disapprove of the anti-vaccination movement, but in the end, the choice on what to believe belongs to the people who maintain such beliefs. In the end, we can’t force them to take a vaccine against their will, but we can certainly restrict what they do in public to prevent them from spreading potentially dangerous and harmful diseases</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="706640950478241823" id="message-706640950478241823">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you have a quick closing statement? We have 2 minutes left <span class="mention" title="ApexTheBirbman#5082">@H. SPT. Апекс Д. Бырдман</span><span class="chatlog__edited-timestamp" title="03-May-20 11:59 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/234146183273119745/c154496d7b9788246b5b24f4cda38829.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Ace#9566" data-user-id="234146183273119745"  style="color: rgb(129, 134, 137)" >Cinna</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="706641046721003590" id="message-706641046721003590">
+                <div class="chatlog__content">
+                    <div class="markdown">To close, I would like to summarize and double down on what I have already stated and believe.
+Above all, Transparency and Action. Beurocratic obscurity has NO place in ANY government that is “Of the People, By the People, and For the People.” Keeping government transparent and the populous informed ensures a government is working for YOUR best interests, as you elected them to. 
+I am glad to be able to share the stage with an enthusiastic yet missing Elliot as well as Apex—who still has no answer to the empirical proof that he was NEVER a Federalist leader, and since then has not given any more claims to be the experienced one, rather falling back on the spoon-fed questions all evening!
+Unlike my fellow candidates, I am plain and forward with my views. CLOSE THE BOX on new taxes! CLOSE THE BOX against ballot harvesting and voter fraud! MAKE GOVERNMENT WORK FOR THE PEOPLE AGAIN! Save the Earth by protecting and preserving our great National Parks and encouraging the move AWAY from wretched coal and oil to efficient and SAFE nuclear power! We need to serve our people through a second comprehensive Coronavirus Stimulus package to mitigate the disaster and provide a second way to defend ourselves against any other global pandemic. 
+Vote for Cinna to keep government Transparent and force it to take action! Together we will make sure Pandora’s box of new taxes STAYS CLOSED and our elections are SECURE!
+Thank you, citizens of Jefferson, for asking wonderful questions and supporting the transparent and actionable candidate, Cinna for the United States House of Representatives, district JF-2!
+ May God bless you all, God bless Jefferson, God bless these United States of America.
+Good night.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/287496540262760448/10c48bba9bb6add05b9d9b1e34658717.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ApexTheBirbman#5082" data-user-id="287496540262760448"  style="color: rgb(111, 203, 242)" >H. SPT. Апекс Д. Бырдман</span>
+
+
+        <span class="chatlog__timestamp">04-May-20 12:06 AM</span>
+
+            <div class="chatlog__message " data-message-id="706642801810604042" id="message-706642801810604042">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> While the outcome of this election is far from certain, all I wish to say is that I hope whoever the people decide upon will do the best job that they can and fulfill the office to the best of their ability. While I don’t appreciate some of the blatant falsehoods pinned upon my character by my opponents, I can understand the passion and intensity behind their statements, showing a desire to serve the people that, in a funny way, reminds me of my own first campaign. Should the people of Jefferson choose to honor me with the opportunity to serve them as Representative, I swear that I will do the best that I can, as I have in the past, to bring to the table their views, their wishes, and their voice. JF-2, make the decision that YOU believe will benefit you. Vote with your heart, your conscience, and most of all, your intelligence. Have a good one, Jefferson!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/367456250323140610/b78f946d47b3869f94cc1b079aa3afdf.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Justin (DF)#4258" data-user-id="367456250323140610"  style="color: rgb(238, 181, 124)" >Justin (DF)</span>
+
+
+        <span class="chatlog__timestamp">04-May-20 12:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="706643027430735962" id="message-706643027430735962">
+                <div class="chatlog__content">
+                    <div class="markdown">(Apex debate is closed buddy)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 106 message(s)</div>
+</div>
+
+</body>
+</html>

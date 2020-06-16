@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - dixie-governor-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">State Elections Channels / dixie-governor-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-May-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="718600375543791707" id="message-718600375543791707">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>June State Election</strong>
+
+The Candidates are: 
+
+<span class="mention" title="Sandoval#9670">@sandoval</span>  (L) 
+<span class="mention" title="Trash#3738">@teras h ffr od</span> (S)<span class="chatlog__edited-timestamp" title="06-Jun-20 12:14 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 01:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="718629795243491399" id="message-718629795243491399">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you to everyone who is watching this debate and eager to ask us questions. Looking forward to some healthy discourse!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 02:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="718631018374103077" id="message-718631018374103077">
+                <div class="chatlog__content">
+                    <div class="markdown"><img class="emoji emoji--large" alt="yes" title="yes" src="https://cdn.discordapp.com/emojis/717927092209319956.png"></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/688482130702893084/f453906a38fb21b5917d7757c66bec31.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Poliman#7886" data-user-id="688482130702893084"  style="color: rgb(129, 134, 137)" >Poliman</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 02:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="718631075303260191" id="message-718631075303260191">
+                <div class="chatlog__content">
+                    <div class="markdown">If the abortion ban was repealed and the Assembly passed an attempt to reinstate it, would you veto?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 02:13 AM</span>
+
+            <div class="chatlog__message " data-message-id="718633628824895519" id="message-718633628824895519">
+                <div class="chatlog__content">
+                    <div class="markdown">Absolutely not. Everyone knows my views on abortion. I will fight tooth and nail to make sure the Right to Life Amendment will never be repealed, and if it does I will fight tooth and nail to get abortion banned again. I refuse to compromise, which is why both me and my Lt. Gov, JMP, have been staunchly pro-life for a very long time and were sponsors and collaborators on the RTL Amendment. On the other hand, Sandoval’s choice of Sen. Order, who made fun of infanticide and fought against RTL, as his Lt. Gov and his defense of “the 47% of Dixians that voted against the Right to Life Amendment” are both very concerning. Sandoval is obviously going to try to convince you that he’s perfectly pro-life, but these signs are indicative that he’d be hesitant to defend the pro-life cause in the future at best and completely switching sides at worst. I can tell you that as Governor, abortion will stay banned, and my actions back up my words. Sandoval might promise the world to you when he answers the question, but his actions tell a very different story.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 02:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="718638657103331409" id="message-718638657103331409">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">If the abortion ban was repealed and the Assembly passed an attempt to reinstate it, would you veto?
+</div><span class="mention" title="Poliman#7886">@Poliman</span>  
+
+Great question as abortion is always a pertinent issue in the state of Dixie. Repeal the amendment? I actually agree with implementing bans through amendments as it requires a referendum to pass. I would not veto any legislation having to do with crafting laws which regulate abortion in the state of Dixie as the Constitution is clear and the people have spoken. My main priority at this point is working with the Assembly on passing laws which lower the rate of abortion, increased access to non-abortive contraceptives, health counseling, more funding towards pregnancy centers and adoption services, etc. What we need to do as a state, if this is the path we <em>truly</em> want to take, is help women and mothers. We cannot just ban a practice and hope it disappears as it seems people like Trash are hoping. They do not realize that in many places where abortion is illegal there are still avenues by which women get them done, and it isn’t safe nor healthy for either party. We need a plan to actually help and engage with our population on this issue and answer the hard questions. Yes, I am very personally opposed to the practice of abortion, and if I were a woman I wouldn’t get one. But guess what? I’m not a woman. In my ideal world there exists a time period where a woman can make a choice for her health. Where a woman can get this procedure done in the event of her rape. Where a woman can live her life freely and rule over her own domain and body.
+
+I pledge to not attempt any repeal of this ban, however in the event that this amendment is overturned as it very well might be, my duty is to inform the public of the facts and answer the hard truths. Trash may deride me for this comment but it’s so very true, that a whopping <em>47%</em> of Dixians who voted, voted “no” on the Right To Life Amendment.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718639496186298371" id="message-718639496186298371">
+                <div class="chatlog__content">
+                    <div class="markdown">That is not an insignificant number, and it goes to show that within our state there exists a large amount of people who do not believe a ban from conception is ok. You will see this in my actions, such as helping institute a freer health market place which will only serve to boost women and increase their access to healthcare and lower the need for an abortion in the first place.
+
+“Sandoval might promise the world to you when he answers the question, but his actions tell a very different story.”
+
+At least I have actions. Coming from an extremely inactive and lazy politician who can hardly get a bill passed I don’t really care about this last part. The people of Dixie know who I am, I’ve never run away from my own truth, and I know that I will serve them and their interests well.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="718647297466171434" id="message-718647297466171434">
+                <div class="chatlog__content">
+                    <div class="markdown">It’s pretty pathetic for you to try to misconstrue my hard support for anti-abortion measures as a statement of ignorance of the reality that abortions often continue illegally. I obviously support expansion of public information campaigns, adoption, counseling, and contraceptives, to the point where I have and will continue to advocate for free and universally available accessibility to applicable services (i.e. contraceptives and counseling), which is a reality that many capitalists like yourself would be afraid to even think about. But, what’s most interesting about your answer wasn’t the ridiculous attack, it was that you proved me right about the shift towards the pro-choice side. The whole portion about how if you were a woman you’d want to be able to make the choice sounds like it came straight from Sen. Order’s hideous website, and I wouldn’t be surprised to find out that he drafted most of your answer for you. I take serious issue with the notion that killing an unborn child is “[a woman’s] choice for her health,” as you so elegantly put it. I don’t believe we should change the Dixie Constitution, as you said, to allow a woman to kill a child “in the event of her rape.” The absolute hypocrisy for a person that once helped write the Right To Life Amendment to be saying that the murder of children is acceptable under the right circumstances “in an ideal world” is straight up disgusting. I knew you planned on contradicting yourself on abortion when you chose Sen. Order as your Lt. Gov, but I never would’ve thought that you would so brazenly violate your own moral axiom like that. Even pro-choicers should wince at the way you are trying to weasel out of taking a solid stance on this question.<span class="chatlog__edited-timestamp" title="06-Jun-20 03:08 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718647795661406239" id="message-718647795661406239">
+                <div class="chatlog__content">
+                    <div class="markdown">For the 47% number, I was simply pointing out the fact that you were shifting gears very early on to become pro-choice. Representing the views of the people is fine, but on a matter of life and death like abortion you should probably hold tight convictions.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718648180455243827" id="message-718648180455243827">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, I have been a very active Dixie assemblyman since my election a few weeks ago. I have missed 0 votes and I authored a wonderful bill that would’ve strengthened unions, which was something that you actually shot down. Additionally, I have been active in the past, authoring many bills in both the assembly and in Congress, which I’ll be happy to elaborate on if I need to.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="718649509412077679" id="message-718649509412077679">
+                <div class="chatlog__content">
+                    <div class="markdown">Please explain how I contradicted myself anywhere in that answer? And please tell me what you have done in all your time within your various political positions to actually help people. It’s shameful for you to act high and mighty when you have very few actual accomplishments. My stance is clear, I am personally opposed to abortion, however I recognize the reality of a ban brought forth by the people through referendum so I must change gears and work to make sure women don’t suffer. Where in that do you take issue? I am happy though that we agree on some things, and if you do end up back in the Assembly someday I am happy to work with you on future legislation regarding this issue.
+
+To assert that Sen. Order wrote my answer is utterly laughable. I don’t need anyone drafting up responses when I do it perfectly fine myself. You are twisting my words around and hoping to bluff your way through this topic, but my convictions have been the same since Day 1. I know that abortion is your favorite topic, however, since it’s the only issue out of your socialist agenda which some Dixians could agree with. My job will be to represent the people, and that’s what I will do.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="718652155782889475" id="message-718652155782889475">
+                <div class="chatlog__content">
+                    <div class="markdown">You want me to explain to you how you contradicted yourself again? Well, alright then. You start with words about how you are the ultimate pro-life defender and that you’re opposed to abortion. That lines up with your previous views. What doesn’t is the way you <em>explicitly</em> say that you ideally believe an abortion is a woman’s choice over her “health” and that sexual assault victims should have the ability to murder their unborn child. I am not twisting your words at all, it’s pretty much verbatim what you said, and if I am misunderstanding your sentiment here you should explain what you meant by the last 4-5 sentences of your second paragraph in the first response. Do I think that women need more accessible healthcare? Absolutely. Do I think that the ability to murder an infant under certain conditions falls under the category of “healthcare?” Absolutely not.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718653212730589284" id="message-718653212730589284">
+                <div class="chatlog__content">
+                    <div class="markdown">I have plenty of achievements throughout my year and a half in politics, ranging from the American Reprioritization Act, which placed a tax on firearms nationally, the revenue from which went to fund underprivileged schools, to the Equitable Loans Act, which made it significantly easier for Americans to get a secondary education with student loans that appreciated at the inflation rate instead of the previous rate which was 5-7%. I am experienced, true to the people I represent, and nationally recognized. To attempt to pull me down as “inactive” is embarrassing and something I’ve only ever seen one other person do — Senator Order.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718653442431909940" id="message-718653442431909940">
+                <div class="chatlog__content">
+                    <div class="markdown">and attacking me for solely talking about abortion when the question was about abortion? that’s just kind of strange<span class="chatlog__edited-timestamp" title="06-Jun-20 03:32 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="718653759659704390" id="message-718653759659704390">
+                <div class="chatlog__content">
+                    <div class="markdown">That... is not what I said. At all. I said that the amendment is the reality of our state and I will do everything in my power to help the women it hurts. Once again, I have been firm in my beliefs since my very first primary and foray into politics. I am not going to fight against an amendment which was voted upon by the people of our state, as I hope to represent them and their views.
+
+As to your achievements... you have submitted two bills to the Assembly. Two. I don’t appreciate your implication that Senator Order is running this debate when it’s anything but. However if more than one person is making the same observation perhaps there’s some truth to it?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:35 AM</span>
+
+            <div class="chatlog__message " data-message-id="718654317376176180" id="message-718654317376176180">
+                <div class="chatlog__content">
+                    <div class="markdown">“The women [the right to life amendment] hurts.” You are yet again proving that you’ve become a pro-choicer. To say that people have been “hurt” by the fact that we stopped women from murdering children is very hypocritical with the statement that you are pro-life.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="718654661006983189" id="message-718654661006983189">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Sandoval#9670">@sandoval</span> what&#39;s your plan to deal with the state debt?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="718654666896048138" id="message-718654666896048138">
+                <div class="chatlog__content">
+                    <div class="markdown">Once again you misunderstand my words. You yourself admitted that even in places where abortion is illegal women take dangerous avenues to get the operation done. So now you don’t agree that a ban hurts women?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="hmmmmm" title="hmmmmm" src="https://cdn.discordapp.com/emojis/662487982418427953.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:38 AM</span>
+
+            <div class="chatlog__message " data-message-id="718655056550953043" id="message-718655056550953043">
+                <div class="chatlog__content">
+                    <div class="markdown">As for your points about my work in the assembly, I haven’t been in the Dixie Assembly for too long, mostly spending my time in Congress where I achieved much more. This last term was my second term, really, and it was much shorter than usual terms. Prior to that I had a drug addiction for a few months, but I think everyone has discussed that period in my time as a politician quite a lot so there’s not really a point in lingering there.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="718655989775204453" id="message-718655989775204453">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote"><span class="mention" title="Sandoval#9670">@sandoval</span> what&#39;s your plan to deal with the state debt?
+</div><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span>  
+
+Great question! We do have a debt issue in Dixie. I will task my cabinet with coming up with further ideas to increase revenue within the state, much as I helped do as Secretary of Internal Affairs for Governor Cabin. We will also cut unnecessary spending within these departments. Following our freedom from this debt I will institute tax reform to better distribute the tax burden through the use of an LVT.
+
+Another way to help decrease our debt quickly will be through creating a more business friendly environment to bring in more companies, industry, jobs, and therefore revenue. I am currently working on a fantastic budget which I intend on introducing upon my first day in office!</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718656226065383435" id="message-718656226065383435">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Trash#3738">@teras h ffr od</span> I did not intend to refer to that difficult time in your life and I apologize if it seemed that way. I empathize with you there sir</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:44 AM</span>
+
+            <div class="chatlog__message " data-message-id="718656446509875202" id="message-718656446509875202">
+                <div class="chatlog__content">
+                    <div class="markdown">Opinion on landlords?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:46 AM</span>
+
+            <div class="chatlog__message " data-message-id="718657089546879076" id="message-718657089546879076">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> To follow up on my answer to the debt question I will also support legislation which legalizes select recreational drugs, as well as taxing their sale to help boost our state’s revenue</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="718657345177256006" id="message-718657345177256006">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="718658359175282780" id="message-718658359175282780">
+                <div class="chatlog__content">
+                    <div class="markdown">Opinion on landlords?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="718658591460032572" id="message-718658591460032572">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Opinion on landlords?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+I believe that people who own property should be able to rent them out freely</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤮" title="🤮" src="https://twemoji.maxcdn.com/2/72x72/1f92e.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/270962769610801163/424d81ef866cc9748d3a896eb7ddd15a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="KP2000#8061" data-user-id="270962769610801163"  style="color: rgb(255, 0, 0)" >K. P. Lee</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="718659352130748436" id="message-718659352130748436">
+                <div class="chatlog__content">
+                    <div class="markdown">Recently, a new party calling itself the New Silver League has recently emerged, with several papers referring to it as &#39;fascists&#39;. While they have dropped out of the race, what are the candidate&#39;s opinions on the matter?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="718660039958593549" id="message-718660039958593549">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="KP2000#8061">@K. P. Lee</span> Fascism is disgusting and has no place in a free and open society. I despise fascism and I am glad that Mr. Daly came to his senses in an honorable manner. The organization which the NSL modeled itself after was not only fascistic, but racist. Were they still in this election I would hope that the people of Dixie would see right through them and their attempts to create a draconian society.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:11 AM</span>
+
+            <div class="chatlog__message " data-message-id="718663213625114665" id="message-718663213625114665">
+                <div class="chatlog__content">
+                    <div class="markdown">You were just looking out for women that currently get illegal abortions? Seriously? Even when you said “in an ideal world... a woman can get this procedure done in the event of her rape?” I mean that’s just very obviously referring to an anti-abortion stance, especially when you’ve failed to explain how else people can understand those specific comments. 
+
+<div class="quote">what&#39;s your plan to deal with the state debt? 
+</div>
+I do not think state debt is particularly important, but in the event that Dixie reaches a point where the state debt is insurmountable without measures, I agree that LVT is a good way to raise some revenue to pay off the debt. As a quick aside, I would love to hear what select drugs my opponent would like to legalize seeing as basically every drug has been federally decriminalized within the last few years. 
+
+<div class="quote">opinion on landlords? 
+</div>
+Landlords are a drain on society. They add nothing of value, yet vampirically steal money from the proletariat. Dixie public housing will be massively expanded if I become Governor, and I have talked with JMP about various measures to decrease landlordship. 
+
+<div class="quote">Recently, a new party calling itself the New Silver League has recently emerged, with several papers referring to it as &#39;fascists&#39;. While they have dropped out of the race, what are the candidate&#39;s opinions on the matter?
+</div>
+I stand strongly in opposition to fascism as one of the signees and the originator of the condemnation of korncorperal, the NR Party, and April. Socialism as an ideology has long been associated with the battle against fascism. Fascism reproduces and amplifies the same exclusionary logics of capitalism on the basis of race, gender, and sexuality, which is abhorrent. The authoritarian structure of fascist government chokes out basic human rights. It is no wonder that the NSL had to manipulate ryandaly45 to get him to join.<span class="chatlog__edited-timestamp" title="06-Jun-20 04:11 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:23 AM</span>
+
+            <div class="chatlog__message " data-message-id="718666300188131451" id="message-718666300188131451">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">You were just looking out for women currently getting illegal abortions?
+</div>The statement is pretty clear. A ban hurts women and I gave an example.
+
+“I do not think the state debt is particularly important”. This is just ridiculous. The state should not be paying interest on debt and I believe it is of the utmost importance to remove all debt from our state’s balance sheet. I think it is quite apt for a socialist with huge, costly ideas to not care about government debt, but you don’t realize the issues here and how a state indebted cannot freely represent the people.
+
+In regards to drugs, our state still has harsh drug laws on the books which have not been affected by federal actions. The Assembly has yet to take action here and institute state-level laws which legalize substances like marijuana and incorporate consumption taxes into our budget. I’d like to tackle this during my term as Governor.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:28 AM</span>
+
+            <div class="chatlog__message " data-message-id="718667604859945060" id="message-718667604859945060">
+                <div class="chatlog__content">
+                    <div class="markdown">I definitely don’t think debt is <em>good,</em> I just think it’s not as pressing of an issue as mass poverty, hunger, climate change, police brutality, coronavirus, or the dozen other things we could be talking about right now or using that extra money to fix.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="718668152053039114" id="message-718668152053039114">
+                <div class="chatlog__content">
+                    <div class="markdown">As much as I&#39;m sure the people of Dixie would love to hear you debate abortion all day, there are other important issues the candidates should focus on.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718668446606557194" id="message-718668446606557194">
+                <div class="chatlog__content">
+                    <div class="markdown">One such issue is mass poverty, as Senator Trash mentioned earlier. This is to both candidates, what would your plan be to help combat mass poverty?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:23 AM</span>
+
+            <div class="chatlog__message " data-message-id="718681454434975745" id="message-718681454434975745">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Trash#3738">@teras h ffr od</span> <span class="mention" title="Sandoval#9670">@sandoval</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="718687111481393172" id="message-718687111481393172">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span>
+Another great question, and especially pertinent considering rising income inequality in our country. What we need to do is shift the tax burden away from the lower class and institute policies which grow jobs and the economy in the areas in which they live. The governments job should only ever be to empower people with increased opportunity and ensure a thriving economy. This means encouraging private industry to invest in economically depressed areas, adding jobs and increased wages along with it.
+
+The second factor is education. We must focus our education less on standardized testing and irrelevant, and oftentimes subjective, standards and instead ensure an atmosphere for students which encourages learning. We must also ensure that educational opportunities are plentiful for people living in poverty or depressed areas of our state. The quickest way out of poverty is through a quality education. I also plan on introducing scholarship programs which can help these students afford college, earn a degree, and live full, productive lives.
+
+Finally the third factor is our unjust criminal justice system which unfairly preys on the poor and minorities. We need reform badly, seen throughout the country as protests rage over the despicable murder of George Floyd by a Minneapolis police officer. Harsh sentencing and police policies which encourage heavier policing in poor areas make it incredibly difficult for residents to escape their situation. There has been great reform in this area done throughout the state, however I believe that there is more to do.
+
+Fighting mass poverty involves many factors and many varying policy points, so the solution will change and shift with the times. I do believe that I can lead an effort to combat the causes of poverty and lift Dixians higher than ever before!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="718687802610548847" id="message-718687802610548847">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/306894912488603648/f5df01ad7869c5ce95d2beb9bd500b7b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Legendstorm TV/Andrew#7194" data-user-id="306894912488603648"  style="color: rgb(0, 149, 255)" >Fmr. Governor/Assemblyman Blaze</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="719034373621547098" id="message-719034373621547098">
+                <div class="chatlog__content">
+                    <div class="markdown">What are your thoughts on the ban on abortions, except in the case of rape or harm for the mother?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="719038326463660132" id="message-719038326463660132">
+                <div class="chatlog__content">
+                    <div class="markdown">Again dealing with abortion, no one is ever pro-abortion we all want in some way want to prevent a women from having to make that decision. In what other ways than a ban do you think Dixie could prevent abortions while still allowing access to abortion?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="719048541720543233" id="message-719048541720543233">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> I have a few plans for economic inequality at large. Unlike Sandoval, I don’t think that allowing companies to prey on Dixians is a good way to balance out wealth inequality. This is not only a common sense point, it’s also historically proven by the Gilded Age or the 1970s and 80s, where awful American politicians like Ronald Reagan put the economy and small government libertarianism ahead of income equality. Instead, we should use the government to ensure that nobody is exploited by capitalism. To start out with, I will return workers’ rights over their own labor by mandating that businesses are owned in large part by workers. This would stop an important issue that many workers face, which is that minimum wage workers at large companies can never escape poverty. If they have a large say in their wages and conditions, they’ll have to worry less about potentially never escaping poverty. Secondly, I will nationalize certain basic needs, like utilities, healthcare, and secondary education. Two huge roadblocks for many people are a. steep prices on goods and services that you absolutely need in order to escape poverty and b. unexpected costs like a pricey medical procedure. Public ownership of these companies would allow Dixie to make sure everyone has access to these crucial and basic needs while simultaneously not having to bankrupt themselves. Finally, a third proposal is my plan to strengthen unions. We can create wage boards to hold negotiations on an industrywide level which would set proper wage and working conditions standards. We can make it easier to join unions by paying union dues directly from the government. We can help workers train for negotiations and for job skills in general with government funded seminars. Strong unions stop the companies from using their overwhelming power to bully the workers into submission, which allows them to access better wages and escape poverty altogether.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719048738722807858" id="message-719048738722807858">
+                <div class="chatlog__content">
+                    <div class="markdown">I do, however, agree with my opponent that education and criminal justice reform are important for poverty management, I just wanted to talk more in depth about my economic proposals.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719048796629106769" id="message-719048796629106769">
+                <div class="chatlog__content">
+                    <div class="markdown">But if anyone has questions about my education and cjr policies, feel free to ask</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719050214916489268" id="message-719050214916489268">
+                <div class="chatlog__content">
+                    <div class="markdown">On abortion, I think everyone knows my views. I am staunchly pro-life and I will never betray my conviction to fight for the lives of the unborn. I think the Right to Life Amendment hit the perfect spot on abortion, banning all abortions except for in the instance of guaranteed harmed to the mother. I think that determining when life begins is difficult, so it’s safest to assume that it begins at conception so as to not kill children unknowingly. However, when the mother is at risk, the life of a real human being is probably more important than that of a hypothetical human being. But, I don’t think that anyone should be able to have an abortion in any other instance, because that justifies killing fully born children because the mother was a rape victim.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719051735796285441" id="message-719051735796285441">
+                <div class="chatlog__content">
+                    <div class="markdown">UBI Guy’s question: well, to start off, I don’t think women should have access to abortions. Regardless, we can all agree that abortions need to decrease anyway. We already discussed this above, but I have a much more ambitious plan here than Sandoval. Not only do I support a huge public information campaign and expanded access to pregnancy tests, counseling, and contraceptives — I also think we should make those things free and universally accessible. I think women’s health and the safety of unborn children is so incredibly important, that I can promise you as Governor all of these things will be included under my healthcare for all plan. Although Sandoval likes to talk about how he’s so great for women’s health choices, he’ll never rise to that level. With a vote for me you can get the best of both worlds — no more infanticide and greatly expanded healthcare for women.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="719195311188344973" id="message-719195311188344973">
+                <div class="chatlog__content">
+                    <div class="markdown">Once again my opponent attacks without reason to. Where did I say I would strip the government of its regulatory power to ensure corporations don’t prey on the people? Leave it up to a socialist to mince words and get caught up in his own assumptions of what I stand for. If he wants to see what I stand for he can simply check out the bills I’ve written and sponsored, all of which have passed the Assembly and signed into law. I function on the same operating procedures our country has been run on for years, and ones in which our people have voted for consistently. I think it ridiculous that the only other major candidate in this race is one who endorsed the nationalization of several industries. I wouldn’t be surprised, in the event of his unlikely win, if the economy here in Dixie plummets down through the floor. He operates off of an unproven, oppressive, historically bogus ideology which has utterly failed in every single country it has been tried. Power is consolidated at the top with promises of returning money and decision-making to the working man, yet this won’t happen as it never has. I agree with his sentiment on pretty much everything, we just have very few means by which to get there in common, at least mine are tested. For instance in healthcare he simply promises free this and free that. How will he afford this? Taxing Dixians <em>through the roof</em>, and as we’ve already seen he “doesn’t care about the debt”. Where will our state sit following his governorship? Broke and broken. He will tax Dixians to death and he still won’t be able to afford his “plans” of nationalizing industry and providing free everything.
+
+Regarding the labor union bill, I expressed on the floor of the Assembly that the idea is somewhat sound as partnering with unions and private companies to re-evaluate wages can be productive. I voted nay because this bill gave too much teeth to these boards in sponsoring and organizing mass strikes and walkout which can damage our state economy.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="719197682974982144" id="message-719197682974982144">
+                <div class="chatlog__content">
+                    <div class="markdown">I’m not certain how my opponent can claim he has a much more ambitious plan than myself on abortion when I have consistently talked about increased funding for the very same things. He just happens to promise them for free, but basic economics has taught us that there’s no such thing as a free lunch. Dixie is the only state in a debt hole, and Senator Trash will dig us ever deeper. Under a Sandoval Administration women will have access to better, and cheaper, healthcare as I was the one who sponsored and introduced a bill which granted Dixie entry into the Health Insurance Compact. This is create a regulatory body which ensures people across state lines can buy private, and safe, healthcare for lower costs. Here in Dixie we will help women get access to non-abortive contraception, pregnancy centers, and health counseling. These are all my plans which I have pushed for since my entry into politics. They will be universally accessible under my term in office, guaranteed.
+
+Once again discussing abortion, my views on this are fairly well known. I do not agree with the ban from conception put forth, and it is absolutely disgusting that my opponent here wants women locked up for going through this procedure. I am good for women’s health, Trash is not. Does he know that women who go through an unwanted pregnancy experience worsened mental health? And that their children are more likely to develop deficits in social and cognitive abilities? Or that unsafe pregnancies have, and will, go up further meaning women will die or be seriously harmed by this amendment?
+
+If the amendment is overturned in court my duty is to represent the people and ensure women’s health. It’s quite frightening that my opponent can sit there an claim he’s great for women when he strips them of the right to make decisions over their own body.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="719198149033459752" id="message-719198149033459752">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you think Dixie&#39;s response to Covid-19 was good enough? If not, what would you have done instead? And, in addition, will you do anything differently as governor to solve this crisis?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="719201925836308500" id="message-719201925836308500">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Do you think Dixie&#39;s response to Covid-19 was good enough? If not, what would you have done instead? And, in addition, will you do anything differently as governor to solve this crisis?
+</div><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span>  
+
+I am on the record saying I do agree with Governor Ethan and HHS Secretary Miner’s decisions to begin reopening the state, however we must take extra precautions. This means requiring masks in public, limiting engagement in public parks, and strict enforcement of social distancing rules. I encourage all Dixians to seek out CDC health guidelines regarding the novel coronavirus and follow all protocol to ensure both their and others safety during this time.
+
+As Governor I plan on creating a COVID-19 Task Force, headed by Lt. Governor Order, in reinforcing and crafting new guidelines for statewide rules while the pandemic is yet ongoing, as well as recommending further aid for small business support and individuals affected by it. We have passed a couple great packages early on within the Assembly, however we need to do more now as businesses struggle and many remain unemployed. My hope with this task force is that it includes not only Lt. Gov. Order but also members of the Assembly, my cabinet, and regular citizens in addressing several issues related to coronavirus. This will enable us to build effective packed legislation in a shorter time frame!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="719202575316156488" id="message-719202575316156488">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/167771071351750658/a441c2c5c74bee11e23051c3de62d62b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="MikeSmith_SnowNation#9297" data-user-id="167771071351750658"  style="color: rgb(241, 196, 15)" >Mike 2020</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="719251469156745226" id="message-719251469156745226">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you agree with the decision by Governor Ethan to pardon DX5 candidate Korn for his alleged arson activities?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="719256722987941900" id="message-719256722987941900">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Do you agree with the decision by Governor Ethan to pardon DX5 candidate Korn for his alleged arson activities?
+</div><span class="mention" title="MikeSmith_SnowNation#9297">@Mike 2020</span>  
+
+If it were me I would have waited until after any trial before further looking at the evidence and taking recommendations from a parole board and other experts in the case.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="719262253949648897" id="message-719262253949648897">
+                <div class="chatlog__content">
+                    <div class="markdown">Sandoval, if you had listened to my answers more closely throughout this debate, you would know that I believe the free market activity you propose most often results in mass exploitation. Sure, maybe you didn’t directly say “corporations should oppress people,” but “encouraging private companies to invest” is pretty close. You would go to the  same companies that made poverty possible to reverse it by giving them benefits? That seems counterintuitive to me. For the taxation, my plans would hardly result in much of it. The parts of my economic plan, i.e. strengthening unions, instituting co-ops, and nationalizing a few industries, would hardly cost a dime for taxpayers. And sure, the plans to make college and healthcare free would cost a good amount of money, but it wouldn’t be too difficult to implement. I plan to raise LVT, which mostly impacts the rich, and as part of the gun control and climate change plans I’ll institute a carbon tax and VAT on certain industries and companies where climate change standards are not being met. These taxes are all entirely focused on the rich and wouldn’t affect the majority of the population for whom these reforms would be beneficial. I don’t think we agree on much at all — you want to keep the poor trapped in an endless cycle of violence and exploitation and I want to do everything in my power to rescue them. 
+
+On abortion and women’s health: I’ll admit that you have proposed ideas that help women’s health, it’s simply a question of how far you’re willing to go for the cause. Oh, you’ll vaguely promise to make healthcare more accessible and cheaper for women? That’s good, but how about someone that can give <em>every</em> woman free and universally accessible healthcare, included under my free healthcare plan? That’s the difference. I don’t doubt you’d be alright for women’s health, since just admitting that we have a problem with women’s health in Dixie is a start. I just think you pale in comparison with me, a candidate that will</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719262323180568637" id="message-719262323180568637">
+                <div class="chatlog__content">
+                    <div class="markdown">give women everything you want to give them but at no cost and with no discrimination</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 07:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="719264232906162246" id="message-719264232906162246">
+                <div class="chatlog__content">
+                    <div class="markdown">on abortion: I continue to take offense with the way you group “abortions” with your plans about “women’s health.” I think I got whiplash from how fast you switched views on abortion. Not even a month ago we worked together on the Right to Life Amendment, which created a ban on abortion from conception in almost all cases. Yet, in the last 2 days, you have slowly been amending that view until today you finally revealed your true colors by saying that you disagree with me on the fact that life begins at conception. That is truly worrying. What is much more worrying, however, is the fact that you got a hefty package of money from an abortion lobbyist shortly after you began switching sides yesterday. For those watching at home or in the crowd, even if you’re pro-choice, we shouldn’t let this kind of corruption take place. We as Dixians should stand together and reject politicians that bend their views at the sight of sweet lobby money. It is bribery, simple as that.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719265420347047936" id="message-719265420347047936">
+                <div class="chatlog__content">
+                    <div class="markdown">on coronavirus: as I said in a previous debate and previously in this debate, I think Dixie’s coronavirus response has been solid for now, but there are some things that need to be sorted out. I believe we should close down the state in a few weeks again, using the data from the short reopening we’ve had as a gauge for how Dixie would potentially fare in a real reopening. We should expand testing and mask production by injecting state money into companies that are currently manufacturing those things but just can’t quite keep up with the massive demand we have all over the country. I also think my healthcare for all plan is crucial right now, since too many Dixians are afraid to go see the doctor when they might have coronavirus for fear of going into ridiculous amounts of debt.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719265720822923284" id="message-719265720822923284">
+                <div class="chatlog__content">
+                    <div class="markdown">on korn: I definitely don’t agree with Governor Ethan’s decision to pardon korn. As I’ve said numerous times, korncorperal is a danger to this country (both politically and through acts of arson) so I don’t really know why he would do that. A blight on an otherwise good Governor’s record.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👎" title="👎" src="https://twemoji.maxcdn.com/2/72x72/1f44e.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="719265752200249374" id="message-719265752200249374">
+                <div class="chatlog__content">
+                    <div class="markdown">Anyway, I have a question</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719265776288137217" id="message-719265776288137217">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Sandoval#9670">@sandoval</span> when does life begin?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="719267838031954001" id="message-719267838031954001">
+                <div class="chatlog__content">
+                    <div class="markdown">I did listen to your answers, and I once again refuted them with facts. Regulatory power will not be stripped from Dixie and we will strike a balance in order to raise up our state as high as possible. Encouraging investment in our state is not “pretty close” to corporate oppression, is that a joke? 
+
+Also, you do not believe that nationalizing several industries would cost a dime? I... I don’t know what to say here because I think you’ve left myself and many others speechless and your inability to grasp the realities of running a functioning government. We don’t live in a made-up world, we live in a reality where we must be pragmatic and smart in our actions with taxpayer money. Furthermore, I’m glad you acknowledge the fact that free college and healthcare would cost a “good amount of money”. Really great inspiring plan there. Socialists run their campaigns on rhetoric and this stuff isn’t even passing the sniff test! We do agree in the institution of an LVT though, I’m sure your running mate isn’t happy with the new taxes considering his new mutualist beliefs... Regarding a carbon tax, are you aware that a carbon tax mainly affects the poor and middle class? It raises the cost of basic utilities and goods. I don’t think you even believe that just the rich would be affected by your tax plan, because that isn’t even realistic. I truly applaud you for wanting to rescue Dixians from a cycle of violence and exploitation, as do I, and I think down the road we can, and will, find common ground.
+
+“Oh you’ll vaguely promise to make healthcare more accessible”. Again, I have made extremely clear promises and have sponsored legislation which accomplishes this. Where are your successes for our state? I see very very few. I do not pale in comparison to you, who has done little when making utterly insane “pie in the sky” campaign promises every election season.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719268809227239444" id="message-719268809227239444">
+                <div class="chatlog__content">
+                    <div class="markdown">Regarding abortion yet again, I did not work with you on the RTL Amendment so I’m not quite sure where you got that idea. I have been increasingly clear on my opinion in this area and you’re only proving me right by continuing to egg on this topic to score a few political points. 
+
+I took money from a lobbyist who agreed with my ideas. There was no offer or exchange which took place, and I think it’s quite apt that someone who is supposedly on the left donated money to the right-wing candidate... if that doesn’t tell you something then I don’t know what will. It is offensive that you take issue with this when you absolutely looted your own party’s coffers and your entire organization to get enough money to compete with me in campaigning. What ever happened to socialists spreading the wealth and helping your fellow man? Guess that goes out the door during election time. Ludicrous.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719268987531165750" id="message-719268987531165750">
+                <div class="chatlog__content">
+                    <div class="markdown">To answer your question above: I don’t know.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="719272218332364871" id="message-719272218332364871">
+                <div class="chatlog__content">
+                    <div class="markdown">Relying on corporate investment <em>is</em> oppression. As I said, you don’t rely on the people that people that made poverty a problem to begin with to rescue the country. Even if you maintain regulation over the economy, I just don’t think that’s enough. We need an economy that works for the people, not one that works for the rich but has some constraints on it. 
+
+Nationalizing companies would cost less than the other part of the plan, which is why I said it would be “a dime” in comparison to that. I don’t plan on nationalizing all of business or anything, just a few industries like utilities companies that are already worth next to nothing and would be easy to acquire. The rest of the plan would definitely be expensive, but I think you overestimate the amount of money that all of this would cost. Free college is incredibly cheap, with Dixie it would cost just 9.6 billion dollars to implement a tuition match program according to a 2017 study from the Hamilton Project. Healthcare estimates vary, but my plan would cost no more than a few hundred billion dollars per year, which would also cut many costly flaws from our current healthcare system, would help us through the pandemic, and is a good amount smaller than the Dixie budget at the moment, meaning it’s perfectly reasonable. For carbon taxes: the income inequality effect of carbon taxes may not be great, but it can be balanced out by giving the low income households that use a lot of energy additional tax rebates. Still, it’s the most efficient way to stop climate change by directly challenging businesses, which is crucial to slow down this existential threat that we are currently facing.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/396728522787520512/64d5e4e94c1b6cb46e7c6a4d14569deb.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="kevvvvvvvvv#1030" data-user-id="396728522787520512"  style="color: rgb(0, 149, 255)" >State Leg. Kevin (UBI Guy)</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="719272261638684773" id="message-719272261638684773">
+                <div class="chatlog__content">
+                    <div class="markdown">The earliest fetus that has been born and survived was 21 weeks and 5 days. Before then and usually after the baby is solely reliant on the mother and at 24 weeks the survival rate is about 50/50. Would you support making the ban only be after one of these weeks? (Question mainly directed at <span class="mention" title="Sandoval#9670">@sandoval</span>)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="719273578096492665" id="message-719273578096492665">
+                <div class="chatlog__content">
+                    <div class="markdown">I think the lobbyist money is a pretty big issue here. Sure, it’s not explicitly known that you got that money from a lobbyist, but this kind of a turnaround paired with a lobbyist handing out money to you directly after you made the switch is highly suspicious. Even if you didn’t receive the money directly in response to that shift, it’s still unacceptable to take donations from people that are attempting to sway your views. However, I think it’s very obvious that you did flip flop on abortion and you should probably just stop pretending as if you’re proposing the same thing that you were a few days ago.</div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/718580651808522250/719273577441918996/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/718580651808522250/719273577441918996/image0.png" alt="Attachment">
+                    </a>
+                </div>
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/718580651808522250/719273577831989278/image1.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/718580651808522250/719273577831989278/image1.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719273786989347138" id="message-719273786989347138">
+                <div class="chatlog__content">
+                    <div class="markdown">(ok the pictures were sent out of order, the bottom one is the one he sent in the TPR debate a few days ago and the top one is the one he just sent like 2 hours ago)</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719274667436670996" id="message-719274667436670996">
+                <div class="chatlog__content">
+                    <div class="markdown">I can assure you that we discussed funding allocation within the PSLPA before giving party funds to me. As for the AWP, that company is run with democratic deliberation between jogod and I and the workers, so funding was dished out based on their desires, not mine. Either way, it is perfectly fine for these left wing groups to give me money since they have no impact on my views. They recognized that you are taking dirty lobby money and that I need all the support I can get to beat your corrupt lobbyists. There is a profound difference between getting funds from a Party and a socialist newspaper and receiving a ton of money from an abortion lobbyist.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719274807509909524" id="message-719274807509909524">
+                <div class="chatlog__content">
+                    <div class="markdown">And another question, if you do not know when life begins, how can you possibly know when to cut off a woman’s ability to have an abortion?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 08:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="719277231851176026" id="message-719277231851176026">
+                <div class="chatlog__content">
+                    <div class="markdown">Capitalism has raised more people out of poverty than any other economic system the world has ever seen, especially so within the United States. What is an issue is crony capitalism and corporatism which I am absolutely not a fan of and will fight against as Governor of Dixie. My economy will work for the people and create jobs and higher quality education by which they can be lifted out of poverty. 
+
+Nationalizing companies won’t cost much? Ok let’s take a look at an example. Southern Company is a utility holding company which operates mainly in Dixie, aside from a small bit of territory in the Northern state. It currently has a market capitalization of $62 billion. This is for <strong>one</strong> company, and you will be purchasing many, not to mention bringing billions in operating costs to the Dixie budget each year. Why do you believe the government can run certain industries better than the private sector can? There is no profit motive which leads to innovation and growth in these industries.
+
+Let’s add in your healthcare plan now too, which I’ll take you at your word will cost only “a few hundred billion dollars per year”. We are adding hundreds of billions of dollars to Dixie’s budget with multiple purchases of large corporations, with little guarantee that they won’t be run poorly and give worse service as a government entity. I’m not sure how anyone can hear these talking points and not feel a shiver go up their spine. This scares me to think how reckless a Trash Administration would be and how moral hazard will wreak havoc as the socialists give little regard to stability and feasibility in their plans. My goal is to get us out of debt and reduce the tax burden on every Dixian, especially the poorest of our citizens.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719278596648206398" id="message-719278596648206398">
+                <div class="chatlog__content">
+                    <div class="markdown">Yet again on the abortion question where you falsely claim I flip flop. There is a distinct difference between personal beliefs and policy beliefs which I have made incredibly clear! I am <strong>personally</strong> against abortion, however I am not a woman and will never have to make this decision. On the other side I recognize that there is a need and there are vast consequences to bans such as this one, so I do not support a ban from conception. Please try and understand my concerns with a ban, as I have kept my personal beliefs separate. I am not “pro-abortion” in that we don’t <em>want</em> women to get abortions, who would? It can be a dangerous and expensive procedure. What we can do together, however, is reduce the need for one.
+
+For lobby money, you can call it corrupt all you like when it’s not. I’m not taking money from the “abortion lobby” when there was no exchange for favors. The lobbyist liked my views and donated to my campaign! You, on the other hand, looted your party’s entire amount of resources which I find shameful coming from someone who spouts socialist rhetoric. I cannot find a better example of “do as I say not as I do” than what you’ve done during this campaign.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719279439707635712" id="message-719279439707635712">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">The earliest fetus that has been born and survived was 21 weeks and 5 days. Before then and usually after the baby is solely reliant on the mother and at 24 weeks the survival rate is about 50/50. Would you support making the ban only be after one of these weeks? (Question mainly directed at <span class="mention" title="Sandoval#9670">@sandoval</span>)
+</div><span class="mention" title="kevvvvvvvvv#1030">@State Leg. Kevin (UBI Guy)</span>  
+
+This can be an answer to Senator Trash’s question as well. I would support a cutoff dictated by scientists and specialists in the field. I honestly listen to the people of Dixie in coming to these hard decisions, and will certainly conduct many town halls with my constituents regarding this issue in the event that the courts strike down the RTL Amendment as unconstitutional, which has a high probability.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteYea" title="VoteYea" src="https://cdn.discordapp.com/emojis/406279850631102474.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="719279768348131359" id="message-719279768348131359">
+                <div class="chatlog__content">
+                    <div class="markdown">Can you substantiate your claim about capitalism lifting people out of poverty, or that it is remotely better at doing so than other economic alternatives?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="719284001315225671" id="message-719284001315225671">
+                <div class="chatlog__content">
+                    <div class="markdown">Despite the fact that recent history proves me correct, as since the advent of the 21st Century and the liberalization of markets the world has experienced extreme growth in its economy thanks to trade and free exchange of goods, I can point to the fact that over net 1 billion people have risen out of poverty in the past 30 years, or that as China’s own economic freedom index has gone down thanks to internal reforms, nearly 800 million people have been lifted out of extreme poverty there alone.
+
+My argument is more so that my ideas are means tested in many nations around the world. Can my opponent name one country which has instituted his ideal form of economic system, and has also been a success?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="719285730349678653" id="message-719285730349678653">
+                <div class="chatlog__content">
+                    <div class="markdown">Have 1 billion people been risen out of poverty, or have 1 billion people who were formerly subsistence laborers become chained into neoliberal capitalism and forced to work for wage instead of for personal livelihood because of mass expropriation of their land and resource thus artificially making it <em>appear</em> that these people have been &quot;lifted out of hardship and poverty&quot;?<span class="chatlog__edited-timestamp" title="07-Jun-20 09:24 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="719287487163269150" id="message-719287487163269150">
+                <div class="chatlog__content">
+                    <div class="markdown">I’m not certain that your question is made in good faith nor that it requires an answer. Are you wanting me to expound on the principles of capitalism?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="719287973358862336" id="message-719287973358862336">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, you claim that history proves you correct in that capitalism has caused people to become lifted from poverty, which is a contentious notion at best, so I am merely presenting you a rhetorical alternative that you could perhaps refute.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="719288131077013527" id="message-719288131077013527">
+                <div class="chatlog__content">
+                    <div class="markdown">(Questions JMP)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="719288317409230948" id="message-719288317409230948">
+                <div class="chatlog__content">
+                    <div class="markdown">Can you prove that your frame of history is more correct than the alternative that I have supplied?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="719289016779931679" id="message-719289016779931679">
+                <div class="chatlog__content">
+                    <div class="markdown">Nationalization won’t cost nearly as much as you make it out to be. Southern Company is one of the largest utility companies in Dixie but on average utilities companies are significantly smaller than this one. Plus, you have to consider the fact that the government really only needs to acquire 51% of a company to effectively nationalize it, which means that nationalizing this utility company, which is one of the biggest in the entire country, would cost 31 billion, and most utilities companies would be significantly cheaper to nationalize. Altogether, the cost of nationalizing utilities companies will come out to be around 150-200 billion dollars per year, including operational costs, and this would greatly benefit Dixians who desperately need these services. The concerns about lack of innovation or quality leadership are overblown, since politicians still have an incentive to make sure everything is running smoothly. Public support, which is determined by effectiveness of programs like these, controls the ability of politicians to get re-elected. And, internally, employees can still get fired or demoted for doing their jobs poorly.<span class="chatlog__edited-timestamp" title="07-Jun-20 09:38 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="719289858958557225" id="message-719289858958557225">
+                <div class="chatlog__content">
+                    <div class="markdown">I disagree with your hypothetical framing of history in that I do not believe people have been “chained into neoliberal capitalism”. My definition of poverty is regarding living conditions and how developed their society is, so in that case yes I believe my frame of history to be more correct. <span class="mention" title="JMP#8812">@JMP</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="719290257618632705" id="message-719290257618632705">
+                <div class="chatlog__content">
+                    <div class="markdown">Can you demonstrate that using evidence other than the oft-cited World Bank analysis that specifically uses capital as its benchmark instead of objective wellbeing, living conditions, etc?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="719291314121736272" id="message-719291314121736272">
+                <div class="chatlog__content">
+                    <div class="markdown">On abortion: if you are personally against abortion, as you have said, you should do whatever it is in your power to stop abortions. I think that the idea of picking when life begins based on what “scientists and specialists agree upon” is basically nonsensical. First, there is practically no consensus on when life begins. Some so-called scientists and specialists believe that life begins at birth. Some believe that it begins at conception. This is a question that has been impossible to answer by scientists, philosophers, and everyone in between for centuries. That is why I believe life begins at conception. It’s simply the safest option, since anything else introduces the risk that the abortion procedure would be massive infanticide. Second, it’s incredibly vague, and unless you can tell me right now exactly what cutoff point you are in favor of, you need to revise your abortion policy.<span class="chatlog__edited-timestamp" title="07-Jun-20 09:50 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719291771166654534" id="message-719291771166654534">
+                <div class="chatlog__content">
+                    <div class="markdown">I still don’t see why disallowing abortions is a bad tradeoff with the issues it causes for women’s health. Unwanted pregnancies are tough. The issue is, allowing the death of children is significantly worse. Unwanted pregnancies can be avoided and illegal abortions can be curtailed through other policies, which I think I have talked about for a significant period of time already but I can elaborate on them again if needed.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719292123966472333" id="message-719292123966472333">
+                <div class="chatlog__content">
+                    <div class="markdown">Taking money from lobbyists is shameful regardless of what your views are. As I said before, party and worker donations are very different than that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="719293108726005791" id="message-719293108726005791">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Can you demonstrate that using evidence other than the oft-cited World Bank analysis that specifically uses capital as its benchmark instead of objective wellbeing, living conditions, etc?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+I implore you to look up the top nations for quality of living and you will see many are developed, western nations with liberalized economies. The countries with the highest standards of living survive off of free trade and the exchange of goods between peoples, not state-managed corporations and industries. I grant that some, mainly Scandinavian, nations do exhibit some aspects of socialism but democratic socialism integrated into deeply liberal nations do not represent what Trash is hoping to achieve.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="no" title="no" src="https://cdn.discordapp.com/emojis/717928213627797508.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/688482130702893084/f453906a38fb21b5917d7757c66bec31.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Poliman#7886" data-user-id="688482130702893084"  style="color: rgb(129, 134, 137)" >Poliman</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="719293330218942557" id="message-719293330218942557">
+                <div class="chatlog__content">
+                    <div class="markdown">What do you think of the Virgin Act in Congress, aiming to hold a referendum for the admission of the US Virgin Islands into the State of Dixie?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="719294474802692117" id="message-719294474802692117">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote"><span class="mention" title="JMP#8812">@JMP</span>  
+</div>&gt; 
+<div class="quote">I implore you to look up the top nations for quality of living and you will see many are developed, western nations with liberalized economies. The countries with the highest standards of living survive off of free trade and the exchange of goods between peoples, not state-managed corporations and industries. I grant that some, mainly Scandinavian, nations do exhibit some aspects of socialism but democratic socialism integrated into deeply liberal nations do not represent what Trash is hoping to achieve.
+</div><span class="mention" title="Sandoval#9670">@sandoval</span> 
+How can you call modern liberal countries built on the back of &quot;free trade&quot; when neoliberal states have been leveraging violence, oppression, expropriation, and ultimately state-propped and inherently non-market ventures that distort a true free market?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="719295047094501517" id="message-719295047094501517">
+                <div class="chatlog__content">
+                    <div class="markdown">I think the virgin act is great. We should start integrating all of these small territories as parts of states in order to ensure that their rights are not abused. Ideally, this bill would give the Virgin Islands the option to join as a state or to stay out, but that’s not a huge issue as I’m sure they would love to join our country fully.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="719295277802192986" id="message-719295277802192986">
+                <div class="chatlog__content">
+                    <div class="markdown">Nationalization if utilities and other sectors of the Dixie economy will result in widespread strife. Government run systems do not offer better service, and the people of Dixie will be forced to incur higher taxes in order for the state government to afford these promises.
+
+On abortion once again: “I still don’t see why disallowing abortions is a bad trade off with the issues it causes for women’s health”. OK I am very glad that you openly accept and agree with the fact that it causes issues for women’s health. This is a huge breakthrough in explaining my side of the debate and I see some hope for you yet! You do not seem to understand that my personal views do not trump facts, and it is not your place to attempt to tell me how to apply my own beliefs as Governor. You are correct that there are many various answers as to when life begins, and so I answered you as honestly as I can with “I don’t know”, because that’s the truth.
+
+Once again: I want people to see the irony in a Socialist looting his own party’s resources for personal gain.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719295563186831430" id="message-719295563186831430">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">What do you think of the Virgin Act in Congress, aiming to hold a referendum for the admission of the US Virgin Islands into the State of Dixie?
+</div><span class="mention" title="Poliman#7886">@Poliman</span>  
+
+If these territories wish to become part of Dixie then I am happy we are granting them the opportunity! I am 100% for the right to self-determination, and if they vote in the affirmative I will be among the first to welcome them.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="719295733538226299" id="message-719295733538226299">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, I’d like to point out that Sandoval’s understanding of how capitalism has moved countries out of poverty reflects a deep misunderstanding of the way neoliberalism has affected the Global South, depleting resources, exploiting hundreds of millions of underpaid laborers, and causing massive instability.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:05 PM</span>
+
+            <div class="chatlog__message " data-message-id="719296043845419018" id="message-719296043845419018">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote"><span class="mention" title="Sandoval#9670">@sandoval</span> 
+How can you call modern liberal countries built on the back of &quot;free trade&quot; when neoliberal states have been leveraging violence, oppression, expropriation, and ultimately state-propped and inherently non-market ventures that distort a true free market?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+You are trying to debate me when you won’t ever be satisfied with an answer I give. I am on the record that I do not support cronyism nor corporatism nor the use of the state for imperialist business and violence against others. Can you or your running mate, <span class="mention" title="Trash#3738">@teras h ffr od</span> , find me an example of a country which emulates the ideals of your own beliefs?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="719297435460960434" id="message-719297435460960434">
+                <div class="chatlog__content">
+                    <div class="markdown">How can you claim to not support cronyism or corporatism when both are constantly perpetuated by the existence of the liberal state? Would you support the dismantling and ultimate decentralization of the status quo state, the abolition of speculative property titles, intellectual property, and other mechanisms of privilege that are the main cause of corporatism?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="719298146965913690" id="message-719298146965913690">
+                <div class="chatlog__content">
+                    <div class="markdown">I don’t disagree that unwanted pregnancies could theoretically cause some damage to women, the much bigger issue is that you are actively removing a person’s right to life with that change. Some children cause psychological damage to their parents when they act a certain way, does that warrant mass killings of children? I don’t think you have a real answer as to why abortion isn’t mass murder. 
+
+I have explained why nationalization of utilities would be affordable and extremely beneficial to millions of Dixians that struggle to afford electricity or water, which are obviously absolutely crucial. We are a developed country in the year 2020. We can easily afford to provide our citizens with the basic right of electricity and plumbing.
+
+Once again, taking money from your party or from a company that is democratically run by the workers has absolutely no relation to socialism. All that this garbage attack is doing is betraying your lack of understanding of my proposals. Lobbyism as a concept is directly corrupt, and even if you agree with the lobbyists they still ultimately control your views. This is especially proven by the fact that, as you said, you’re <em>personally</em> against abortion but for the sake of your political life (and lobby money), you don’t think life begins at conception. That is bribery, end of story.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:14 PM</span>
+
+            <div class="chatlog__message " data-message-id="719298290482675782" id="message-719298290482675782">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="JMP#8812">@JMP</span> I can agree that we do need reform in certain aspects which have continued to give rise to corporatist interests, namely intellectual property, patent, and copyright laws. One can simply look at the huge cost of prescription drugs in this country as many companies hold monopolies on certain drugs and rip off the consumer. So yes, I think we can absolutely find common ground in dismantling pieces of the state which prop up crony interests</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="719298842574716978" id="message-719298842574716978">
+                <div class="chatlog__content">
+                    <div class="markdown">What about unproductive property titles and state-enforced privilege elsewhere?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="719299256674156564" id="message-719299256674156564">
+                <div class="chatlog__content">
+                    <div class="markdown">A decent example of a country that emulates my beliefs is Bolivia, another example is Salvador Allende’s Chile of the 70s. These examples are not perfect, since some of what I’m proposing is fairly unprecedented, but these are just a couple of examples that prove socialism is possible. I know that you’re inevitably going to go on this rant about the Soviet Union, which you kind of already began planting the seeds for, but just know that I am a deeply libertarian socialist and Dixie will be run very differently than these big Marxist-Leninist regimes of the 20th century.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="719299339696078912" id="message-719299339696078912">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you support abolishing incorporation and allowing worker cooperatives, which are empirically more efficient than firms, to become the predominant form of enterprise?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="719299655078510624" id="message-719299655078510624">
+                <div class="chatlog__content">
+                    <div class="markdown">“I don’t think you have real reason as to why abortion isn’t mass murder”. This is why there is such a stark divide between parties privy to debates such as this. You shape the debate to your will and force language upon us which does not accurately describe our own assumptions. It’s impossible. But I am willing to work with you on a solution, as I have said that if the referendum results on the RTL Amendment holds I can’t do anything about it as Governor. I will have a duty to preserve the Constitution and it will be up to the Assembly and our citizenry to change going forward. This is where we can come together and put in place our common goals for legislation regarding healthcare and pregnancy counseling for women.
+
+Once again: you looted the entirety of your party’s resources for your own gain when many other members have hard fought races. Ironic.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719299910360498277" id="message-719299910360498277">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">What about unproductive property titles and state-enforced privilege elsewhere?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+A properly executed land value tax can penalize the holding of unproductive land and land speculation and reward it being put to productive use. I know that my opponent is also in favor of incorporating an LVT into Dixie law</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="719300056905416834" id="message-719300056905416834">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes, although I think building worker co-ops should be done over a period of time and not all at once. Co-ops are key to sustain an economy that doesn’t thrive on the exploitation of laborers. Ideally, after my first term, we will be on our way to eliminating class differences altogether with worker co-ops.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="719300834965323908" id="message-719300834965323908">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Do you support abolishing incorporation and allowing worker cooperatives, which are empirically more efficient than firms, to become the predominant form of enterprise?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+I am not in favor of abolishing incorporation altogether, however I am fine with workers beginning a cooperative on their own terms, which is already legal within Dixie law. I believe in freedom of association and the ability of workers to do so.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="719300991970836601" id="message-719300991970836601">
+                <div class="chatlog__content">
+                    <div class="markdown">your answers on abortion continue to baffle me. How can you say so many words, yet convey so little of substance? Yes, I think we should listen to the people. The people made it clear that they want a ban on abortion. The fact is that it’s a lot better to assume life begins at conception in order to limit the risk that we are actively killing children with abortions. You continue to dodge this question. Abortion is murder, it’s really as simple as that. It’s immoral to publicly stand for the pro-choice movement when you can’t explain why abortion <em>isn’t</em> an endorsement of infanticide.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719301325942161461" id="message-719301325942161461">
+                <div class="chatlog__content">
+                    <div class="markdown">And once again, I’ll explain to you that accepting money from the party and the AWP when both had internal discussions of how to split the money and both agreed to give the money to me is obviously not “ironic” or anything. Lobbyism is corruption. Accepting money from your party is not.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="719301466220920832" id="message-719301466220920832">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote"><span class="mention" title="JMP#8812">@JMP</span>  
+</div>&gt; 
+<div class="quote">I am not in favor of abolishing incorporation altogether, however I am fine with workers beginning a cooperative on their own terms, which is already legal within Dixie law. I believe in freedom of association and the ability of workers to do so.
+</div><span class="mention" title="Sandoval#9670">@sandoval</span> 
+Is associating via cooperatives really a &quot;freedom&quot; when neoliberal banking systems consistently refuse to give startup capital to promising cooperatives due to cultural differences and issues with multiple cosignatories and thus pressures the average worker to labor in a corporate environment instead of one where he is free to be a productive and fulfilled worker?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="719301646244380834" id="message-719301646244380834">
+                <div class="chatlog__content">
+                    <div class="markdown">There is no contradiction between workers at the awp democratically deciding to give me money and my views that lobbyism is corrupt or that we should redistribute wealth. That is just nonsensical, and I’ll again repeat that it betrays a total lack of understanding of leftist values or policies.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="719302780883435551" id="message-719302780883435551">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Trash#3738">@teras h ffr od</span> The onus is not on me to answer a bad faith call for me to prove “abortion isn’t murder”. Are you serious with this? Are we to go on about this until the end of time? My views are increasingly clear on this subject. I am opposed to the ban, I am opposed to abortion myself, however I recognize the need for women to get one. Your amendment and bills will hurt women’s health and even lock some up, extremely despicable and sad.
+
+Regarding you taking all of the resources at your party’s disposal, ok sure. You can call donations to my campaign corrupt all you like but that doesn’t make it true. Is it corrupt for a person to donate money to someone they agree with on policy? Nope. And yes it is ironic that you stole all of the resources at your disposal, including from the party you lead and the paper you run. And you didn’t even spend it all! This is ironic, a socialist took all of the money for himself and spent it unwisely. A tale as old as time.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yes" title="yes" src="https://cdn.discordapp.com/emojis/717927092209319956.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="719303750266781716" id="message-719303750266781716">
+                <div class="chatlog__content">
+                    <div class="markdown">How do elective abortions have a strong enough nexus to maternal health to justify allowing them in spite of the possible slaughter of an infant?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="719303799293870081" id="message-719303799293870081">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes, the onus is on me to prove that abortion is murder. The thing is, I already have. As I have said numerous times, it really is unknown when exactly life starts. Any risk of allowing mass infanticide, however, must be stopped. As such, it’s safer to assume that life begins at conception in order to stop any possibility of abortion killing children. It’s kind of analogous to Blackstone’s ratio. You have not responded to this argument after 2 days of debating. The burden of rejoinder is on you. Until then, you are basically knowingly condoning murder of a child.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719304421116215347" id="message-719304421116215347">
+                <div class="chatlog__content">
+                    <div class="markdown">The campaign stuff: this is just getting kind of pathetic. I didn’t “steal” any resources from anyone. <strong>as I have said time and time again, with both the PSLPA money and the AWP money it was democratically decided that I would get the funds.</strong> I am a leftist that falls in line perfectly with these left wing organizations that democratically decided to give me money. You are taking money from an abortion lobbyist that, as you said, you disagree with personally. That is bribery.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="719314870784229377" id="message-719314870784229377">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">How do elective abortions have a strong enough nexus to maternal health to justify allowing them in spite of the possible slaughter of an infant?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+See now you’re phrasing it incorrectly yet again. Would you consider abortion following a rape to be an elective abortion? Well under current Dixie law a woman isn’t able to get one. I find that despicable.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/301477892339138560/33cc7e9312a31bb07656175e4d169e44.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="JMP#8812" data-user-id="301477892339138560"  style="color: rgb(255, 0, 0)" >JMP</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="719315355704754306" id="message-719315355704754306">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you know what &quot;elective&quot; means...?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="719316122415005767" id="message-719316122415005767">
+                <div class="chatlog__content">
+                    <div class="markdown"><img class="emoji emoji--large" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png"></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="719316563181961336" id="message-719316563181961336">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Trash#3738">@teras h ffr od</span> No, it is not safer to assume that life begins at conception when you have very little proof on your own. Once again, framing the abortion in this debate as “infanticide” vs “pro-life” is doing so in bad faith and it makes it incredibly difficult to make any headway in an argument. If I don’t believe that life begins at conception then, no, I am not “condoning the murder of children” and I find it pathetic that you would apply that logic to 47% of Dixians, who I assure you are not content with slaughtering children.
+
+ The conversation I had with a lobbyist was a single question and a single answer, no exchange. To claim it as bribery is utterly laughable when the donation was made based on policy views and values I already hold. You, on the other hand, is it not suspect that the head of a party and the head of the AWP happens to receive every dollar of funding when other socialists need the money just as much? I wouldn’t expect too much from someone that heads the party of genocide deniers and Soviet Squidward.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719316796603236393" id="message-719316796603236393">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Do you know what &quot;elective&quot; means...?
+</div><span class="mention" title="JMP#8812">@JMP</span>  
+
+Yes I do, and the point of my comment was that if a woman is pregnant not by her own will I find it gross to say her terminating the pregnancy is still her choice and not urgently necessary.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="719319223637245994" id="message-719319223637245994">
+                <div class="chatlog__content">
+                    <div class="markdown">I don’t really care whether you dislike my framing of the abortion debate. It is the <em>safest assumption</em> that abortion is murder because anything else leaves open the possibility that we are killing innocent children. That is simply a true statement. You can’t seem to accept that, and in trying to ignore it, you are perpetuating the same ignorance around abortion and murder. The 47% of Dixians that voted against the RTL Amendment have the right to hold whatever opinions they want, but that doesn’t take away from the fact that their beliefs logically support murder, even if they don’t directly put it that way. 
+
+No, it’s not “suspect” that I got all of the money from the party and the awp. For the party, the NCP democratically voted to give me all the funds. For the awp, I talked with jogod and we also held a democratic vote among the workers of the company. Both of those things are perfectly reasonable. On the other hand, taking money from an external agent like a lobbyist is significantly worse simply because there is no democratic process and there is no transparency. I was given funding because I am the best option for the workers, and I line up with the left wing party I’m in. You were given money because you bent your will to a shady external agent. There’s a stark difference there. 
+
+P.S. genocide deniers are not allowed into the party as per the constitution and Squidward was banned as quickly as possible by the party. You’re just beating a dead horse that didn’t even have a lot of life in it while it was alive.<span class="chatlog__edited-timestamp" title="07-Jun-20 11:38 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="719323713304002623" id="message-719323713304002623">
+                <div class="chatlog__content">
+                    <div class="markdown">No, the logic does not follow that other beliefs constitute the murder of children, it is only if one subscribes to <em>your particular</em> brand of belief that this becomes true. It is people like you who perpetuate invasive and draconian policies which negatively affect women everywhere, not just in Dixie. I have a concrete plan for helping women get access to means which will raise them up economically as well as ensure the abortion rate goes down. You yourself have admitted that in localities where abortion is illegal women go through dangerous operations to get them anyways. I’m not sure how any person can support a law which makes women felons for wanting to regulate their own body. It is both disgusting and despicable. Many experts do not agree that life begins at conception, and so it will be my duty, in case of the overturning of the ban, to consult with experts and doctors on the best course of action. My <em>number one</em> priority is decreasing the need for abortion, which will involve education reform, healthcare reform, and many other novel policies only I will be able to get passed through the Assembly and into law.
+
+Regarding your shady dealings in funding this election, I am simply pointing out the irony of looting all funding available, which you can claim was democratic but I doubt it, and writing a check to yourself, and not even using it all. We can use this to explain exactly what would happen in a, hopefully, hypothetical Trash governorship: the state appropriates billions from unwilling taxpayers, a lot more than likely is lost due to corruption and cronyism, and last but not least the government misuses and mismanages funds badly.
+
+There was no shady external agent. I am proud of my beliefs and nobody can claim otherwise. To receive funding for being a man of action is an honor and I hope to make all of my voters proud!
+
+You can say Soviet Squidward was a one-off, but you put him up for election and it took way too long to expel him.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="719324666665369621" id="message-719324666665369621">
+                <div class="chatlog__content">
+                    <div class="markdown">I would simply like to close this off with a final reminder of what the Trash campaign is about. This is a campaign for the people. This is a reclamation of your rights, your money, your power over the government, your life. I plan to implement wide sweeping reforms the likes of which have never been seen in Dixie and deconstruct capitalism once and for all. Throughout this debate, I have shown that we are currently stuck in a system that exploits workers and, vampirically sucks the surplus labor from the backs of Dixians. Sandoval’s weak capitalist reforms change are part of the same structure of deceit that made violence possible in the first place. In the words of the great Friedrich Engels, “every step of real movement is more important than a dozen programmes.” Today, we solidly take a step to end capitalism with the largest worker movement in history!<span class="chatlog__edited-timestamp" title="07-Jun-20 11:59 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="719324675498311810" id="message-719324675498311810">
+                <div class="chatlog__content">
+                    <div class="markdown">In conclusion, my campaign is run on small-government beliefs which seek to utilize the government not as an invasive tool, but as a guide for both our constituents and private industry in growing every sector of our economy. We will use funding for necessary projects in education reform, expanding access to affordable healthcare and prescription drugs, repairing and rebuilding our dwindling infrastructure such as roads, schools, bridges, and increasing access to high-speed fiber optic internet, continuing to battle the coronavirus epidemic, and paying off the debt while seeking out future tax reform. 
+
+I believe these policies to be the best course of action here in Dixie and if so honored as to be selected as the next Governor I will absolutely make every single Dixian proud. God bless you all and may God bless our great state!!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 117 message(s)</div>
+</div>
+
+</body>
+</html>

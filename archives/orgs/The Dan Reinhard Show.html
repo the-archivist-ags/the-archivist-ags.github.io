@@ -1,0 +1,3131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - the-dan-reinhard-show</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / the-dan-reinhard-show</div>
+
+        <div class="preamble__entry preamble__entry--small"></div>
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Deleted User#0000" data-user-id="456226577798135808" >Deleted User</span>
+
+
+        <span class="chatlog__timestamp">17-Mar-20 02:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="689481095338786949" id="message-689481095338786949">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="frostydev#6964">@frostydev</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 03:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="689494479530360842" id="message-689494479530360842">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dan Reinhard Show will be interviewing Senator Kamala Harris at 8:00 PM EST tonight! I invite anyone who would like to attend.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="689494818766061582" id="message-689494818766061582">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dan Reinhard show is a brand new source for information, elections, and interviews with politicians! Join our community today, the first interview will be conducted today!
+<a href="https://discord.gg/TESSR8">https://discord.gg/TESSR8</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 04:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="689510167875813482" id="message-689510167875813482">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dan Reinhard Show&#39;s mid-debate election predictions are live! They will be updated at 6:00 PM EST, and new predictions will be up at around 7:00 -
+<a href="https://docs.google.com/document/d/15GvHmlZnOkhojQMXexXzGmszWxnQU9M9hy5ok6qD6mU">https://docs.google.com/document/d/15GvHmlZnOkhojQMXexXzGmszWxnQU9M9hy5ok6qD6mU</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/15GvHmlZnOkhojQMXexXzGmszWxnQU9M9hy5ok6qD6mU"><div class="markdown">TDRS - DX-5 election predictions</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Below are The Dan Reinhard Show’s election predictions for the DX-5 House special election. (Predictions will be updated at 6:00 pm EST)  Poll leader - Poliman - 46.5% of votes  Secondary Leader - Fmr. Governor Blaze - 28.3% of votes  Poll Minority - Sven Brender - 25.2% of vo...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/LT6p--K9Rl-cQdstDHsc-RJziqgWbC_oVKeIT2Er1eGJImcHnLMzTlafXEuQqxBT9889uUTvnQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/LT6p--K9Rl-cQdstDHsc-RJziqgWbC_oVKeIT2Er1eGJImcHnLMzTlafXEuQqxBT9889uUTvnQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 06:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="689548135264944204" id="message-689548135264944204">
+                <div class="chatlog__content">
+                    <div class="markdown">Due to changes in our host, Dan Reinhard&#39;s schedule, Senator Kamala Harris&#39; interview has been moved from 8pm to 6pm. Still EST</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 08:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="689569781535211592" id="message-689569781535211592">
+                <div class="chatlog__content">
+                    <div class="markdown">Want to be on the show, but don&#39;t like messaging people? Sign up today, and we can work out a time slot! -
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSe9eZGzKGT7OH0_wwXyAxzvj-O-2WAsUb4hJZp9k9nPMm5G2A/viewform?usp=sf_link">https://docs.google.com/forms/d/e/1FAIpQLSe9eZGzKGT7OH0_wwXyAxzvj-O-2WAsUb4hJZp9k9nPMm5G2A/viewform?usp=sf_link</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe9eZGzKGT7OH0_wwXyAxzvj-O-2WAsUb4hJZp9k9nPMm5G2A/viewform?usp=sf_link"><div class="markdown">The Dan Reinhard Show Interview sign-up</div></a>
+                            </div>
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/E7oG_szpx6d7kQIbZM0FMzZMdlA6O2ektMEjt0EIKm99QjfWToI6-CMoqguFnBE8ukn5jXg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/E7oG_szpx6d7kQIbZM0FMzZMdlA6O2ektMEjt0EIKm99QjfWToI6-CMoqguFnBE8ukn5jXg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 08:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="689578347050696712" id="message-689578347050696712">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dan Reinhard Show is live at 5 with Senator Kamala Harris! I encourage all to tune in for a great interview!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 09:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="689587751615856891" id="message-689587751615856891">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>BREAKING NEWS</strong></em>
+Former Northern Governor Juan Escobar-Mendoza has been found alive, claims wife pronounced his death in order to collect life insurance. Juan states he was simply in a coma following cardiac issues, and is well now</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 10:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="689600235449876490" id="message-689600235449876490">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>The Dan Reinhard Show&#39;s first episode ends a success!</strong></em>
+The Dan Reinhard Show, along with guest speaker Senator Kamala Harris, aired it&#39;s first episode today. Much was accomplished, indeed!
+
+Tomorrow, we will have a very well-known name in the community, who also plays a large role in our government! Episode 2 will air at 8:00 PM tomorrow</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 10:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="689602068801126494" id="message-689602068801126494">
+                <div class="chatlog__content">
+                    <div class="markdown">Senator Kamala Harris&#39; interview transcript -
+<a href="https://docs.google.com/document/d/15x3B7ur-oK1shyAFSx6P4s23PXiYBNWfIMKMWZnkGSs">https://docs.google.com/document/d/15x3B7ur-oK1shyAFSx6P4s23PXiYBNWfIMKMWZnkGSs</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/15x3B7ur-oK1shyAFSx6P4s23PXiYBNWfIMKMWZnkGSs"><div class="markdown">TDRS S1E1 - Sen. Kamala Harris transcript</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Interviewee - Senator Kamala Harris Date of interview - Tuesday, March 17, 2020 Location Of Interview - Reinhard Theatre, Seattle Washington  Abbreviations - DR - Dan Reinhard KH - Senator Kamala Harris ————————————————————— DR - Everyone welcome, and thanks for tuning in! The...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/DwZeFyHK7vllZ7Ln8b9wIiBa9EgK17MLNPqfHZnHon09ji-5cPd5CmfzJOXip7ZHmlwijQwMQQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/DwZeFyHK7vllZ7Ln8b9wIiBa9EgK17MLNPqfHZnHon09ji-5cPd5CmfzJOXip7ZHmlwijQwMQQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">17-Mar-20 11:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="689621404655681586" id="message-689621404655681586">
+                <div class="chatlog__content">
+                    <div class="markdown">If you&#39;d like to submit a question for someone being interviewed on The Dan Reinhard Show, here&#39;s the spot! -
+<a href="https://forms.gle/ps5APSjo2cNECGQE8">https://forms.gle/ps5APSjo2cNECGQE8</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://forms.gle/ps5APSjo2cNECGQE8"><div class="markdown">The Dan Reinhard Show Interview Question submissions</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Want to have your question asked on the Dan Reinhard show? Submit them here!</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/Jz7nXi-2EKNwK7U6ecaBORVpSe60DSqEoo2I9HB53mqUEDpMVFfyCkNBr2ZDimfO5hR8IUQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/Jz7nXi-2EKNwK7U6ecaBORVpSe60DSqEoo2I9HB53mqUEDpMVFfyCkNBr2ZDimfO5hR8IUQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Mar-20 05:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="689894212308566202" id="message-689894212308566202">
+                <div class="chatlog__content">
+                    <div class="markdown">We need questions to ask! Feel free to submit some above! ^^^</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Mar-20 06:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="689905212189704341" id="message-689905212189704341">
+                <div class="chatlog__content">
+                    <div class="markdown">Tonight I will be interviewing the following -
+
+4:00 PM EST - John Darby
+8:00 PM EST - Vice President J.G.T Webb
+
+Feel free to tune in!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Mar-20 06:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="689907715757047818" id="message-689907715757047818">
+                <div class="chatlog__content">
+                    <div class="markdown">Official DX-5 House special election prediction -
+We predict that Sven Browder will win the seat</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="689909025143652614" id="message-689909025143652614">
+                <div class="chatlog__content">
+                    <div class="markdown">correction - Sven <em><strong>Brender</strong></em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">18-Mar-20 07:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="689924910470266975" id="message-689924910470266975">
+                <div class="chatlog__content">
+                    <div class="markdown">Seeing that the invite to our theatre has expired, here is a new one -
+<a href="https://discord.gg/fbMBjnv">https://discord.gg/fbMBjnv</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Mar-20 09:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="690314061468270632" id="message-690314061468270632">
+                <div class="chatlog__content">
+                    <div class="markdown">WE ARE LIVE IN 20 WITH GUEST J.G.T WEBB! Join us at 6!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Mar-20 11:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="690346798489141299" id="message-690346798489141299">
+                <div class="chatlog__content">
+                    <div class="markdown">Interview slots are officially filled through NEXT FRIDAY! Because of this, I have closed signups. They will re-open on <em><strong>Thursday</strong></em> of next week.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 01:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="690371983682175006" id="message-690371983682175006">
+                <div class="chatlog__content">
+                    <div class="markdown">Transcript of our interview with Fmr. Rep. Anoneymous -
+<a href="https://docs.google.com/document/d/1A9CZzsdzaOrpRwv3-f9QvPpSqaNnPTDNFjLea4wXXKE">https://docs.google.com/document/d/1A9CZzsdzaOrpRwv3-f9QvPpSqaNnPTDNFjLea4wXXKE</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1A9CZzsdzaOrpRwv3-f9QvPpSqaNnPTDNFjLea4wXXKE"><div class="markdown">TDRS S1E3 - Anoneymous transcript</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Interviewee - Fmr. Rep. Anoneymous Date of interview - Thursday, March 18, 2020 Location Of Interview - Reinhard Theatre, Seattle Washington  Abbreviations - DR - Dan Reinhard A - Fmr. Rep. Anoneymous ————————————————————— DR - Everyone, welcome to the Reinhard theatre in Seat...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/rB4dl_W1KbxhekHzby_xzfW1Xn6Npkd-xqhmbPgvXUjrAvqQvBzUVLKNafbsLGMubd6Ts8oPYA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/rB4dl_W1KbxhekHzby_xzfW1Xn6Npkd-xqhmbPgvXUjrAvqQvBzUVLKNafbsLGMubd6Ts8oPYA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+            <div class="chatlog__message " data-message-id="690372450529181708" id="message-690372450529181708">
+                <div class="chatlog__content">
+                    <div class="markdown">BREAKING NEWS!!!
+As our predictions suggest, Sven Brender has won the DX-5 Special House election! Congrats, Sven!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 03:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="690580216233459732" id="message-690580216233459732">
+                <div class="chatlog__content">
+                    <div class="markdown">Interview question submissions have been updated through next week! If you want your voice heard on air, I encourage you to go submit a question or two for your favorite guests!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 07:23 PM</span>
+
+            <div class="chatlog__message " data-message-id="690641743166832671" id="message-690641743166832671">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>It&#39;s official - another right wing party is forming, and they&#39;ll probably die quickly</strong></em>
+
+It&#39;s true, folks. I&#39;ll keep it short and sweet -
+
+This &quot;splinter-party&quot; of the federalists is in the works of being formed, and has high hopes to gain some seats in upcoming state elections. Will they succeed? More information on the party as soon as there&#39;s more to say.
+
+For now, brace yourselves. Your daily shitshow is on the brink of starting...</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Mar-20 11:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="690706946436890634" id="message-690706946436890634">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>Let&#39;s Close This Week</strong></em> premiers in <em><strong>20 minutes</strong></em> on The Dan Reinhard Show! Topics to be discussed -
+
+-<em><strong>COVID-19 Cases in the US skyrocket</strong></em>
+
+-<em><strong>Federalist Party happenings</strong></em>
+
+-<em><strong>What Dixie&#39;s new anti-abortion law means for parents
+
+-</strong></em>Viewer questions and thoughts***</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">20-Mar-20 11:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="690709533923999745" id="message-690709533923999745">
+                <div class="chatlog__content">
+                    <div class="markdown">For those who would like to tune in tonight but don’t want to scroll up -
+<a href="https://discord.gg/fbMBjnv">https://discord.gg/fbMBjnv</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Mar-20 03:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="690763942032572447" id="message-690763942032572447">
+                <div class="chatlog__content">
+                    <div class="markdown">Transcript of my special interview with <span class="mention" title="Chad#7390">@Chad</span> on his campaign beliefs -
+<a href="https://docs.google.com/document/d/1DtTCY3oMubqjspg2sp0ZTXPs5fGxROKxXN-4QrhGIaI">https://docs.google.com/document/d/1DtTCY3oMubqjspg2sp0ZTXPs5fGxROKxXN-4QrhGIaI</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1DtTCY3oMubqjspg2sp0ZTXPs5fGxROKxXN-4QrhGIaI"><div class="markdown">Special Interview - Chad</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Interviewee - Chad Date of interview - Friday, March 20, 2020 Location Of Interview - Reinhard Theatre, Seattle Washington  Abbreviations - DR - Dan Reinhard C - Chad ————————————————————— DR - Everyone, today I’ll be doing a special interview with Chad! How are you today, Cha...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/Kmi2xarwg5reSbzOCSyUdrlVX74UEk4pjhMUXc-qNpFuegUm9oQp3XdTXYHmAPnhrU12R2cMzA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/Kmi2xarwg5reSbzOCSyUdrlVX74UEk4pjhMUXc-qNpFuegUm9oQp3XdTXYHmAPnhrU12R2cMzA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Mar-20 09:06 PM</span>
+
+            <div class="chatlog__message " data-message-id="691030084995383318" id="message-691030084995383318">
+                <div class="chatlog__content">
+                    <div class="markdown">THE DAN REINHARD SHOW PODCAST IS LIVE!
+
+You can listen along on your favorite listening stations, including the following -
+-Spotify
+-Anchor
+More will come as the podcast is accepted onto new platforms!
+<a href="https://open.spotify.com/show/6d1vs0Uf7cJQvTJMqbMj3p?si=VYPJpTwJTLmuPnCemYZRMg">https://open.spotify.com/show/6d1vs0Uf7cJQvTJMqbMj3p?si=VYPJpTwJTLmuPnCemYZRMg</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://open.spotify.com/show/6d1vs0Uf7cJQvTJMqbMj3p?si=VYPJpTwJTLmuPnCemYZRMg"><div class="markdown">The Dan Reinhard Show</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Listen to The Dan Reinhard Show on Spotify. New developments in the area of AGS politics, election coverages, interviews, and more!</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://i.scdn.co/image/649168b517528f89254e1bdd62fb542604212357">
+                                <img class="chatlog__embed-thumbnail" src="https://i.scdn.co/image/649168b517528f89254e1bdd62fb542604212357" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Mar-20 01:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="691460497836605531" id="message-691460497836605531">
+                <div class="chatlog__content">
+                    <div class="markdown">COVID-19/reporters needed statement from The Dan Reinhard Show -
+<a href="https://docs.google.com/document/d/1E6AkuNbyKqSH35D5-LWa8UDlm_zz5N6zXgfsSI1_Fks">https://docs.google.com/document/d/1E6AkuNbyKqSH35D5-LWa8UDlm_zz5N6zXgfsSI1_Fks</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Mar-20 03:05 AM</span>
+
+            <div class="chatlog__message " data-message-id="691845206043131966" id="message-691845206043131966">
+                <div class="chatlog__content">
+                    <div class="markdown">In response to our recent accusations of holding shows with a full audience -
+<a href="https://docs.google.com/document/d/1H_oTlrC7M-tRqZLOK_nq36y7hi8dWyzOPtMgLu-ufY4">https://docs.google.com/document/d/1H_oTlrC7M-tRqZLOK_nq36y7hi8dWyzOPtMgLu-ufY4</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1H_oTlrC7M-tRqZLOK_nq36y7hi8dWyzOPtMgLu-ufY4"><div class="markdown">Statement on audienceless showings</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">In response to MonarchJared’s recent notice, I feel the need to apologize for not notifying my viewers beforehand.  Starting with Arkenstone, and continuing until further notice, ALL interviews on The Dan Reinhard Show will and have been run without an audience. I apologize fo...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/8He1NqkS3ikdWA8KMdPqrwmseCildzZziNvYt0oLDLTHtwpnjGsJAH_8axMBfxoyEd12dpzwNg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/8He1NqkS3ikdWA8KMdPqrwmseCildzZziNvYt0oLDLTHtwpnjGsJAH_8axMBfxoyEd12dpzwNg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Mar-20 02:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="692201794809626675" id="message-692201794809626675">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dan Reinhard Show podcast will be releasing its first episode following the release of the JF and NS special elections</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">26-Mar-20 02:18 AM</span>
+
+            <div class="chatlog__message " data-message-id="692558164910014496" id="message-692558164910014496">
+                <div class="chatlog__content">
+                    <div class="markdown">First official episode of The Dan Reinhard Show podcast is out now! I don&#39;t know how accurate the info is, if someone finds something wrong let me know and I can fix it. 
+<a href="https://open.spotify.com/episode/0eLHnYFZbzAeSA1iIXGTQk?si=OxptSNDxTKynDuSDqzz_jA">https://open.spotify.com/episode/0eLHnYFZbzAeSA1iIXGTQk?si=OxptSNDxTKynDuSDqzz_jA</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Mar-20 03:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="692931859868287058" id="message-692931859868287058">
+                <div class="chatlog__content">
+                    <div class="markdown">This night and yesterday&#39;s planned interviews with System and Randy were unable to be recorded due to issues with our systems. I will work on getting that fixed for tomorrow&#39;s interview with Order.
+
+The first podcast episode will be edited and re-released tomorrow</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">02-Apr-20 03:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="695286241759068170" id="message-695286241759068170">
+                <div class="chatlog__content">
+                    <div class="markdown">After a couple days, The Dan Reinhard show is back! I&#39;ll get interview signups back up in the next few days, but I do need a couple days to get back in beat</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 06:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="695505282519924746" id="message-695505282519924746">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>IS THE FATE OF AMERICAN POLITICS MAKING A DRASTIC CHANGE OF COURSE?</strong></em>
+
+As we all know, within the last month things have been quite shifty. With the COVID-19 scare, states have begun shutting down. Politicians work nearly around-the-clock looking for ways to slow the spread through policy and enforcement. As cases continue to rise, Congress and the United States team up with unlikely allies around the world to develop a vaccine as quickly as possible. Congress works to prevent new cases from spreading as efficiently as possible. Along with the major COVID-19 scare, political parties have joined and split. After a few day&#39;s worth of negotiations, the #ConservaSurge ended following the merging of the Conservative party with the Federalists. Just this past week, the former American Liberal Party, now the American Liberal Coalition, has split into 3 separate caucuses - moderates, progressives, and libertarians. This raises me of the question <em>will the PSLPA follow in it&#39;s fellow parties footsteps? Will new parties be formed? What new troubling events are we apt to see in this month of April?
+
+All of these happenings quite literally in the past 2 weeks leads to yet more questions - *what do the parties hope to achieve?</em>
+
+I&#39;ll leave it up to you to decide this - Is the fate of American Politics making a drastic change of course?
+
+<em><strong><em>Authored and reported by Dan Reinhard, stuck in the confines of his office</em></strong></em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 06:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="695510869353693194" id="message-695510869353693194">
+                <div class="chatlog__content">
+                    <div class="markdown">One of our 3 shows will be cut this upcoming week. Vote for the 1 you want to see gone, loser will be given one last episode then go to the archives for good.
+<img class="emoji " alt="👥" title="👥" src="https://twemoji.maxcdn.com/2/72x72/1f465.png"> - interviews
+<img class="emoji " alt="🗣" title="🗣" src="https://twemoji.maxcdn.com/2/72x72/1f5e3.png"> - news
+<img class="emoji " alt="👤" title="👤" src="https://twemoji.maxcdn.com/2/72x72/1f464.png"> - lets close this week!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👥" title="👥" src="https://twemoji.maxcdn.com/2/72x72/1f465.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🗣️" title="🗣️" src="https://twemoji.maxcdn.com/2/72x72/1f5e3.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👤" title="👤" src="https://twemoji.maxcdn.com/2/72x72/1f464.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">03-Apr-20 06:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="695690331856961546" id="message-695690331856961546">
+                <div class="chatlog__content">
+                    <div class="markdown">(Poll Closed)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">03-Apr-20 09:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="695730721704116275" id="message-695730721704116275">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>Good luck to those running in elections!!!</strong></em>
+
+The Dan Reinhard Show will be releasing exclusive coverage and predictions based on multiple factors every couple hours, with the first predictions for each election coming at 5:00 PM EST</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-Apr-20 04:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="696024019807502337" id="message-696024019807502337">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>FIRST ROUND PREDICTIONS OUT!</strong></em>
+<a href="https://docs.google.com/document/d/1E7TuKQgyL0Pzqaz8lBp4xa3lkS-0-DFRVeQrbRyGHMQ">https://docs.google.com/document/d/1E7TuKQgyL0Pzqaz8lBp4xa3lkS-0-DFRVeQrbRyGHMQ</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1E7TuKQgyL0Pzqaz8lBp4xa3lkS-0-DFRVeQrbRyGHMQ"><div class="markdown">The Dan Reinhard Show - First batch predictions</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">These are not final predictions, the words being used are - Lean - We think a candidate is likely to win Slight Lean - We think a candidate won’t have a landslide victory, but they will get more votes than to be considered Barely winning Barely - We think a candidate will win ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/-MG4VUX-EtaGjpXOET280jDLja7ctOVAFj0rTjmwBSieax5S-Nt0AKnI7NO98Y7o8kU_kIZbgQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/-MG4VUX-EtaGjpXOET280jDLja7ctOVAFj0rTjmwBSieax5S-Nt0AKnI7NO98Y7o8kU_kIZbgQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">04-Apr-20 08:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="696079878654525502" id="message-696079878654525502">
+                <div class="chatlog__content">
+                    <div class="markdown">UPDATED PREDICTIONS, SCROLL TO BOTTOM -
+<a href="https://docs.google.com/document/d/1E7TuKQgyL0Pzqaz8lBp4xa3lkS-0-DFRVeQrbRyGHMQ">https://docs.google.com/document/d/1E7TuKQgyL0Pzqaz8lBp4xa3lkS-0-DFRVeQrbRyGHMQ</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1E7TuKQgyL0Pzqaz8lBp4xa3lkS-0-DFRVeQrbRyGHMQ"><div class="markdown">The Dan Reinhard Show - First batch predictions</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">(Update predictions at bottom)  These are not final predictions, the words being used are - Lean - We think a candidate is likely to win Slight Lean - We think a candidate won’t have a landslide victory, but they will get more votes than to be considered Barely winning Barely ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/-MG4VUX-EtaGjpXOET280jDLja7ctOVAFj0rTjmwBSieax5S-Nt0AKnI7NO98Y7o8kU_kIZbgQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/-MG4VUX-EtaGjpXOET280jDLja7ctOVAFj0rTjmwBSieax5S-Nt0AKnI7NO98Y7o8kU_kIZbgQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 07:22 AM</span>
+
+            <div class="chatlog__message " data-message-id="696243331046441011" id="message-696243331046441011">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>BREAKING NEWS</strong></em>
+
+The Dan Reinhard Show has officially partnered with <span class="mention">#smith-news-station</span>! Details in the agreement below -
+<a href="https://docs.google.com/document/d/1IdL1k4ua9w9UzCd1AJF6mNetRSR37iWOpZ_dqrmDKDM">https://docs.google.com/document/d/1IdL1k4ua9w9UzCd1AJF6mNetRSR37iWOpZ_dqrmDKDM</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1IdL1k4ua9w9UzCd1AJF6mNetRSR37iWOpZ_dqrmDKDM"><div class="markdown">Partnership Announcement</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">—————————————————————  The Dan Reinhard Show PARTNERSHIP ANNOUNCEMENT  The Dan Reinhard Show has officially partnered with Late Night With John Smith. Details below  ————————————————————— The Dan Reinhard Show  Proposition of partnership with Late Night With John Smith  Becaus...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/Q3Qsk9J8NEPiDKRmk5CYSqMwyu_BhjEwH-SgoL9qwUx91wamu_np1yNwjFceUDqtrlVuCaLq-w=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/Q3Qsk9J8NEPiDKRmk5CYSqMwyu_BhjEwH-SgoL9qwUx91wamu_np1yNwjFceUDqtrlVuCaLq-w=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 09:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="696453208607817863" id="message-696453208607817863">
+                <div class="chatlog__content">
+                    <div class="markdown">Pre-Result Remarks
+
+First of all, here at the The Dan Reinhard Show, we&#39;ve been following this state election VERY closely. Each and every candidate who ran, for the most part, ran quite a good campaign.
+
+While not everyone can win their elections, we have predicted the lucky few we think will win each.
+
+Good luck to all running!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">05-Apr-20 11:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="696490741798666331" id="message-696490741798666331">
+                <div class="chatlog__content">
+                    <div class="markdown">BREAKING NEWS
+Trash or Cash has officially joined The Dan Reinhard Show. That&#39;s all, not really breaking news, but I got you to look! <img class="emoji " alt="😆" title="😆" src="https://twemoji.maxcdn.com/2/72x72/1f606.png"></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Socialist" title="Socialist" src="https://cdn.discordapp.com/emojis/695762683617869824.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 03:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="696731758531444806" id="message-696731758531444806">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>BREAKING NEWS!!!</strong></em>
+
+TNEICNA DELLAC TSUJ SAW SWEN CBA! So ancient, it seems, that I have them all backwards! How will they retaliate?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 03:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="696734367141199953" id="message-696734367141199953">
+                <div class="chatlog__content">
+                    <div class="markdown">***The Dan Reinhard Show dares take on the unbeatable, Presidential Medal of Wg19:&amp;hegya winner &quot;The Shallot&quot; in terms of crazy-ass content. Will they prevail? Probably not</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">06-Apr-20 06:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="696777366353215538" id="message-696777366353215538">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>Starting this week</strong></em>
+On Tuesdays and Thursdays, we will be adding a show SIMILAR, but not EXACTLY LIKE American Inquirer&#39;s new show, crossfire. The show will we known as &quot;Dealbreakers&quot;, where we will take a snippet of news from either in-sim or out-of-sim, and each challenger (there will be a left and right-winged opponent) will give their thoughts on the snippet. Each opponent will have 10 minutes to process their thoughts and give their opinion on the matter. Following that, there will be a 30-minute period where each opponent will try as hard as they can to sway their opponent&#39;s opinion. The audience will then vote for who they think did best at swaying their opponent. That challenger wins the game.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">10</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇸" title="🇸" src="https://twemoji.maxcdn.com/2/72x72/1f1f8.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇮" title="🇮" src="https://twemoji.maxcdn.com/2/72x72/1f1ee.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇲" title="🇲" src="https://twemoji.maxcdn.com/2/72x72/1f1f2.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="❓" title="❓" src="https://twemoji.maxcdn.com/2/72x72/2753.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">07-Apr-20 06:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="697134608185032736" id="message-697134608185032736">
+                <div class="chatlog__content">
+                    <div class="markdown">The Dan Reinhard show&#39;s final predictions guesses only <em><strong>3</strong></em> races wrong, with 14/17 correct!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="1️⃣" title="1️⃣" src="https://twemoji.maxcdn.com/2/72x72/31-20e3.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="8️⃣" title="8️⃣" src="https://twemoji.maxcdn.com/2/72x72/38-20e3.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/559200051629654026/3f02944e6205c47879dff687e9171360.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="frostydev#6964" data-user-id="559200051629654026" >frostydev</span>
+
+
+        <span class="chatlog__timestamp">07-Apr-20 06:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="697134650396639304" id="message-697134650396639304">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/689480850621988912/697134650161889311/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/689480850621988912/697134650161889311/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">07-Apr-20 07:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="697151401733783596" id="message-697151401733783596">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>BREAKING NEWS</strong></em>
+Valerie, the President of the United States, just announced her nomination of none other than Cabin to the position of Vice President of a The United States. The Dan Reinhard Show is siding with the American Inquirer with their prediction that he will be accepted by the United States Congress</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">08-Apr-20 03:29 PM</span>
+
+            <div class="chatlog__message " data-message-id="697452980114423900" id="message-697452980114423900">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>LEFTIST SENATORS VOTE AGAINST EZRA AND POLIMAN, MINORITY LEADER AND PRESIDENT TICKED OFF</strong></em>
+
+In voted yesterday, leftist majority members, voted against the confirmation of Ezra and Poliman to the respective positions to which they were nominated. Most members of the Federalist parties, from what we have seen, state the most likely cause is partisan rivalry.
+
+Under heavy fire from Senate Minority Leader Hagen and the President of the United States herself, Valerie, the Senate has begun a 2-hour extension segment to the hearing. We suspect further voting should put Poliman and Ezra into their positions, unless something new happens the disbenefits one of them during their hearing.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">11-Apr-20 02:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="698526826754080778" id="message-698526826754080778">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>THE DAN REINHARD SHOW PREDICTIONS FOR JF-2 AND JF-4 RACES</strong></em>
+
+Our predictions for the following races include - (bold indicates winner)
+
+<em><strong>JF-2</strong></em> -
+<em><strong>Ezra (F)</strong></em> - 36.4%
+Oliver (I) - 33.7%
+Epsilon (S) - 20.3%
+Alex (AL) - 9.6%
+
+<em><strong>JF-4</strong></em>
+<em><strong>Dan Reinhard (AL)</strong></em> - 44.6%
+Caprese (F) - 39.4%
+Samuel Adams (I) - 16%
+
+We&#39;ll be back to review these predictions post-results!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">11-Apr-20 09:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="698634757919080498" id="message-698634757919080498">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>THE DAN REINHARD SHOW POST ELECTION RESULTS</strong></em>
+
+<em><strong>JF-2 -</strong></em>
+<em><strong>Our Prediction -
+Ezra (F), with 36.4%
+Oliver (I), with 33.7%
+Epsilon (S), with 20.3%
+Alex (AL), with 9.6%</strong></em>
+
+Real result -
+<em><strong>Ezra (F)</strong></em>, with 36.87%
+Oliver (I), with 34.8%
+Epsilon (S), with 25.46%
+Alex (AL), with 2.87%
+
+<em><strong>JF-4 -</strong></em>
+<em><strong>Our Prediction -
+Dan Reinhard (AL), with 44.6%
+Caprese (F), with 39.4%
+Samuel Adams (I, turned F after election), with 16%</strong></em>
+
+Real Result -
+<em><strong>Dan Reinhard (AL)</strong></em>, with 43.68%
+Caprese (F), with 43.58%
+Samuel Adams (I, turned F after election), with 12.8%
+
+Alright. Following these races we have some remarks, especially regarding the extraordinary happening in the JF-4 election.
+
+<em><strong>JF-2 Remarks -</strong></em>
+Just off from your normal race, what we are pretty sure caused the win was endorsements, considering the Federalist Party controls both houses of Congress, they had each and every one of their guys endorse Ezra, one after one
+
+<em><strong>JF-4 Remarks -</strong></em>
+We are utterly speechless. After seeing now-Representative Dan Reinhard compete in 4 different elections, and facing the man he&#39;s faced before, he <em><strong>barely</strong></em> managed to slide by with the win. Multiple people from the Federalist Party demanded and asked for recounts, with the election being within the <em><strong>.1%</strong></em> margin. Here at Rep. Dan Reinhard&#39;s show, we are curious to see how well he lives up to his name, or whether he becomes a wreck in Congress. At this point, he has 2 options - truly show people he means business, or be one of those people who gets booted at the next election.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Apr-20 12:25 AM</span>
+
+            <div class="chatlog__message " data-message-id="699037526970597467" id="message-699037526970597467">
+                <div class="chatlog__content">
+                    <div class="markdown">We&#39;d like to congratulate Poliman for his entrance to the House of Representatives</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="699037731828793444" id="message-699037731828793444">
+                <div class="chatlog__content">
+                    <div class="markdown">He ran well, and, though we never got the chance to post it, fell just within 5% of our guess! Good job Poli!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Apr-20 07:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="699322684349350013" id="message-699322684349350013">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>JF-3 Prediction</strong></em>
+
+According to our model, the prediction is as follows -
+
+<em><strong>Winner</strong></em> <span class="mention" title="Caprese#2439">@the salad</span>, with 48.8%
+<span class="mention" title="Epsilon966#7849">@Epsilon966</span>, with 42.5%
+<span class="mention" title="Slavette#0420">@Traitor of the right wing</span>, with 8.7%
+
+Stay tuned as the night goes on for updates!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">13-Apr-20 10:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="699368078546567289" id="message-699368078546567289">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>JF-3 Batch 2 Prediction</strong></em>
+
+New! John Richfield, a former contender for the race, announced he would be suspending his campaign for Representative due to lack of resources. He has non-formally endorsed Mr. Epsilon
+
+Prediction -
+<em><strong>Winner</strong></em> <span class="mention" title="Caprese#2439">@the salad</span>, with 51.3% (+2.5%)
+<span class="mention" title="Epsilon966#7849">@Epsilon966</span>, with 48.7% (+6.2%)
+
+Predictions being updated at 8 pm EST</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">14-Apr-20 02:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="699608166958366730" id="message-699608166958366730">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>JF-3 Batch 3 Prediction</strong></em>
+
+New! Seeing as though Mr. John Richfield&#39;s name has indeed been put on the ballot, we shall move back to including him in today&#39;s first prediction.
+
+Prediction -
+<em><strong>Winner</strong></em> <span class="mention" title="Epsilon966#7849">@Epsilon966</span>, with 49.4% (+0.7%)
+<span class="mention" title="Caprese#2439">@the salad</span>, with 46.2% (-5.1%)
+<span class="mention" title="Slavette#0420">@Traitor of the right wing</span>, with 4.4% (-4.3%)
+
+Predictions being updated throughout the day today, with final predictions at vote close</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">14-Apr-20 08:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="699698966958178364" id="message-699698966958178364">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>JF-3 Batch 4 Prediction</strong></em>
+
+With this afternoon&#39;s latest prediction, our electoral prediction has changed up a bit, but not too drastically
+
+Prediction -
+<em><strong>Winner</strong></em> <span class="mention" title="Caprese#2439">@the salad</span>, with 49.5% (+3.3%)
+<span class="mention" title="Epsilon966#7849">@Epsilon966</span>, with 47.3% (-2.1%)
+<span class="mention" title="Slavette#0420">@Traitor of the right wing</span>, with 1.2% (-3.2%)
+
+More predictions later</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">15-Apr-20 02:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="699798301372842028" id="message-699798301372842028">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1BnJzhNpwqbD9Xguj50grJrb1_FIZIJR0tjk7e3AvlE4">https://docs.google.com/document/d/1BnJzhNpwqbD9Xguj50grJrb1_FIZIJR0tjk7e3AvlE4</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1BnJzhNpwqbD9Xguj50grJrb1_FIZIJR0tjk7e3AvlE4"><div class="markdown">Trash or Cash S2E1 Transcript</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Trash or Cash S2 E2 Transcript  Key:  T = Trash R = Rufflez E = Ethan Armstrong   T: Welcome to Trash or Cash, the ultimate political game show! I’m your host, Trash, and today, we’ll see which one of our contestants has it in them to win some cash!  audience applauds and chee...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/KDfZwQfWFjRk3euRIrsoulYw9NMY8LnAS6Mk_fZXtfslfNEV62M97rbnEIXbWSosERywLLLfCA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/KDfZwQfWFjRk3euRIrsoulYw9NMY8LnAS6Mk_fZXtfslfNEV62M97rbnEIXbWSosERywLLLfCA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">16-Apr-20 08:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="700426316398198909" id="message-700426316398198909">
+                <div class="chatlog__content">
+                    <div class="markdown">We are hiring someone who can act as a proxy manager for Mr. Dan Reinhard while he is away! If you are interested, contact him some way</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">16-Apr-20 10:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="700453387086463098" id="message-700453387086463098">
+                <div class="chatlog__content">
+                    <div class="markdown">Trash or Cash will return...</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="VoteYea" title="VoteYea" src="https://cdn.discordapp.com/emojis/406279850631102474.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😎" title="😎" src="https://twemoji.maxcdn.com/2/72x72/1f60e.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🦀" title="🦀" src="https://twemoji.maxcdn.com/2/72x72/1f980.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">19-Apr-20 02:22 AM</span>
+
+            <div class="chatlog__message " data-message-id="701241207640293387" id="message-701241207640293387">
+                <div class="chatlog__content">
+                    <div class="markdown">Until Mr. Reinhard returns, Trash or Cash host <span class="mention" title="Trash#3738">@teras h ffr od</span> is in charge of The Dan Reinhard Show&#39;s website</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yikesnobackground" title="yikesnobackground" src="https://cdn.discordapp.com/emojis/549083480718573598.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">19-Apr-20 03:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="701257517220626452" id="message-701257517220626452">
+                <div class="chatlog__content">
+                    <div class="markdown">teras h</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😳" title="😳" src="https://twemoji.maxcdn.com/2/72x72/1f633.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/307328847190425601/bdf9e9028cab85ffc5e9fc1433af03da.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Trash#3738" data-user-id="307328847190425601"  style="color: rgb(255, 0, 0)" >teras h ffr od</span>
+
+
+        <span class="chatlog__timestamp">19-Apr-20 04:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="701278142211555418" id="message-701278142211555418">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Official Announcement from <s>TDRS</s> The Trashcan</strong>
+Following multiple experts reviewing the numbers and how company policies affect our success, it has become clear that The Dan Reinhard Show has a poor reputation and is a failing business. As such, we will go through a temporary rebranding of the company to see whether that will change anything. Our new name is <em>The Trashcan</em> and our new logo is the image attached to this message. We hope all of our fans remain loyal viewers and we welcome the new journey ahead of us.<span class="chatlog__edited-timestamp" title="19-Apr-20 05:04 AM">(edited)</span></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/689480850621988912/701278141758439514/image0.jpg">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/689480850621988912/701278141758439514/image0.jpg" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 02:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="701781826947121252" id="message-701781826947121252">
+                <div class="chatlog__content">
+                    <div class="markdown">Trash is hereby fired from the Dan Reinhard Show, I don&#39;t care who hates on us for this. It was not his show to tamper with, and Trash or Cash is off the show</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 03:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="701807361265762364" id="message-701807361265762364">
+                <div class="chatlog__content">
+                    <div class="markdown">In light of recent events, our partnership with <span class="mention">#smith-news-station</span> has ended. He will remain staff on our show if he so pleases. We will ALSO be bringing back some stuff, including possibly interviews. There will be a form out shortly to submit ideas</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 07:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="701862853732204704" id="message-701862853732204704">
+                <div class="chatlog__content">
+                    <div class="markdown">Please take this brief survey! -
+<a href="https://forms.gle/1JW9CM3tSF2XtfBH7">https://forms.gle/1JW9CM3tSF2XtfBH7</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://forms.gle/1JW9CM3tSF2XtfBH7"><div class="markdown">New ideas for The Dan Reinhard Show submission</div></a>
+                            </div>
+
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/_UEsnmL9yuj4ks-rbdug-ixgb6NktCmP7bkW13fZ9-amnJxngDHL-Lg-6pFWnCt1jEHmoL4=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/_UEsnmL9yuj4ks-rbdug-ixgb6NktCmP7bkW13fZ9-amnJxngDHL-Lg-6pFWnCt1jEHmoL4=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 08:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="701884035210936322" id="message-701884035210936322">
+                <div class="chatlog__content">
+                    <div class="markdown">Results -
+<a href="https://docs.google.com/document/d/1Ph0Tz_YpJdNtiYUA14bzDFtYy5i7a9Zs_3RW2KJH8eQ/edit">https://docs.google.com/document/d/1Ph0Tz_YpJdNtiYUA14bzDFtYy5i7a9Zs_3RW2KJH8eQ/edit</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1Ph0Tz_YpJdNtiYUA14bzDFtYy5i7a9Zs_3RW2KJH8eQ/edit"><div class="markdown">The Dan Reinhard Show - 4/20/2020 poll results</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">In response to this question, Trash or Cash will never return to The Dan Reinhard Show. I’ll think of ideas for a Trivia show. I’ll be making the show less political in the times to come    I’ll think about bringing interviews back, but FIRST, I’ll be bringing a trivia show on...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/lDoaMMeItoFjhBRz3NoYXu_BtKSoP37hyRALgT3RW6QiJIk3qScCKBvSANKkjGMdFIo6-D4MrA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/lDoaMMeItoFjhBRz3NoYXu_BtKSoP37hyRALgT3RW6QiJIk3qScCKBvSANKkjGMdFIo6-D4MrA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 10:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="701911908470489119" id="message-701911908470489119">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>BREAKING NEWS</strong></em>
+As both Representative Sven Brender and Representative Emperio rank to 3 missed votes, expulsions loom. Each of the Federalists have 24 hours to provide reasoning as to why they shall not be expelled. If they are expelled, I assume federalists will be elected to each spot.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 11:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="701926262637068351" id="message-701926262637068351">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>You asked, we deliver! Contact Dan Reinhard to sign up for tonight&#39;s show!-</strong></em>
+<a href="https://docs.google.com/document/d/1QjLWl-In61kjvgEbiaOua2rGMm05cC5NUIeVjWUqbyo/edit">https://docs.google.com/document/d/1QjLWl-In61kjvgEbiaOua2rGMm05cC5NUIeVjWUqbyo/edit</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1QjLWl-In61kjvgEbiaOua2rGMm05cC5NUIeVjWUqbyo/edit"><div class="markdown">The Dan Reinhard Show presents - Trivia Night Live!</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">—————————————————— The Dan Reinhard Show Presents - Trivia Night Live!  When - Monday’s, Wednesday’s, and Friday’s at 8 PM EST  Where - The Reinhard Theatre (Until this COVID-19 crisis is over with, the games will be held online via video chat)  How Many Contestants - Up to 4 ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/6WFqe-Rh-bUkyqGYuOz6flzQXforDE7Tern_pTyy-IVIAovQPQbWxGs2JTB6vucHFszBCdjNVg=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/6WFqe-Rh-bUkyqGYuOz6flzQXforDE7Tern_pTyy-IVIAovQPQbWxGs2JTB6vucHFszBCdjNVg=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 01:54 AM</span>
+
+            <div class="chatlog__message " data-message-id="701958934168076440" id="message-701958934168076440">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>Final score -
+Randy - 1,000
+Darby - 900
+
+Randy&#39;s prize - A VIP seat in our audience, and a lifetime supply of cheese!</strong></em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 05:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="702187363157147648" id="message-702187363157147648">
+                <div class="chatlog__content">
+                    <div class="markdown">Randy has been confirmed Speaker of the Dixie Assembly</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 08:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="702232313852854312" id="message-702232313852854312">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>NS-5 Prediction</strong></em>
+
+Pretty easy to predict, to be honest.
+
+Arkenstone - 48%
+Judge Red - 36%
+IndyPrez - 16%</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="gun" title="gun" src="https://cdn.discordapp.com/emojis/686319031837655040.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 09:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="702258161217830912" id="message-702258161217830912">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>NS-5 Updated Prediction</strong></em>
+
+Arkenstone - 47%
+Judge Red - 45%
+IndyPrez - 8%</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 12:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="702302585473728553" id="message-702302585473728553">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>JF-5 RESULTS FINALLY RELEASED</strong></em>
+
+<span class="mention" title="NotAName#0591">@hey guys im new to ags</span> has won the seat over <span class="mention" title="Slavette#0420">@Traitor of the right wing</span>. Congrats to him, this report was boring and I know that</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇺" title="🇺" src="https://twemoji.maxcdn.com/2/72x72/1f1fa.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇧" title="🇧" src="https://twemoji.maxcdn.com/2/72x72/1f1e7.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇴" title="🇴" src="https://twemoji.maxcdn.com/2/72x72/1f1f4.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇮" title="🇮" src="https://twemoji.maxcdn.com/2/72x72/1f1ee.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇳" title="🇳" src="https://twemoji.maxcdn.com/2/72x72/1f1f3.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇬" title="🇬" src="https://twemoji.maxcdn.com/2/72x72/1f1ec.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😠" title="😠" src="https://twemoji.maxcdn.com/2/72x72/1f620.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 04:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="702353805102153768" id="message-702353805102153768">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>SPECIAL ELECTION TIME!</strong></em>
+
+Now-Former Representative Sven Brender has been expelled from his position in the House. A special election will occur at SOME point</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">26-Apr-20 01:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="703757713133273138" id="message-703757713133273138">
+                <div class="chatlog__content">
+                    <div class="markdown">Mr. Reinhard is currently taking a break, to once again be with his ill wife. TDRS will remain open, and be back in order in a few days</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🗑️" title="🗑️" src="https://twemoji.maxcdn.com/2/72x72/1f5d1.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇴" title="🇴" src="https://twemoji.maxcdn.com/2/72x72/1f1f4.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="💵" title="💵" src="https://twemoji.maxcdn.com/2/72x72/1f4b5.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="❓" title="❓" src="https://twemoji.maxcdn.com/2/72x72/2753.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Apr-20 04:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="704361199831351377" id="message-704361199831351377">
+                <div class="chatlog__content">
+                    <div class="markdown">TDRS is back</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="cowbo" title="cowbo" src="https://cdn.discordapp.com/emojis/547143274662723598.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👎" title="👎" src="https://twemoji.maxcdn.com/2/72x72/1f44e.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">27-Apr-20 07:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="704396860479111239" id="message-704396860479111239">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>TRIVIA NIGHT LIVE TONIGHT AT 8 EST</strong></em></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🤡" title="🤡" src="https://twemoji.maxcdn.com/2/72x72/1f921.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="📴" title="📴" src="https://twemoji.maxcdn.com/2/72x72/1f4f4.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🅱️" title="🅱️" src="https://twemoji.maxcdn.com/2/72x72/1f171.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇦" title="🇦" src="https://twemoji.maxcdn.com/2/72x72/1f1e6.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇳" title="🇳" src="https://twemoji.maxcdn.com/2/72x72/1f1f3.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇩" title="🇩" src="https://twemoji.maxcdn.com/2/72x72/1f1e9.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🗑️" title="🗑️" src="https://twemoji.maxcdn.com/2/72x72/1f5d1.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭕" title="⭕" src="https://twemoji.maxcdn.com/2/72x72/2b55.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="💸" title="💸" src="https://twemoji.maxcdn.com/2/72x72/1f4b8.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 12:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="704479782661914725" id="message-704479782661914725">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>TRIVIA NIGHT LIVE IN 10</strong></em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 05:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="704556435429654589" id="message-704556435429654589">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>Reinhard announces campaign for president, Northern Star gets it&#39;s facts wrong</strong></em>
+
+Representative Dan Reinhard has officially announced plans to seek the American Liberal nomination for president in July, which led the <span class="mention">#northern-star</span> to immediately assume Order and Garland weren&#39;t running. Great job to the Star, for not having their facts straight <img class="emoji " alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png"><img class="emoji " alt="🏻" title="🏻" src="https://twemoji.maxcdn.com/2/72x72/1f3fb.png">
+
+<em><strong>System announces he will be seeking the July Federalist nomination</strong></em>
+
+System Jones has just released a tweet, announcing intentions to run for the Federalist nomination. With the competitive minds in the Federalist Party, who knows who else will join the race?
+
+<em><strong>Socialists, Classic Liberals, Centrists have yet to announce candidacies</strong></em>
+
+As of writing, no member of the Socialists, Classic Liberals, or Centrists has announced plans to run. This is sure to change in the future</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 06:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="704568159771820032" id="message-704568159771820032">
+                <div class="chatlog__content">
+                    <div class="markdown">Templar News has bought out The Dan Reinhard Show. In accordance with the deal, The Dan Reinhard Show will remain in operation, it will simply be under ownership of Templar News. If Templar so happens to fold, Dan Reinhard will purchase TDRS back. We will remain giving election coverage, news, Trivia Night Live, all that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/689491390534778995/2121ce52d6ebeb82c58d0ba54a54987a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Dan Reinhard Show#0000" data-user-id="689491390534778995" >The Dan Reinhard Show</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 06:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="704570544992944209" id="message-704570544992944209">
+                <div class="chatlog__content">
+                    <div class="markdown"><em><strong>MonarchJared announces campaign...twice?</strong></em>
+
+Fmr. Representative MonarchJared released a tweet announcing his run for the presidency as a Classical Liberal, switching his party and everything. Minutes later, be removed the tweet, and put up a new tweet, announcing his run as a Federalist.
+
+To Mr. MonarchJared - Make up your mind! Are you a liberal or a federalist???</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/167846500397744128/c33585aafc42d8931f5841fb8ddd11a8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="PirateCody#5653" data-user-id="167846500397744128"  style="color: rgb(52, 170, 224)" >Kody</span>
+
+
+        <span class="chatlog__timestamp">28-Apr-20 07:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="704572691071369266" id="message-704572691071369266">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Archived</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 82 message(s)</div>
+</div>
+
+</body>
+</html>

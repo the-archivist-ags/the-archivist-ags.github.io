@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - the-rhombus</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / the-rhombus</div>
+
+        <div class="preamble__entry preamble__entry--small"></div>
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Deleted User#0000" data-user-id="456226577798135808" >Deleted User</span>
+
+
+        <span class="chatlog__timestamp">20-Apr-20 06:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="701852103202701342" id="message-701852103202701342">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="rat randy!!!!!!!#0001">@rat!!!!!!!</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇼" title="🇼" src="https://twemoji.maxcdn.com/2/72x72/1f1fc.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇹" title="🇹" src="https://twemoji.maxcdn.com/2/72x72/1f1f9.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇫" title="🇫" src="https://twemoji.maxcdn.com/2/72x72/1f1eb.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 06:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="701853177070354463" id="message-701853177070354463">
+                <div class="chatlog__content">
+                    <div class="markdown">Welcome to the rhombus! We are a show dedicated to entertaining you, while staying on the air.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇬" title="🇬" src="https://twemoji.maxcdn.com/2/72x72/1f1ec.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇦" title="🇦" src="https://twemoji.maxcdn.com/2/72x72/1f1e6.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇾" title="🇾" src="https://twemoji.maxcdn.com/2/72x72/1f1fe.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="701853472017875044" id="message-701853472017875044">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://discord.gg/fkZVNHU">https://discord.gg/fkZVNHU</a></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="701853744320610366" id="message-701853744320610366">
+                <div class="chatlog__content">
+                    <div class="markdown">Oh uh also.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇻" title="🇻" src="https://twemoji.maxcdn.com/2/72x72/1f1fb.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇪" title="🇪" src="https://twemoji.maxcdn.com/2/72x72/1f1ea.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇷" title="🇷" src="https://twemoji.maxcdn.com/2/72x72/1f1f7.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇾" title="🇾" src="https://twemoji.maxcdn.com/2/72x72/1f1fe.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="PrideHeart" title="PrideHeart" src="https://cdn.discordapp.com/emojis/589321688013864980.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😉" title="😉" src="https://twemoji.maxcdn.com/2/72x72/1f609.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇬" title="🇬" src="https://twemoji.maxcdn.com/2/72x72/1f1ec.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇦" title="🇦" src="https://twemoji.maxcdn.com/2/72x72/1f1e6.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇮" title="🇮" src="https://twemoji.maxcdn.com/2/72x72/1f1ee.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="701853761056014398" id="message-701853761056014398">
+                <div class="chatlog__content">
+                    <div class="markdown">We&#39;re hosting trash or cash.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">20-Apr-20 11:36 PM</span>
+
+            <div class="chatlog__message " data-message-id="701924241037328445" id="message-701924241037328445">
+                <div class="chatlog__content">
+                    <div class="markdown">There might be an episode of trash or cash tonight. No promises but probably. Join the server above to watch! (If it happens)</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 01:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="701959175197949993" id="message-701959175197949993">
+                <div class="chatlog__content">
+                    <div class="markdown">TOC starting in 5 minutes! <a href="https://discord.gg/KxmyMwD">https://discord.gg/KxmyMwD</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 02:22 AM</span>
+
+            <div class="chatlog__message " data-message-id="701965976123474012" id="message-701965976123474012">
+                <div class="chatlog__content">
+                    <div class="markdown">OFFICIAL SCORE FROM <span class="mention" title="Trash#3738">@teras h ffr od</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="701965984130400616" id="message-701965984130400616">
+                <div class="chatlog__content">
+                    <div class="markdown">1. Dan - 170k
+2. Randy - 75k
+3. JMP - 60k
+4. Fink - 41k
+
+HOWEVER
+
+since dan betrayed the show by firing me and literally crushing my heart and soul forever, he&#39;s disqualified <span class="spoiler spoiler--hidden" onclick="showSpoiler(event, this)"><span class="spoiler-text">lol jk it&#39;s because randy is my boss and we don&#39;t have any money to pay you with</span></span>
+
+so the proper scores are:
+1. Randy - 75k
+2. JMP - 60k
+3. Fink - 41k
+4. Dan, DQ</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 02:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="702153827536732271" id="message-702153827536732271">
+                <div class="chatlog__content">
+                    <div class="markdown">Contact Randy Rhombus if you would like to write for the rhombus.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 04:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="702175792116793394" id="message-702175792116793394">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Breaking</strong>
+A motion in the Dixie Assembly has carried to vacate the speakership of Assemblyman John Smith. An election for speaker of the assembly is expected to occur soon.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">21-Apr-20 04:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="702180109888651296" id="message-702180109888651296">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+Randy has been confirmed Speaker of the Dixie Assembly.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 12:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="702294513636475004" id="message-702294513636475004">
+                <div class="chatlog__content">
+                    <div class="markdown">yeah so randy took a shit on the house floor</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="702294926985265263" id="message-702294926985265263">
+                <div class="chatlog__content">
+                    <div class="markdown">my bad</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702295112994128012" id="message-702295112994128012">
+                <div class="chatlog__content">
+                    <div class="markdown">Anyways, starting Friday the Rhombus show will be live every week! And occasion more often if I want to.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 03:38 AM</span>
+
+            <div class="chatlog__message " data-message-id="702347571389268090" id="message-702347571389268090">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+Homeschool family runs out of space on their van for more family stick figure bumper stickers. Live updates coming in soon.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😱" title="😱" src="https://twemoji.maxcdn.com/2/72x72/1f631.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="702348715029168139" id="message-702348715029168139">
+                <div class="chatlog__content">
+                    <div class="markdown">Update: their family has purchased a new van for the sole purpose of stickers. More kids expected soon.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 05:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="702549577953443940" id="message-702549577953443940">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>News</strong>
+The senate is fully loaded, shooting out cloture faster than you can say, &quot;What the fuck&quot;. This is a remarkable show of efficiency that is amazing most people. Quite the relief from the shitty situation of yesterday.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 06:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="702564500527775805" id="message-702564500527775805">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Dixie</strong>
+The amendment proposed to change the capital of Dixie to Richmond has failed by 1 vote.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 11:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="702650687720390696" id="message-702650687720390696">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+Former chairman of the Conservative party, LOTR, has been elected as chairman of the Federalist Party. He received 52.6% of the vote among federalist members,.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">22-Apr-20 11:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="702650703906209872" id="message-702650703906209872">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/701851842208071691/702650703675392071/image0.jpg">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/701851842208071691/702650703675392071/image0.jpg" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">22-Apr-20 11:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="702650914158411806" id="message-702650914158411806">
+                <div class="chatlog__content">
+                    <div class="markdown">There is rumors of voter fraud. Updates on it coming as soon as we get information.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="702651217586683916" id="message-702651217586683916">
+                <div class="chatlog__content">
+                    <div class="markdown">Jim fisher has been accused, as he is the only federalist with ballot access.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">23-Apr-20 05:57 AM</span>
+
+            <div class="chatlog__message " data-message-id="702745064077525043" id="message-702745064077525043">
+                <div class="chatlog__content">
+                    <div class="markdown">LORT is officially elected chairman of the Federalist Party after lots of research and checks for fraud.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 03:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="703254197750988901" id="message-703254197750988901">
+                <div class="chatlog__content">
+                    <div class="markdown">Arkenstone has been elected to the house after his opponent dropped out.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703254293159084152" id="message-703254293159084152">
+                <div class="chatlog__content">
+                    <div class="markdown">Randy has become SPT after a mysterious departure of Jim Fisher.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703255367127269397" id="message-703255367127269397">
+                <div class="chatlog__content">
+                    <div class="markdown">Correction: our apologies, neither of arkenstone&#39;s opponents dropped out.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 10:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="703350728005255218" id="message-703350728005255218">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+A centrist party is rumored to be formed, attached is the platform that has been released.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703350737991762021" id="message-703350737991762021">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1-VGSQeC6VGYYGCWJ01zei0N5Wh9wvsiC3uXcXvhPGxo/edit?usp=sharing">https://docs.google.com/document/d/1-VGSQeC6VGYYGCWJ01zei0N5Wh9wvsiC3uXcXvhPGxo/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1-VGSQeC6VGYYGCWJ01zei0N5Wh9wvsiC3uXcXvhPGxo/edit?usp=sharing"><div class="markdown">AGS: Centrist Party Platform</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Centrist Party Platform  The Centrist Party is a moderate-left-wing party that intends to serve the people. We want to be able to appeal to the majority of Americans-not too liberal, not too conservative, not too authoritarian, not too libertarian. To appeal to everyone, we to...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/Ps7CLy6xKDoVC9rutuhhIenbniUknzXClJgRG6XKr2HsSBdre1LdPNDfKroKFZ6krhj9kBh59g=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/Ps7CLy6xKDoVC9rutuhhIenbniUknzXClJgRG6XKr2HsSBdre1LdPNDfKroKFZ6krhj9kBh59g=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 10:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="703355186776637461" id="message-703355186776637461">
+                <div class="chatlog__content">
+                    <div class="markdown">This copy has been locked so</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703355196516073514" id="message-703355196516073514">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1643Ed9MORAz7fz6Pp_7bBLirL4tPAuRcFvNbN4CTeLY/edit?usp=sharing">https://docs.google.com/document/d/1643Ed9MORAz7fz6Pp_7bBLirL4tPAuRcFvNbN4CTeLY/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1643Ed9MORAz7fz6Pp_7bBLirL4tPAuRcFvNbN4CTeLY/edit?usp=sharing"><div class="markdown">Centrist Party</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Centrist Party Platform  The Centrist Party is a moderate-left-wing party that intends to serve the people. We want to be able to appeal to the majority of Americans-not too liberal, not too conservative, not too authoritarian, not too libertarian. To appeal to everyone, we to...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/ppK-3lUZZIN1pYTOXULcYqqzoGmWjPMC4RUq51rrKguWfXBUHbIDAEg8nnviVB3KlpAAvzfsRQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/ppK-3lUZZIN1pYTOXULcYqqzoGmWjPMC4RUq51rrKguWfXBUHbIDAEg8nnviVB3KlpAAvzfsRQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 10:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="703364336101490708" id="message-703364336101490708">
+                <div class="chatlog__content">
+                    <div class="markdown">The veritas post stays committed to their journey of providing mediocre news at low quality.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703364655195750401" id="message-703364655195750401">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+Representative Darby has been expelled from the ALC. This may be due to his constant going behind the back of the party and his recent attempts to start a centrist party.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703365837993541665" id="message-703365837993541665">
+                <div class="chatlog__content">
+                    <div class="markdown">Message from the Editor in Chief of the rhombus: Dear Darby,</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">24-Apr-20 11:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="703365847439245454" id="message-703365847439245454">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/701851842208071691/703365847380394024/image0.jpg">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/701851842208071691/703365847380394024/image0.jpg" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">24-Apr-20 11:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="703366626053062776" id="message-703366626053062776">
+                <div class="chatlog__content">
+                    <div class="markdown">Ethan Matthias has also been expelled.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703368071313883187" id="message-703368071313883187">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+Socialist member representative DFADS is awaiting expulsion as he has received a 2/3 majority vote of the house to expel him. Information coming as we get it.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703368235822743664" id="message-703368235822743664">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>ALSO BREAKING</strong>
+<span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> has been selected as minority leader following Darby&#39;s expulsion from the party.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703368888334680125" id="message-703368888334680125">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>FUCKING BUSTING THE DOOR OPEN</strong>
+The sex party has recently been formed. This is very important.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="703368919179722793" id="message-703368919179722793">
+                <div class="chatlog__content">
+                    <div class="markdown">sex is kinda funny ngl</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="this" title="this" src="https://cdn.discordapp.com/emojis/435262746464878613.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="703369734476791808" id="message-703369734476791808">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>ABSOLUTELY RIPPING EVERYTHING AROUND IT UP</strong>
+DFADS has been officially expelled from the House of Representatives.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="cowbo" title="cowbo" src="https://cdn.discordapp.com/emojis/547143274662723598.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Apr-20 01:18 PM</span>
+
+            <div class="chatlog__message " data-message-id="703580667375517738" id="message-703580667375517738">
+                <div class="chatlog__content">
+                    <div class="markdown">The rhombus show has been postponed to today, our apologies for any inconvenience. (As if you were gonna watch it)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Apr-20 02:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="703603083506352140" id="message-703603083506352140">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>BREAKING</strong>
+Chicken found vibing in popular video game &quot;Minecraft&quot;. Will others follow?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">25-Apr-20 02:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="703603103487885333" id="message-703603103487885333">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/701851842208071691/703603102984437771/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/701851842208071691/703603102984437771/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">25-Apr-20 05:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="703644603382759425" id="message-703644603382759425">
+                <div class="chatlog__content">
+                    <div class="markdown">The rhombus will be shutting down. This show didn&#39;t quite work out. We will still be hosting trash or cash so the organization will still be a thing.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="703644678079381555" id="message-703644678079381555">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://discord.gg/fkZVNHU">https://discord.gg/fkZVNHU</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 12:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="704474608929341531" id="message-704474608929341531">
+                <div class="chatlog__content">
+                    <div class="markdown">Fuck it, we&#39;re back for just a bit.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="704474684061909003" id="message-704474684061909003">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>RANDY SHITS</strong>
+That&#39;s it. He shat at a leadership meeting.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/701853176193613945/1d0ca145b746b6dcc594006e208cbf0a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="The Rhombus#0000" data-user-id="701853176193613945" >The Rhombus</span>
+
+        <span class="chatlog__bot-tag">BOT</span>
+
+        <span class="chatlog__timestamp">28-Apr-20 01:53 AM</span>
+
+            <div class="chatlog__message " data-message-id="704495522534260816" id="message-704495522534260816">
+                <div class="chatlog__content">
+                    <div class="markdown">Randy has resigned as SPT due to the fucking bullshit he did today&#39;s</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="704495589756239953" id="message-704495589756239953">
+                <div class="chatlog__content">
+                    <div class="markdown">*today</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">28-Apr-20 03:55 AM</span>
+
+            <div class="chatlog__message " data-message-id="704526051585425460" id="message-704526051585425460">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Archived</strong></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">14</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🦀" title="🦀" src="https://twemoji.maxcdn.com/2/72x72/1f980.png">
+                            <span class="chatlog__reaction-count">9</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="jeb" title="jeb" src="https://cdn.discordapp.com/emojis/437017827812311040.png">
+                            <span class="chatlog__reaction-count">6</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="crabrave" title="crabrave" src="https://cdn.discordapp.com/emojis/569384755813023767.gif">
+                            <span class="chatlog__reaction-count">7</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 51 message(s)</div>
+</div>
+
+</body>
+</html>

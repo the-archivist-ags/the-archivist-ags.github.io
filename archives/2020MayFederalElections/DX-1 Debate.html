@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - dx1-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">May 2020 Federal Election / dx1-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-Apr-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">01-May-20 11:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="705915748358422608" id="message-705915748358422608">
+                <div class="chatlog__content">
+                    <div class="markdown">The Candidates are:
+
+<span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> (ALP)
+<span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> (F)
+<span class="mention" title="TheodoreIvy#8633">@TheodoreIvy</span> (CL)
+
+
+Please ask any questions if you are a resident of Dixie</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="705926386866585641" id="message-705926386866585641">
+                <div class="chatlog__content">
+                    <div class="markdown">For all candidates: why should we vote for you over either of your opponents?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="705927046882263080" id="message-705927046882263080">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, first of all, I&#39;m glad to be here to answer any and all questions that might be in the minds of the people of Dixie.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 12:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="705930750007967845" id="message-705930750007967845">
+                <div class="chatlog__content">
+                    <div class="markdown">Second, to your question <span class="mention" title="Sandoval#9670">@sandoval</span> , I have more experience, limited though it may be, than both candidates combined. I have worked, as a member of the Assembly of Dixie, and as a member of the State Cabinet, to get legislation passed to provide a comprehensive overhaul to the education system of Dixie. Also, in my time in the Assembly, we have worked to defeat the evil of abortion, the lack of health insurance, and, after much deliberation, decided one of the most important issues facing the state.......our state beverage, which I&#39;m proud to say is Sweet Tea.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/273990668358254603/401c0aba9655a73671894dc55a124299.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Anarchist#0361" data-user-id="273990668358254603"  style="color: rgb(26, 188, 156)" >OrDeR</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="705977289544040478" id="message-705977289544040478">
+                <div class="chatlog__content">
+                    <div class="markdown">If elected will you vote to reinstate John Smith as speaker despite his lack of leadership?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="706154519662297088" id="message-706154519662297088">
+                <div class="chatlog__content">
+                    <div class="markdown">Opinion on this</div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/705580852775485511/706154519112974356/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/705580852775485511/706154519112974356/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="706155604074299472" id="message-706155604074299472">
+                <div class="chatlog__content">
+                    <div class="markdown">Idk why someone running for the United States House of Representatives just wished his best regards to someone who is likely the greatest threat to world peace.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706155693853638746" id="message-706155693853638746">
+                <div class="chatlog__content">
+                    <div class="markdown">I would think that this comment alone completely disqualifies him for the office</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="706155726795571240" id="message-706155726795571240">
+                <div class="chatlog__content">
+                    <div class="markdown">He then claimed that the U.S and President Valerie are the biggest threat to world peace.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 03:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="706155850066165802" id="message-706155850066165802">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, he just doesn’t know what he’s talking about</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/273990668358254603/401c0aba9655a73671894dc55a124299.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Anarchist#0361" data-user-id="273990668358254603"  style="color: rgb(26, 188, 156)" >OrDeR</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 04:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="706165853426679909" id="message-706165853426679909">
+                <div class="chatlog__content">
+                    <div class="markdown">If elected will you vote to reinstate John Smith as speaker despite his lack of leadership?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 05:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="706179800343117875" id="message-706179800343117875">
+                <div class="chatlog__content">
+                    <div class="markdown">I would vote to reinstate John as Speaker. John is a good friend of mine, and he has been one for a while. He delegated responsibility to his SPT, just as a responsible leader does. Do I believe he needs to try to do better to complete his duties? Yes. Do I believe he should get another chance to prove himself now that he knows we are dissatisfied? Also yes</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:21 PM</span>
+
+            <div class="chatlog__message " data-message-id="706193575427309589" id="message-706193575427309589">
+                <div class="chatlog__content">
+                    <div class="markdown">John Smith is not fit for speakership. He has had many opportunities to prove his leadership and so far cannot seem to cope.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="706194738742820914" id="message-706194738742820914">
+                <div class="chatlog__content">
+                    <div class="markdown">You decided to show up. Nice of you to join us.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706194997451685899" id="message-706194997451685899">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> can you explain your absence for much of this debate?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:30 PM</span>
+
+            <div class="chatlog__message " data-message-id="706195818255745035" id="message-706195818255745035">
+                <div class="chatlog__content">
+                    <div class="markdown">Debates opened while I was asleep. I&#39;m pretty sure it&#39;s legal to sleep<span class="chatlog__edited-timestamp" title="02-May-20 06:30 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706195928369070092" id="message-706195928369070092">
+                <div class="chatlog__content">
+                    <div class="markdown">Unless you Feds prohibited it</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/688482130702893084/f453906a38fb21b5917d7757c66bec31.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Poliman#7886" data-user-id="688482130702893084"  style="color: rgb(129, 134, 137)" >Poliman</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:31 PM</span>
+
+            <div class="chatlog__message " data-message-id="706196114713346068" id="message-706196114713346068">
+                <div class="chatlog__content">
+                    <div class="markdown">Thoughts on the income tax? <span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 06:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="706199497197355118" id="message-706199497197355118">
+                <div class="chatlog__content">
+                    <div class="markdown">( <span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> attacking someone based off of when they start debating is a no)<span class="chatlog__edited-timestamp" title="02-May-20 06:45 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/516621756379955201/cbd5997f84195843fbe24dadf6f39672.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="John Smith#4125" data-user-id="516621756379955201"  style="color: rgb(0, 255, 129)" >John Smith</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="706205134018838649" id="message-706205134018838649">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="TheodoreIvy#8633">@TheodoreIvy</span> will you participate in this election unlike the last state elections?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 07:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="706215703002218649" id="message-706215703002218649">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Poliman#7886">@Poliman</span> I thank you for your question. Our tax system should represent modern America, and LVT is the way to do this, not a simple income tax. However, I believe that it should be levied on those on the very top end of the payscale. For the most vulnerable in our society, those barely making ends meet, it is not fair to expect them to cough up for the government. At the same time as these people are struggling to survive, those in the 1% are jetting off to tropical locations and making more money in a month than some people will earn in their lives. This economic inequality, which is already hurting thousands of Americans, will be made even more jarring by an unjust tax system. The way forward is a path to economic equality and progress, where hard-working families in America do not need to worry about getting food on the table for their children. The only way to go about this is a tax system that supports these people.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666349165256638474/59a3074be01671bb36ece3ccda2a11ef.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Sandoval#9670" data-user-id="666349165256638474"  style="color: rgb(16, 255, 0)" >sandoval</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 08:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="706231792650289263" id="message-706231792650289263">
+                <div class="chatlog__content">
+                    <div class="markdown">Question for all candidates: how will you help combat climate change?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 09:19 PM</span>
+
+            <div class="chatlog__message " data-message-id="706238381633568768" id="message-706238381633568768">
+                <div class="chatlog__content">
+                    <div class="markdown">I aim to reduce the need for cars by encouraging the use of public transport, especially within cities. Now this will be a challenge: there are hundreds of millions of cars on our roads, and hundreds of thousands of miles of road. The government needs to increase federal and state funding for public transportation systems, to drastically expand services and also to make them a more appealing option for commuters and travellers; something that I will fight for in Congress. Lowering the amount of vehicles that need our roads will heavily reduce carbon emissions, as well as help solve traffic problems, such as those faced in LA.
+
+Another item on the agenda that I will fight for is forest protections. Our forests contain some of our most beautiful scenery, and it is an affront to society that these are torn down and sold for wood. Forests provide much-needed habitats to endangered species; which do not deserve to become extinct due to human actions. Our green areas need greater protections so that we can continue to enjoy our rich landscape and protect our wildlife, and the logging industry must be heavily regulated to enforce greener policies.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">02-May-20 09:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="706241860074602597" id="message-706241860074602597">
+                <div class="chatlog__content">
+                    <div class="markdown">That’s all well and good, but public transportation, though limiting emissions, doesn’t solve the overall problem. The real problem we need to deal with is fossil fuels, the main one used being oil. Oil has proved to be a wonderful resource for progress. It helped drive us into the modern age. It powers our cars, heats and cools our houses, and even holds ours food when we have leftovers. But now it’s time to look at its impacts. It’s killing our planet. It’s destroying our home and we aren’t doing enough to stop it. And that’s why I have a plan to crush fossil fuels, starting with oil. We need to ban fracking, which allows for the easier extraction of oil, at the cost of millions of tons of methane being released into the atmosphere, further warming our planet. We need to look towards alternatives for plastic, which, besides being made from oil, also fills our oceans and clutters our streets. We need to look to alternative energy sources, such as wind or solar. We don’t need to defeat cars. We need to defeat oil. People aren’t the problem. They don’t want to destroy their planet. But they don’t have many affordable options. And that’s why we need to aid auto manufacturers. We need to give them some sort of motivation to want to produce cars that run clean. If we can run clean cars, we won’t have to take tens of millions of cars off the road. We don’t have to destroy. We can adapt. And that’s what I will fight for in Congress. I will fight to protect our planet. I will fight to fix the problem with pragmatic solutions. I will fight to create, not to destroy.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="706531541362409482" id="message-706531541362409482">
+                <div class="chatlog__content">
+                    <div class="markdown">What are your opinions on the constitution and the rights it affords to America? What is the most important part of the constitution in your opinion?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706531597318488125" id="message-706531597318488125">
+                <div class="chatlog__content">
+                    <div class="markdown">Many have blamed poor transparency within the Chinese government, along with their authoritarian practices and massive disinformation campaign, for the severity of the Coronavirus and how unprepared the world has been for it. What should our relationship with China be like in the wake of this? Should we carry out any forms of retaliation against them?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 04:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="706532507834908713" id="message-706532507834908713">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, to your first question, I believe that the Second Amendment is the most important because, without it, we couldn’t defend our other rights. I prize my ability to speak freely, to worship God, and to be innocent until proven guilty if charges are brought against me, but without our right to bear arms, the government can easily take those rights away. Without a citizenry willing and able to back it up and fight for themselves, the Constitution is just an aging piece of paper.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706533689508626452" id="message-706533689508626452">
+                <div class="chatlog__content">
+                    <div class="markdown">To your second question, new information confirms our suspicions that the Chinese government was involved in an in-depth cover up to hide to true lengths that the pandemic was coming to. Do I believe we need to take action against them? Yes . But it’s complicated because it’s China. They’re one of our main global trading partners. They’re a giant in global politics. Making one wrong move could mean a trade war or worse. So I do believe we do need to take action, but I believe we need to be patients and we need to make sure it’s well thought out and prepared before we launch any action.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="706551433713025024" id="message-706551433713025024">
+                <div class="chatlog__content">
+                    <div class="markdown">What should we do in Israel to help deal with the conflict between the Israelis and the Palestinians?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706558782733287536" id="message-706558782733287536">
+                <div class="chatlog__content">
+                    <div class="markdown">Well,frankly, the peace deal we’ve wanted for so long, isn’t working. The idea of the two state solution the way we see it, isn’t going to work. The Palestinians and their allies are too entrenched to even discuss and Israel feels like it’s lost too much to the Palestinian coalition to surrender more. We need a new deal. A different deal. A deal that everyone can live with. A deal where Israel doesn’t have to surrender but the Palestinians also get their state. Now I’m not a expert on the Middle East. But are gonna need experts if we wanna figure out this deal. So in the House, I wanna establish a task force on Israel-Palestine relations, designed to hash out a deal that’s fair for everyone</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 06:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="706565105877385317" id="message-706565105877385317">
+                <div class="chatlog__content">
+                    <div class="markdown">Which world leader, outside of America, would you say you look up to the most?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 08:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="706589716409090128" id="message-706589716409090128">
+                <div class="chatlog__content">
+                    <div class="markdown">My apologies for a somewhat delayed response. For your first question, I believe that the First Amendment is the most important as it sets out the rights that this country is based on. Our nation is built on these values of freedom; freedom of speech, of the press, of assembly, and of religion. Without these guarantees, we would not have risen as the defender of freedom and liberty in time of crisis and adversity. Our free press means that we do not become a dystopian state where censorship is the norm; without this we would allow ourselves to sink just as low as Russia or China.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 08:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="706593118274716220" id="message-706593118274716220">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="1877KarsForKids#6916">@Justice Jed Marshall</span> that’s a hard question to answer. I look up to many of the world’s leaders. But if I had to choose, I would say someone like Prime Minister Netanyahu,who recently put aside his political differences to form a government with his chief rival, or someone like Prime Minister Boris Johnson, who fought through the coronavirus and kept leading his people the whole way. Their spirits of strength, reaching across the aisle, and working for everyone, really inspires me.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 08:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="706594421763997727" id="message-706594421763997727">
+                <div class="chatlog__content">
+                    <div class="markdown">On your second question, I concur that China carried out authoritative practices of censorship in a desperate attempt to hide their weakness. This assault on freedom has led to the biggest public health crisis of our time, simply because the Chinese Government relies on brutal and archaic methods of governance to brush aside its failures. We cannot allow such actions to take place right in front of our eyes, especially when our core principles of democracy are threatened. In spite of this, I believe that a hardline, provocative approach to China is a terrible course of action. Our response should be carefully calculated, managed and examined closely, and conducted with the advice and assistance of experts in Foreign and International Affairs.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="706597999693922305" id="message-706597999693922305">
+                <div class="chatlog__content">
+                    <div class="markdown">Now onto your third question. In recent history, complete peace has never been reached by dividing territory. East and West Germany, North and South Vietnam, North and South Korea.... This half and half approach which has attempted to be implemented in Israel and Palestine is inadequate. However, I do not believe that it is our right to be the policeman of the world. The US must conduct a non-interventionalist approach, using diplomacy and influence while supporting and encouraging the two nations involved to come to an agreement. I am no expert on this so the careful and perilous negotiations must be headed by professionals.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="706599271209762846" id="message-706599271209762846">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> as much as I respect your opinion, helping turn one of the most violent places in the world, peaceful, is not interventionism. It <em>is</em> diplomacy.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="706600053019508738" id="message-706600053019508738">
+                <div class="chatlog__content">
+                    <div class="markdown">On your fourth question, I personally look up to Tsai Ing-wen during this crisis. In a nation of over 22 million people in extremely close proximity to the epicentre of the virus, she and her government have achieved an incredible feat of only 432 confirmed cases. In the face of adversity she has shown strong leadership and has been proactive in protecting her people.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706600092513337355" id="message-706600092513337355">
+                <div class="chatlog__content">
+                    <div class="markdown">I thank you for your questions <span class="mention" title="1877KarsForKids#6916">@Justice Jed Marshall</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706601316410982431" id="message-706601316410982431">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> We tried to turn violent places peaceful before. Look where that led us: Vietnam and Korea. Interventionalist policies cannot solve the problems created by our previous governments.<span class="chatlog__edited-timestamp" title="03-May-20 09:45 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="706601562675347557" id="message-706601562675347557">
+                <div class="chatlog__content">
+                    <div class="markdown">The US voted in favour of the proposal to divide Israel and Palestine; it is partly our fault as to the issues there. If we try and micromanage the situation it will lead to even worse conflict</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/619992328832155668/4b3891338ff574b2b8a250d4e1a92952.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="rat randy!!!!!!!#0001" data-user-id="619992328832155668"  style="color: rgb(129, 134, 137)" >rat!!!!!!!</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="706607795058769922" id="message-706607795058769922">
+                <div class="chatlog__content">
+                    <div class="markdown">Excuse me sir, this is of dire importance. Did you just spell favor with a u? That’s disgusting. ok I’ll leave</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="706607961581027358" id="message-706607961581027358">
+                <div class="chatlog__content">
+                    <div class="markdown">How many American troops were stationed in Vietnam and Korea? I’ll tell you. Almost 3 million troops were deployed to Vietnam. And there were almost 350,00. How many are there in Israel? 99. There are 99 active duty personnel in Israel. Now tell me how we are intervening and it’s gonna end up like Vietnam or Korea. Cause, as far as I know, we have been trying for decades to get a peaceful agreement between Israel and Palestine. And Israel has fought war after war, just to exist. And ever time, they yielded most of the land they pushed into. If we aren’t willing to help our ally figure out a land dispute peacefully, why are we even claiming to be their allies. We have to help our allies when they need us. It’s not interventionism. It’s called loyalty.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="706608483683926026" id="message-706608483683926026">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">Excuse me sir, this is of dire importance. Did you just spell favor with a u? That’s disgusting. ok I’ll leave
+</div><span class="mention" title="rat randy!!!!!!!#0001">@rat!!!!!!!</span> My sincerest apologies sir</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="706609589835006024" id="message-706609589835006024">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="the Majestic Purple Phoenix#3828">@Aegeus Phoenix</span> My apologies for any confusion: I am referring to military intervention. My point is that it would be a disaster to deploy more troops than there already are, or to get involved militarily. I never called for us to abandon our allies; this is made up nonsense. I stated that we should support our ally diplomatically in resolving its disputes; I am a man of loyalty and I have high respect for our allies.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="706610174328045618" id="message-706610174328045618">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> I was concerned from the way you made it sound. It sounded like you wanted us to abandon Israel so they could figure it out on their own. We know that Israel needs our assistance. I’m glad to see we don’t have someone of questionable character running for Congress.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 09:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="706610648636981250" id="message-706610648636981250">
+                <div class="chatlog__content">
+                    <div class="markdown">Of course not, we must support our allies in all corners of the globe. Thank you for your compliment; you are a man of great passion and I can see that you love your country.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="706611193913147415" id="message-706611193913147415">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Drunken Sailor#0063">@Going home, I&#39;m Drunk</span> have you had experience in public office before?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="706611974129319936" id="message-706611974129319936">
+                <div class="chatlog__content">
+                    <div class="markdown">No I concede that I have not. However, all great politicians must start somewhere and I believe that I am ready to take the first step on my political journey.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:12 PM</span>
+
+            <div class="chatlog__message " data-message-id="706614071339909170" id="message-706614071339909170">
+                <div class="chatlog__content">
+                    <div class="markdown">There has been a lot of talk about education. What would you like to do to reform the education system?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 10:22 PM</span>
+
+            <div class="chatlog__message " data-message-id="706616767220547705" id="message-706616767220547705">
+                <div class="chatlog__content">
+                    <div class="markdown">Well, I plan to continue the work that I have begun in Dixie as Education Secretary. At the time,then Governor Cabin, Speaker Smith, and I got together to discuss how to reform our education system. What came out of it was a revolutionary piece of legislation that has come to define my campaign to fix our broken education system. I want to work to end the destruction of creativity and ingenuity in our classrooms. I wanna let our kids think and problem solve, free from the constraints of homework and standardized tests. State mandated tests that are exactly identical for every student are conducive to learning. They honestly do more harm then good. Not everyone learns the same. And that’s something that the education system fails to realize. We need to allow for individuals to complete work on a schedule that doesn’t create unnecessary anxiety and stress. We need to teach them that it’s okay to not understand things. We need to make schools a place that students don’t dread going. I remember being a student. The sound of the alarm was dreadful to me. It forced me to get up and get ready for school. No student should feel like that. Students should love going to school. They should love being able to see their friends, and learn about the beauty of the stars or about humanities’ greatest inventions or about what their potential is. We need to stop making school a chore, and make it joy instead.<span class="chatlog__edited-timestamp" title="03-May-20 10:22 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:32 PM</span>
+
+            <div class="chatlog__message " data-message-id="706634354193072180" id="message-706634354193072180">
+                <div class="chatlog__content">
+                    <div class="markdown">I wholeheartedly agree with the gentlemen&#39;s point. The fact that being forced to stay home from school during this crisis is celebrated by students is not the kind of culture we should be fostering. If a person is relieved to not have to attend an activity, then clearly that is an issue with the activity rather than the person, and we need to fix that. Students falling asleep in class is often a sign that they have been overworked by school, and this is preventing them from getting a healthy night&#39;s sleep. However there is a hope. Most of these issues lie on the backs of teachers and, while our teachers are some of the most hardworking and intelligent workers, unfortunately many have been taught to teach this way themselves. These issues stem from archaic practises passed down from teacher to teacher. Luckily these can be helped (not solved, but helped) by proper training on the mental health of youngsters and proper procedures on the care for students, to turn school into a more inviting environment.<span class="chatlog__edited-timestamp" title="03-May-20 11:32 PM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/423124238329708544/0db4a8faf48cdbeb1bad04c33b2b2a0f.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="1877KarsForKids#6916" data-user-id="423124238329708544"  style="color: rgb(241, 196, 15)" >Justice Jed Marshall</span>
+
+
+        <span class="chatlog__timestamp">03-May-20 11:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="706637752896323586" id="message-706637752896323586">
+                <div class="chatlog__content">
+                    <div class="markdown">As this debate draws to a close, what would you like to reiterate?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/441668652211765250/d196447e27ed3762a51b0141bff193b1.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="the Majestic Purple Phoenix#3828" data-user-id="441668652211765250"  style="color: rgb(241, 196, 15)" >Aegeus Phoenix</span>
+
+
+        <span class="chatlog__timestamp">04-May-20 12:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="706643038012964924" id="message-706643038012964924">
+                <div class="chatlog__content">
+                    <div class="markdown">That I believe, whoever wins this election,if it’s me or my opponent, I think Dixie is better for it</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/329284385289273344/295643445962f2dc327948585461f74a.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Drunken Sailor#0063" data-user-id="329284385289273344"  style="color: rgb(0, 149, 255)" >Going home, I&#39;m Drunk</span>
+
+
+        <span class="chatlog__timestamp">04-May-20 12:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="706643398295027806" id="message-706643398295027806">
+                <div class="chatlog__content">
+                    <div class="markdown">I agree. Dixie&#39;s leadership will be in good hands whoever wins.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 54 message(s)</div>
+</div>
+
+</body>
+</html>

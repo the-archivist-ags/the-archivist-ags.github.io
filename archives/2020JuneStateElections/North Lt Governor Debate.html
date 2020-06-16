@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - north-lt-governor-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">State Elections Channels / north-lt-governor-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-May-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:02 AM</span>
+
+            <div class="chatlog__message " data-message-id="718600640535855125" id="message-718600640535855125">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>June State Election</strong>
+
+The Candidates are: 
+
+<span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span>  (AL) 
+<span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span> (L)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:06 AM</span>
+
+            <div class="chatlog__message " data-message-id="718601588221935647" id="message-718601588221935647">
+                <div class="chatlog__content">
+                    <div class="markdown">I would like to thank everyone who is watching this for joining. I would like to start out by asking my opponent why he thinks he is more fit for this position than me.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/126487411839467520/a7839147826d6087cf160314c2f598d3.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="0009ddet#9582" data-user-id="126487411839467520"  style="color: rgb(0, 149, 255)" >pp t te dd</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="718602194718294046" id="message-718602194718294046">
+                <div class="chatlog__content">
+                    <div class="markdown">To both of you: What do you consider your crowning political achievements?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:50 AM</span>
+
+            <div class="chatlog__message " data-message-id="718612645325963292" id="message-718612645325963292">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for the question, Mr. Majority Leader. 
+
+We have all seen firsthand the wreckage and damage that the COVID-19 pandemic has inflicted upon our nation. Families have lost loved ones; millions are out of a job; society has reached a level of weariness, tension and fear that has not been felt for a very long time. 
+
+Working with Govermor Garland, as Secretary of Internal Affairs and Public Safety, I have been able to play a major part in the North&#39;s response to this pandemic. Among others, I&#39;ve taken steps that no other states have taken, including forming a Board to track the spread of COVID-19 and gauge the severity on a county by county level. I was also appointed to Governor Garland&#39;s Economic Advisory Committee, where I worked with others on fleshing out plans as to how we may be able to help our citizens get through this pandemic on the economic side of things. Furthermore, I was appointed to Coronavirus Committee, acting as a liaison between the state and federal governments and helping plan out the Federal government&#39;s response. 
+
+Why is my role in combating COVID-19 my crowning achievement? Why is that when, as Secretary of the Treasury, I worked with the president in devising the next budget, when I have been both House Majority Leader and Minority Leader? 
+
+It&#39;s because this pandemic is hurting <em>everyone.</em> It is <em>my duty,</em> as a public servant, to work to ensure the well-being and prosperity of our people and there is no way I can serve the people more than working to fight and defeat this horrendous pandemic. This virus has ravaged millions, directly or indirectly, and I believe my most valuable contribution has been my role in the fight against this terror.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666700446152523796/020d6aecbca828c501d46db7254b527b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="SteB#7085" data-user-id="666700446152523796"  style="color: rgb(0, 149, 255)" >Taft&#39;s alt</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="718784232083816469" id="message-718784232083816469">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you support the Green Employment Act?
+
+<a href="https://docs.google.com/document/d/1Xmoc8qbKFCXkXDUGwuu_aDHQ2OpHfa-t7J7o6vD8gFs/edit?usp=sharing">https://docs.google.com/document/d/1Xmoc8qbKFCXkXDUGwuu_aDHQ2OpHfa-t7J7o6vD8gFs/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1Xmoc8qbKFCXkXDUGwuu_aDHQ2OpHfa-t7J7o6vD8gFs/edit?usp=sharing"><div class="markdown">Green Employment Act</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">IN THE HOUSE OF REPRESENTATIVES OF THE UNITED STATES OF AMERICA  June 2nd, 2020  A Bill to increase the size of the green energy sector in the United States Presented by Rep, SteB; Co-sponsored by Rep. Drunk, Rep. Epsilon and Rep. Apex  A Bill  To expand the Green Energy priva...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/jwYU8HPvb1ChHlzKUAGY24H7Rf8yPI1vyinK3DtArTYhhTHiMXvNCCVxwNL9A6ETrkoK60Ywyw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/jwYU8HPvb1ChHlzKUAGY24H7Rf8yPI1vyinK3DtArTYhhTHiMXvNCCVxwNL9A6ETrkoK60Ywyw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 02:11 PM</span>
+
+            <div class="chatlog__message " data-message-id="718814235928428565" id="message-718814235928428565">
+                <div class="chatlog__content">
+                    <div class="markdown">To SteB, yes.
+To Tedd, my crowning political achievement has been stemming the tide of the novel coronavirus not only as a member of the executive and a Delegate of the Northern House, but being help to help stem the tide of the virus in both Dixie and Jefferson too despite this, as well as helping put in place permanent hospital expansion measures, as well as helping in the economic recovery of the state. When you are at the spearhead of not just one, but all of the states in approaching and dealing with a global pandemic, it is hard for that to be not considered as the crowning achievement.
+To <span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span> you mentioned that you have played a major part in dealing with the coronavirus as Secretary of Internal Affairs and Public Safety. How can you do better as Lt. Governor seeing as dealing with the Public&#39;s safety is at the forefront of this?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718815885682278400" id="message-718815885682278400">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, to my friend, did you seriously just have your own organization give you the maximum amount of funding possible?</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="perhaps" title="perhaps" src="https://cdn.discordapp.com/emojis/604799860415397888.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718816270476247082" id="message-718816270476247082">
+                <div class="chatlog__content">
+                    <div class="markdown">If you believe that you are the better candidate than me, you should let the people of the great Northern State decided that without needing to use <em>your</em> organization to fund <em>your</em> campaign</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="718843848033435711" id="message-718843848033435711">
+                <div class="chatlog__content">
+                    <div class="markdown">While I do not feel the need to validate my organization&#39;s actions to you, how do you expect people to know my message and what I bring to the table if I don&#39;t. 
+
+Thank you, Representative SteB, for your question.  I do support that bill- I voted for it to pass the CCE, as a matter of fact, and further plan on voting &quot;Yea&quot; when the time comes that the House votes upon it. Is it perfect? No. I have stated in the past that I would like to see our state take the path of furthering our most efficient energy program, nuclear, and I stand by that stance. 
+
+Nevertheless, both aiding the millions of people who have been left without jobs by this pandemic and caring for the well-being of our planet should be top priorities of any government, and the Green Employment Act.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="718844946622447655" id="message-718844946622447655">
+                <div class="chatlog__content">
+                    <div class="markdown">So you&#39;re denying that your actions are symbolic of the corruption you seek to get out of politics?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="718846682422313033" id="message-718846682422313033">
+                <div class="chatlog__content">
+                    <div class="markdown">Interesting choice of words to describe using the money I&#39;ve made in a campaign. Frankly, speaking of corruption is quite rich of you when your attempts to slow down certain bills in the House that you don&#39;t like a quite apparent, not to mention your obvious attempt to increase the Speaker&#39;s power when we were revising the House Rules.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="718887880046411788" id="message-718887880046411788">
+                <div class="chatlog__content">
+                    <div class="markdown">I did not play a hand in writing those rules. That&#39;s a nice attempt to frame me in a poor light. As I explained at the time, the rules skipped committee because no one was introducing anything without the rules in place. I even said to John Smith, if memory serves me correct, that I would bill the bill in committee if someone introduced another bill, which no one did. As Speaker I&#39;ve run by far the most efficient House, and I&#39;m still doing it.
+If you&#39;re referencing the current committee reassignment bill, I&#39;m leaving it at the end of the schedule because, otherwise, literally every bill must be reassigned committee, and go through them again. This will take a lot of time that we don&#39;t have during a pandemic.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="718904007405600768" id="message-718904007405600768">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> Besides the environment, what else have you done?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718904053853323396" id="message-718904053853323396">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span> What work have you done for the country so far, and in which areas?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 09:33 PM</span>
+
+            <div class="chatlog__message " data-message-id="718925484183912448" id="message-718925484183912448">
+                <div class="chatlog__content">
+                    <div class="markdown">As I&#39;ve stated many times, I&#39;ve been the spearhead of getting legislation passed and action taken on the state level, and I plan to continue to do so headed into the Lt. Governor office. I&#39;ve also worked on getting legislation passed that will make sure America has the best Healthcare system going forward.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 09:40 PM</span>
+
+            <div class="chatlog__message " data-message-id="718927211150704771" id="message-718927211150704771">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for the question, Minority Leader Hagen.
+
+I have had the pleasure to work on all levels of government in an extremely varied manner. From the Governor Garland&#39;s cabinet to President Valerie&#39;s cabinet, and the United States House of Representatives to even the Northern House of Delegates as a proxy for yourself, I have been able to work for the betterment of this country in many different ways.
+
+As Governor Garland&#39;s Secretary of Internal Affairs and Public Safety, I have been able to take a leading role in the fight against COVID-19. As I believe I have previously stated, I established a Board to track the spread, development and severity of COVID-19, a Board that played a major part in the early part of the state&#39;s decision making with regards to the pandemic. Furthermore, I have been able to work with the private manufacturing sector in order to ensure that hospitals and other medical facilities within the North have sufficient supplies for this pandemic. As previously stated, I was also appointed to both Governor Garland&#39;s Economic Advisory Committee and the COVID-19 Committee, the former being to plan on how we may aid struggling Northerners and the latter to plan the Federal Government&#39;s response. 
+
+In regards to the Federal realm of politics, I worked with President Valerie, as Secretary of the Treasury, to draft the next budget, as well as establish a Universal Basic Income, a much needed program following this pandemic. I also worked with her to redesign the 20 dollar bill, in order to replace Andrew Jackson with Frederick Douglass, an appropriate change in this day and age.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718927219388448809" id="message-718927219388448809">
+                <div class="chatlog__content">
+                    <div class="markdown">In the House of Representatives, I have worked on a number of issues. Most recently, I wrote and submitted a bill that would expand oversight over law enforcement, specifically in regards to appropriate firearms usage which will address a major part of police behaviors and actions that needs to change. As of now, the bill is waiting in Committee, as the Speaker had sent it back to committee less than 24 hours following its passage. 
+
+I&#39;ve also worked in the House on a varied number of other topics, from animal rights to registration of voters to abhorrent and unnecessary government waste and, as Lt. Governor, will utilize the vast array experience that has equipped me with.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 01:10 AM</span>
+
+            <div class="chatlog__message " data-message-id="718980135109263420" id="message-718980135109263420">
+                <div class="chatlog__content">
+                    <div class="markdown">In some good lighthearted fun, as we are both exhausted from campaigning, I&#39;m sure because we&#39;ve lamented the amount we&#39;ve had to do in private, how distressed are you about Garland&#39;s favorite bagel type?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718980191409406004" id="message-718980191409406004">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718980303632334929" id="message-718980303632334929">
+                <div class="chatlog__content">
+                    <div class="markdown">Because I agree that Seasame seeds do not belong on one</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 01:54 AM</span>
+
+            <div class="chatlog__message " data-message-id="718991178615488523" id="message-718991178615488523">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you very much for the question. I do believe that sesame seeds belong on a bagel <em>if</em> and only <em>if</em> it is an everything bagel. That is acceptable. However, the existence and preference of a sesame seed bagel aside, what I find most offensive is the fact that the Governor puts <em>cream cheese</em> on his sesame seed bagel. Butter I could possibly understand, but cream cheese? That is an affront to God.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718992138670440519" id="message-718992138670440519">
+                <div class="chatlog__content">
+                    <div class="markdown">Your opinion of sesame seeds on an everything bagel? <span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 01:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="718992349325164574" id="message-718992349325164574">
+                <div class="chatlog__content">
+                    <div class="markdown">Seems legit. I can get behind it. But by itself seems... odd. Plain bagels are the best in my opinion</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:00 AM</span>
+
+            <div class="chatlog__message " data-message-id="718992711738458112" id="message-718992711738458112">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;d have to agree. Toasted with cream cheese or butter, but I prefer the former.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="718993064252669962" id="message-718993064252669962">
+                <div class="chatlog__content">
+                    <div class="markdown">You like your bagels with... butter? Why not just have toast then?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:03 AM</span>
+
+            <div class="chatlog__message " data-message-id="718993431317315584" id="message-718993431317315584">
+                <div class="chatlog__content">
+                    <div class="markdown">It&#39;s all about the texture. A good NY bagel is nice and chewy and has a distinct flavor. Some attribute the flavor and texture to the water, but who knows.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718993510967279688" id="message-718993510967279688">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;d actually really suggest a toasted everything bagel with butter. Copious amounts of butter.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:05 AM</span>
+
+            <div class="chatlog__message " data-message-id="718994035343097867" id="message-718994035343097867">
+                <div class="chatlog__content">
+                    <div class="markdown">I&#39;m much more of a plain bagel with cream cheese kinda guy. Though you can add some ham and turkey and it makes for a nice sandwich</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:07 AM</span>
+
+            <div class="chatlog__message " data-message-id="718994544166961223" id="message-718994544166961223">
+                <div class="chatlog__content">
+                    <div class="markdown">Have you tried lox? Some nice lox on a plain bagel... can&#39;t beat it.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="Justin_el_egg" title="Justin_el_egg" src="https://cdn.discordapp.com/emojis/647567969995456523.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="718994655076810812" id="message-718994655076810812">
+                <div class="chatlog__content">
+                    <div class="markdown">Add some tomato, capers, onion... mmm.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718994807099359274" id="message-718994807099359274">
+                <div class="chatlog__content">
+                    <div class="markdown">With cream cheese of course.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/278678878271307776/2314dfdf1fed4a4fd6589d4b003bed0c.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Jebcubed#6350" data-user-id="278678878271307776"  style="color: rgb(129, 134, 137)" >Jebcubed</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:19 AM</span>
+
+            <div class="chatlog__message " data-message-id="719012698444136518" id="message-719012698444136518">
+                <div class="chatlog__content">
+                    <div class="markdown">To both candidates, do you believe the Lieutenant Governor should have more powers?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/126487411839467520/a7839147826d6087cf160314c2f598d3.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="0009ddet#9582" data-user-id="126487411839467520"  style="color: rgb(0, 149, 255)" >pp t te dd</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:21 AM</span>
+
+            <div class="chatlog__message " data-message-id="719013104457089056" id="message-719013104457089056">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> Why are you better and more qualified than your opponent?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719013536864534530" id="message-719013536864534530">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span> Thoughts on this image?</div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/718600459660689409/719013536864665600/hy8y6sc1hd351.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/718600459660689409/719013536864665600/hy8y6sc1hd351.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="719015195510440046" id="message-719015195510440046">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you for the question <span class="mention" title="Jebcubed#6350">@Jebcubed</span>.
+
+I consider that a very broad question. As a general rule, I oppose the expansion of the powers of major elected officials. The powers of such officials have often greatly expanded the creation of said offices and officials with too much power pose a threat to the liberty and wellbeing of their constituents. 
+
+Specific to the powers of the Lieutenant Governor, I do not believe that the office needs more power. I believe that the role it plays in both the House of Delegates and the Cabinet is appropriate and not over reaching. As Lieutenant Governor, I would be perfectly content with the powers currently given to the position.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719015404999278675" id="message-719015404999278675">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="0009ddet#9582">@pp t te dd</span> Very, very cute. While I confess to preferring dogs, I love cats nonetheless- yes, people like us exist.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719015543625220169" id="message-719015543625220169">
+                <div class="chatlog__content">
+                    <div class="markdown">I sorta want to see the inside though! Is it an empty shell or more decorated inside? How did that cat get in there? Some of life&#39;s greatest mysteries.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/126487411839467520/a7839147826d6087cf160314c2f598d3.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="0009ddet#9582" data-user-id="126487411839467520"  style="color: rgb(0, 149, 255)" >pp t te dd</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="719015982026194947" id="message-719015982026194947">
+                <div class="chatlog__content">
+                    <div class="markdown">Thank you, now what is your opinion on the death penalty?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719016029866426430" id="message-719016029866426430">
+                <div class="chatlog__content">
+                    <div class="markdown">To both candidates</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:36 AM</span>
+
+            <div class="chatlog__message " data-message-id="719016968283357254" id="message-719016968283357254">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>, what are your plans for law enforcement reform in the wake of statewide and nationwide protests?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:44 AM</span>
+
+            <div class="chatlog__message " data-message-id="719018915241525248" id="message-719018915241525248">
+                <div class="chatlog__content">
+                    <div class="markdown">The death penalty is- was, rather- a thing of the past and I believe that we should all work to keep it in the past.
+
+If I could tell you a short story- Kirk Bloodsworth was a 25 year old man from a rural town on the Chesapeake Bay when, in 1985, he was charged with the rape, first degree murder and mutilization of a nine year old girl. He was sentenced to death row following a trial that included egregious mistakes and corruption on part of the prosecution <em>and</em> the judge. The only reason we have Mr. Bloodsworth with us today is the invention of DNA testing. He was acquitted and pardoned when DNA evidence pinned the crime to someone with a history of violent assault. 
+
+Reading Mr. Bloodworth&#39;s story and being able to meet him in person for a lunch- and let me tell you, no one can break apart a crab faster than he can- resulted in going through a paradigm shift. It opened my eyes to the reality of the death penalty- despite its seemingly noble intentions, it both costs more to execute someone than to lock them in prison for life and it execute <em>innocent people.</em> How many innocent people have been executed? How many lives were unjustly killed- nay, murdered, but the state because of a faulty trial or a bias in the judicial system?
+
+The death penalty is state mandated killing, nothing more, nothing less. I would rather lock up the worst of criminals for the rest of their lives if it meant that 5 innocent people would not be sent to a premature, unjust death.<span class="chatlog__edited-timestamp" title="07-Jun-20 03:46 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719018949777555496" id="message-719018949777555496">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="0009ddet#9582">@pp t te dd</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:46 AM</span>
+
+            <div class="chatlog__message " data-message-id="719019426493628416" id="message-719019426493628416">
+                <div class="chatlog__content">
+                    <div class="markdown">To Jebcubed&#39;s question, while I believe in times of crises it is better for a singular person to head up a crisis, a singular person that, mind you, is <em>trusted</em>, the Lt. Governor is not that position and, if I end up in that position, I will not broaden the powers of the executive, as I see it as way too big of a conflict of interest.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="719019788780961953" id="message-719019788780961953">
+                <div class="chatlog__content">
+                    <div class="markdown">Agreed. It ties in why we do not let Congressmen raise their own salaries or why the President alone can&#39;t add an amendment expanding their powers. <em>If</em> the powers of a Lieutenant Governor or Governor should be expanded, let it come from the House of Delegates and the desires of people. No Lt. Governor should work to expand their power.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="719019845873696788" id="message-719019845873696788">
+                <div class="chatlog__content">
+                    <div class="markdown">To <span class="mention" title="0009ddet#9582">@pp t te dd</span> I believe I have shown I am more qualified by being a participating member of the executive branch in the Northern State, at the Federal level, and by writing and pushing my own legislation. While my opponent has pushed some for his own legislation it has not been to the extent I have.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:50 AM</span>
+
+            <div class="chatlog__message " data-message-id="719020458569105429" id="message-719020458569105429">
+                <div class="chatlog__content">
+                    <div class="markdown">I would certainly hope you have pushed more legislation than I have, as you are a Delegate as well as a Representative. I would be worried that you&#39;re inactive or inefficient as a Delegate if that were not the case.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="719022729130541077" id="message-719022729130541077">
+                <div class="chatlog__content">
+                    <div class="markdown">I thank you especially for the question about police brutality Mr. Vice President, especially in light of recent events. <span class="mention" title="Cabin#6713">@Vice President Cabin</span> 
+
+Our nation needs change. For far too long, decades, centuries, law enforcement institutions have been built upon systemic racism and corruption. And it is a <em>tragedy</em> that so many people are afraid of those who are supposed to protect them and uphold the laws of the land. It is a <em>tragedy</em> that so many people are wondering &quot;Will I be next? Will I be the next person to follow the law yet end up murdered at the hands of those I should trust?&quot;
+
+The first thing that we need to do is <em>fundamentally restructure the police.</em> Many police departments have a culture that teaches their officers to behave as if they are in enemy territory and that is so incredibly dangerous. We need to change the mentalities of police officers so that they do not see themselves as outsiders, but rather as a part of the community in which they serve. 
+
+We also need to address police oversight. If you ask a toddler if they did something you&#39;re sure they did, the toddler will say no. What we have been metaphorically doing for too long is taking the toddler for its word. We can not trust law enforcement to accurately conduct oversight on themselves, we must ensure that each and every police department in our state recieves oversight by an independent group that is not affected by the corruption that runs deep within many police departments. 
+
+Last but <em>definitely</em> not least- training. Our police are egregiously undertrained in deescalation and managing situations which has lead to many unncessary deaths and escalations. We also need to revise what methods when dealing with suspects is acceptable. 
+
+There is a lot that needs to change in respects to our law enforcement, and I will work to see that change becomes reality.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="719030749482844271" id="message-719030749482844271">
+                <div class="chatlog__content">
+                    <div class="markdown">My opinion on the death penalty is that it is a horrendous idea that was, and still is, a completely outdated form of punishment that should never ever see the light of day again, no matter what the circumstances. Here is the thing with that:
+There is always a chance that the &quot;clearly guilty&quot; person we are putting to death is entirely innocent. Nobody should have an innocent man&#39;s blood on their hands, nor should anyone have to worry about having an innocent person&#39;s blood on their hands. It isn&#39;t something that any human should have to deal with. Full stop. That should be more than plenty, however, I would like to go on to point out that some would like to see people die for what they&#39;ve done, and that feeling, that <em>urge</em> I understand, but what seperares civilized folk from non-civilized folk is the ability to repress that urge and not act upon it.
+I would go so far as to say that <em>any</em> lethal force should be stopped. We, as humans, should not play God no matter what the circumstance. Unless you&#39;ve exhausted all other methods, lethal force is absolutely not acceptable.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719031129063030829" id="message-719031129063030829">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span> what specifically about Police Oversight do you believe needs to be addressed?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="719037523350782053" id="message-719037523350782053">
+                <div class="chatlog__content">
+                    <div class="markdown"><div class="quote">We, as humans, should not play God no matter what the circumstance. 
+</div>I hope that you will forgive me if I quote that in the future. 
+
+Unfortunately, many police departments on local levels lack oversight that is completely independent of the department itself. While the Clark Open Police Accountability Act gives the Board the ability to establish an independent oversight board in coordination with local officials (Section 104.b.ii), it does not <em>require</em> the establishment of independent oversight groups and as such, many places lack them. 
+
+We need to make sure that there is completely independent police oversight throughout our entire state, from the county level to the state level, and I <em>will</em> work to see that becomes reality.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="719039970689679411" id="message-719039970689679411">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Doggo#2129">@Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span> Your opinion on the 2nd amendment rights fulfillment in the North?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:18 AM</span>
+
+            <div class="chatlog__message " data-message-id="719042517584183387" id="message-719042517584183387">
+                <div class="chatlog__content">
+                    <div class="markdown">With all due respect to you Mr. Coulter. Section 104.b.ii reads as follows:
+<em>The Board may determine, in consultation with the local municipal government and police department leadership, the structure and membership of local police advisory boards.</em>
+The independent oversight group exists on the state level and applies to local levels, if the ones on the local level do not exist (104.a.i and 104.b refers to the local boards). While I understand your concern about the state board being overwhelmed, perhaps this is the place to start? However section 104.a.i makes it clear that any decision made by this board applies to all departments, and not just arbitrary ones like you seem to insist.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:49 AM</span>
+
+            <div class="chatlog__message " data-message-id="719050302392762409" id="message-719050302392762409">
+                <div class="chatlog__content">
+                    <div class="markdown">My apologies, I misread the bill and was in the wrong. However, that does not change the fact that we are still suffering from a lack of proper oversight and will likely continue to do so. We need to expand oversight and ensure its integrity. That and fundamentally changing how we train cops and the culture in which they serve, I believe, can make all the difference in the world.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 06:23 AM</span>
+
+            <div class="chatlog__message " data-message-id="719058821317656586" id="message-719058821317656586">
+                <div class="chatlog__content">
+                    <div class="markdown">In response to Senator Hagen&#39;s question. 
+
+Second Amendment rights have sadly been under attack and suppressed in this state since its inception. Many seem to have taken the idea what works for New York City will work for a rural county in the Corn Belt. That can not be further from the truth. 
+
+We need to work to remove a number of overreaching and unnecessary gun laws and decentralize how we treat gun control. Asides from exercising one&#39;s second amendment right, there&#39;s little practical reason for someone who lives in, say, New York City or Columbus to have a gun. The story is completely different in many other parts of the state, however, where police responses to emergencies could be half an hour or longer and farms need to be able to defend their livestock from predators. 
+
+This state&#39;s current gun control laws need to be revisited and revised for the well-being of our people.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:00 PM</span>
+
+            <div class="chatlog__message " data-message-id="719204039966982305" id="message-719204039966982305">
+                <div class="chatlog__content">
+                    <div class="markdown">Here is the thing about the second amendment, yes, you have the right to bear arms, yes you have the right to own a gun, but other rights are restricted such as freedom of speech, voting, and others that are much more dear to us than the right to own guns. We have restrictions on these rights in the same way that, for example, someone cannot shout &quot;fire&quot; in a crowded theater and expect to get away with it without any persecution from the government for disturbing the peace. This same common sense must be applied to guns as well. Things such as background checks and mental health evaluations must be taken into account when selling someone a gun. We have a huge problem in this country of mass shootings happening where people are senselessly killed because guns continue to slip into the wrong hands. These simple measures will help us be able to track and/or slow (depending on the situation) guns from getting into the wrong hands. That&#39;s what this argument should be about.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666700446152523796/020d6aecbca828c501d46db7254b527b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="SteB#7085" data-user-id="666700446152523796"  style="color: rgb(0, 149, 255)" >Taft&#39;s alt</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:01 PM</span>
+
+            <div class="chatlog__message " data-message-id="719204300546506862" id="message-719204300546506862">
+                <div class="chatlog__content">
+                    <div class="markdown">Would you support a subsidy for renewable energy research and development?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="719232971491508294" id="message-719232971491508294">
+                <div class="chatlog__content">
+                    <div class="markdown">But the difference is that the right to bear arms is overly restricted to many of our citizens. Millions of our citizens <em>need</em> guns, be it for personal protection when the police response is too long, to keep predators away from livestock or for hunting. 
+
+You do not need to explain to me that no freedom is absolute, there are restrictions to them all. Yelling fire in a crowded move theater is not protected by the First Amendment, nor is practicing a religion that practices human sacrifice. But the difference is that people in certain parts of the state need their right to bear arms and it shouldn&#39;t be unreasonably restricted. 
+
+If you can look me in the face, look your constituents in the face, and say that the restrictive gun laws that apply to people in Boston or Baltimore should apply to people living out in the rural country, than I&#39;m afraid you are <em>atrociously</em> out of touch with millions of Northerners and they lives they live.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719233007592013885" id="message-719233007592013885">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719233863468974171" id="message-719233863468974171">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="SteB#7085">@Taft&#39;s alt</span> It depends of course on how much the subsidy is- fiscal responsibility is extremely important- but generally, yes. Our planet needs help fighting climate change and steps we take to fight it are steps taken in the right direction. 
+
+I would also look to further this state&#39;s nuclear program. We all know that nuclear energy is by far the most efficient and is, I believe, the only way for us to feasibly get off of our fossil fuel reliance in a short amount of time and make the changes that our planet needs to see.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 06:03 PM</span>
+
+            <div class="chatlog__message " data-message-id="719235179608277162" id="message-719235179608277162">
+                <div class="chatlog__content">
+                    <div class="markdown">So long as you can pass a federal background check, and are mentally cleared by a psychologist, I have no problems with citizens owning guns whether they be in Boston or Lexington or in the Pocono Mountains. That is not what I said, please do not misconstrue my argument. What I said is we need background checks to keep guns out of the hands of dangerous individuals. I am more than comfortable looking people in the eye and telling them that, if they cannot pass a background check, they shouldn&#39;t own a gun. If they fail a psychological evaluation, they should not own a gun. If they cannot pass a basic knowledge of gun safety test, they should not own a gun. From there... buy as many dang guns as you want, it won&#39;t affect me, or anyone else. If you are a danger to our society, you should not be able to get your hands on guns, full stop. You&#39;ve layed out the exact problem with the debate around this. I&#39;m not some head honcho who is gonna go around and steal everyone&#39;s guns, that&#39;s not the case. I&#39;m just setting up laws that will make sure that they don&#39;t get into dangerous hands or, at least, make it significantly harder for that to happen. In the same way your right to swing your fist stops moments from my face, your right to own a gun ends when you hurt or kill someone. Surely we can agree on that, no?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719236047229157376" id="message-719236047229157376">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, <span class="mention" title="SteB#7085">@Taft&#39;s alt</span> to your question, while my opponent would only further the states nuclear program, I have, and will continue to, forward <em>all</em> non-carbon energy programs whether that be nuclear, solar, wind, or hydropower, or whether that be artifical leaves, or other ways of taking co2 out of the air. The thing with Global Warming is we are working against a clock that we don&#39;t know when it will expire. We need a combination of <em>all</em> of these to accomplish our goals, not just nuclear power.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/309056431896789002/f63c040d28c5cbed9b43b8dfede74fa7.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Doggo#2129" data-user-id="309056431896789002"  style="color: rgb(241, 196, 15)" >Jack &#209;&#165;&#165;&#165;ěěěěěě Coulter</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="719282239166218290" id="message-719282239166218290">
+                <div class="chatlog__content">
+                    <div class="markdown">As an established politician in state politics, I hope you <em>are</em> aware that the North already has background checks for those wishing to purpose a gun? 
+
+I&#39;m not talking about things like background checks. I&#39;m talking about the 10 roundl limit. I&#39;m talking about prohibiting <em>any</em> open cary regardless of kind. I&#39;m talking about not permitting people to own any suppressors. 
+
+I&#39;m talking about a number of the ridiculous, restrictive gun laws that are detrimental to so many Northerners.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/400485600064700417/9f279ea737744e478e92013b9dfd5d70.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ThanosBaby#6300" data-user-id="400485600064700417"  style="color: rgb(26, 188, 156)" >Grindr™</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 09:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="719292785731305513" id="message-719292785731305513">
+                <div class="chatlog__content">
+                    <div class="markdown">How are they detrimental?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 10:25 PM</span>
+
+            <div class="chatlog__message " data-message-id="719300924790669324" id="message-719300924790669324">
+                <div class="chatlog__content">
+                    <div class="markdown">The original question was about my stance on gun control laws, not about what is or isn&#39;t in place. That being said, which laws do you see as detrimental and why?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 64 message(s)</div>
+</div>
+
+</body>
+</html>

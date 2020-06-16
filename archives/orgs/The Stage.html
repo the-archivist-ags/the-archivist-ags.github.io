@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - the-stage</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">To Be Archived / the-stage</div>
+
+
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">05-Jan-20 07:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="663470023175569468" id="message-663470023175569468">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Lamport#9511">@Chief Justice Lamport</span> wow i’m a brick</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="⭐" title="⭐" src="https://twemoji.maxcdn.com/2/72x72/2b50.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">05-Jan-20 08:15 PM</span>
+
+            <div class="chatlog__message " data-message-id="663475753605922859" id="message-663475753605922859">
+                <div class="chatlog__content">
+                    <div class="markdown"></div>
+                </div>
+
+                <div class="chatlog__attachment">
+                    
+                    <a href="https://cdn.discordapp.com/attachments/663469714952945664/663475753605922857/image0.png">
+                        
+                            <img class="chatlog__attachment-thumbnail" src="https://cdn.discordapp.com/attachments/663469714952945664/663475753605922857/image0.png" alt="Attachment">
+                    </a>
+                </div>
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="PrideHeart" title="PrideHeart" src="https://cdn.discordapp.com/emojis/589321688013864980.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+            <div class="chatlog__message " data-message-id="663476747198529557" id="message-663476747198529557">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage</strong> recognizes that meaningful debate and discussion should not be limited to election season and small public spats. We are dedicated to providing a platform for different ideas to make their case. We will be hosting debates and discussions for not only the most well-known politicians in the country, but also for the everyday observer looking to have their voice heard. 
+
+We will also be developing an election prediction model, beginning this week with the federal election.
+
+If you are interested in participating or viewing, join us for all the content. We will be posting highlights and schedules here, along with our election predictions.
+
+Are you ready to take your place on The Stage?
+
+<a href="https://discord.gg/GMHKCXa">https://discord.gg/GMHKCXa</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jan-20 10:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="663875787073781810" id="message-663875787073781810">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage is seeking more participants, particularly those right-of-center. Join and throw your name in!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jan-20 10:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="664236113157816342" id="message-664236113157816342">
+                <div class="chatlog__content">
+                    <div class="markdown">The first event on The Stage will take place following the midterm election. It will be over a recent hot topic, the Land Value Tax and single tax. Our discussion will include individuals on all sides of the issue, and will hopefully bring differing opinions to light.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">09-Jan-20 08:26 PM</span>
+
+            <div class="chatlog__message " data-message-id="664927966781767680" id="message-664927966781767680">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage predicts a Fed-Pop Majority in the House, and several surprise wins from newcomer candidates. Check out the full prediction report below:</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="664927980505792550" id="message-664927980505792550">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/spreadsheets/d/114kbNGpjgvbBnl7p5nAG6sUrTvD81yDIpPiIyvkmJzA">https://docs.google.com/spreadsheets/d/114kbNGpjgvbBnl7p5nAG6sUrTvD81yDIpPiIyvkmJzA</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/spreadsheets/d/114kbNGpjgvbBnl7p5nAG6sUrTvD81yDIpPiIyvkmJzA"><div class="markdown">January Predictions</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Sheet1
+
+Race,Federalist,Labor,Popular,Independent,Prediction
+NS-1,Killalangdon657,Mooneylupin,Antonio Bismen,XRT-17,Lean Independent
+NS-2,Hagen,Adrewster,Toss-Up
+NS-3,Thanos May,Called Popular
+NS-4,MTRX Gaming,Maya,Lean Labor
+NS-5,Simon Pyde,Darby,Toss-Up
+NS-6,LOTR,Blue,Solid...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/r2Pmnl2U-YxoDFgZlA0wnA7AcCuaZ_aqo718a-Z_qwUwQAf8HhdlZ1yPykqZyKd0Qv1PHw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/r2Pmnl2U-YxoDFgZlA0wnA7AcCuaZ_aqo718a-Z_qwUwQAf8HhdlZ1yPykqZyKd0Qv1PHw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">09-Jan-20 11:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="664979010228453386" id="message-664979010228453386">
+                <div class="chatlog__content">
+                    <div class="markdown">Predictions will be updated throughout the next 24 hours. Here are the top House races to watch:
+
+NS-2
+NS-5
+JF-5
+JF-6
+JF-7</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">10-Jan-20 12:24 AM</span>
+
+            <div class="chatlog__message " data-message-id="664987853159399444" id="message-664987853159399444">
+                <div class="chatlog__content">
+                    <div class="markdown">Dixie 1 Senate: Lean Fed --&gt; Solid Fed</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">11-Jan-20 03:52 AM</span>
+
+            <div class="chatlog__message " data-message-id="665402671687270400" id="message-665402671687270400">
+                <div class="chatlog__content">
+                    <div class="markdown">Final Predictions:
+
+NS1: XRT-17 (I)
+NS2: Hagen (F)
+NS3: Thanos May (P)
+NS4: Maya (L)
+NS5: Simon Pyde (F)
+NS6: LOTR (F)
+
+DX1: Cabin (F)
+DX2: Ostland (F)
+DX3: H&#228;st Alg (F)
+DX4: Trash (F)
+DX5: John Smith (F)
+DX6: Lohengramm (P)
+
+JF1: Benny Neutron (L)
+JF2: Commander Johnsonson (P)
+JF3: Valerie (F)
+JF4: MadelynMoon (F)
+JF5: Chargerman (F)
+JF6: Putbye (P)
+JF7: Hombre (L)
+
+North Senate: Garland (L)
+Dixie 1 Senate: Pon Raul (F)
+Dixie 3 Senate: Bruce Hill (L)
+Jefferson Senate: Zarphos (L)</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="665403162550730753" id="message-665403162550730753">
+                <div class="chatlog__content">
+                    <div class="markdown">Tipping Point Races:
+NS5: Pyde v. Darby
+JF4: Madelyn v. Rice
+JF6: Putbye v. Computerguy
+JF7: Hombre v. Llama
+DX3 Senate: Hill v. Webb
+JF Senate: Zarphos v. JMP</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="665403880523169809" id="message-665403880523169809">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage predicts an outright Federalist majority in the House (11 seats) followed by Popular (4 seats), Labor (3 seats), and XRT winning as an Independent
+
+We predict a Labor majority in the Senate, with Pon Raul joining Rincewind in the minority. With two Senate races considered tipping point however, the Federalists do have the small possibility of Senate majority.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">11-Jan-20 03:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="665581700818010122" id="message-665581700818010122">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage is hosting our first discussion, this time on the Single Tax Foundation&#39;s proposed single tax on land value. Join us to watch!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">12-Jan-20 10:27 PM</span>
+
+            <div class="chatlog__message " data-message-id="666045680552509470" id="message-666045680552509470">
+                <div class="chatlog__content">
+                    <div class="markdown">We talked efficiency, public health, climate change, reasons for taxation, and we even had a convert by the end. Check out the full transcript of Episode 1 of The Stage below! Special thanks to our guests.
+
+<a href="https://docs.google.com/document/d/1D20wG58vFS0tyUPGhWAUsI6WON4Uj40SKzQZTMqXS4o">https://docs.google.com/document/d/1D20wG58vFS0tyUPGhWAUsI6WON4Uj40SKzQZTMqXS4o</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1D20wG58vFS0tyUPGhWAUsI6WON4Uj40SKzQZTMqXS4o"><div class="markdown">The Stage Ep.1: Single Tax/LVT</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The Stage Episode 1: Single Tax and LVT With Special Guests: Former President JMP, Vice President d.a.barchipelago, Speaker of the House Valerie, Congressman Thanos May, and Congressman John Darby.  Transcript has been lightly edited due to some invited guests not appearing. ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/4s7Ceps6cgyZxX_cXumxh_eatU5Ff2Gf8QF6alf_UdC0Y40__-KX24IKFsoCRCEIrMyUlQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/4s7Ceps6cgyZxX_cXumxh_eatU5Ff2Gf8QF6alf_UdC0Y40__-KX24IKFsoCRCEIrMyUlQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">13-Jan-20 01:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="666098867363774494" id="message-666098867363774494">
+                <div class="chatlog__content">
+                    <div class="markdown">Tomorrow, The Stage will host our second discussion. The topic will be gun control, and I invite everyone to tune in live. A transcript will of course be published at the conclusion for those who can&#39;t make it</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">15-Jan-20 03:02 AM</span>
+
+            <div class="chatlog__message " data-message-id="666839504765714432" id="message-666839504765714432">
+                <div class="chatlog__content">
+                    <div class="markdown">Far less fruitful than Episode 1, this time we talked gun control with Dixie Secretary of State James Order and Senator Bruce Hill, with brief appearances from the opposition Congressman Hagen and former Governor J.G.T. Webb. 
+
+<a href="https://docs.google.com/document/d/1DJP8MRWx9_ScF5lcimauizsblMYcwi87pvdoHzuQI0A">https://docs.google.com/document/d/1DJP8MRWx9_ScF5lcimauizsblMYcwi87pvdoHzuQI0A</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1DJP8MRWx9_ScF5lcimauizsblMYcwi87pvdoHzuQI0A"><div class="markdown">The Stage Ep.2: Gun Control</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The Stage Episode 2: Gun Control With Special Guests: Senator Bruce Hill, Congressman Hagen, Dixie Secretary of State James Order, and former Senator and Governor J.G.T. Webb   Cabin: I’ll ask the guests to answer the following to start us off: do you believe the United Sta...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/pYILKdrTDC_pbgEFcMXiEf39l6wEnzjKbjhCyNkDqmI0b7OJkRHyvK-WXj_ZxoO2i276PQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/pYILKdrTDC_pbgEFcMXiEf39l6wEnzjKbjhCyNkDqmI0b7OJkRHyvK-WXj_ZxoO2i276PQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="utryd" title="utryd" src="https://cdn.discordapp.com/emojis/623700154012401701.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">18-Jan-20 02:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="667911429990383636" id="message-667911429990383636">
+                <div class="chatlog__content">
+                    <div class="markdown">With news from <span class="mention">#associated-press</span> today that the NATO gathering ended in a walkout, foreign policy is on the mind for many Americans. Join us Monday for a discussion on America&#39;s role in the world!
+
+<a href="https://discord.gg/ZbSfQZ4">https://discord.gg/ZbSfQZ4</a><span class="chatlog__edited-timestamp" title="18-Jan-20 02:37 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">20-Jan-20 04:13 PM</span>
+
+            <div class="chatlog__message " data-message-id="668850538980311084" id="message-668850538980311084">
+                <div class="chatlog__content">
+                    <div class="markdown">Cameras are rolling! Join in to view the conversation live!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">21-Jan-20 01:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="668989858483798026" id="message-668989858483798026">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+Based on Darby&#39;s failure to campaign, we predict <span class="mention" title="Deleted User#0000">@Deleted User</span> will win NS-3
+
+Based on Alligator&#39;s failure to campaign and ComputerGuy&#39;s poor recent election history, we predict <span class="mention" title="MonarchJared#5027">@MonarchJared</span> will win JF-5</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">22-Jan-20 08:47 PM</span>
+
+            <div class="chatlog__message " data-message-id="669644316431482911" id="message-669644316431482911">
+                <div class="chatlog__content">
+                    <div class="markdown">Check out Episode 3 of The Stage, featuring special guests Webb and JMP!
+
+<a href="https://docs.google.com/document/d/1DKAtICsd8z62v41kow76eaRltaL_MfwZCpwjp1qRp8s">https://docs.google.com/document/d/1DKAtICsd8z62v41kow76eaRltaL_MfwZCpwjp1qRp8s</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1DKAtICsd8z62v41kow76eaRltaL_MfwZCpwjp1qRp8s"><div class="markdown">The Stage Ep.3: Foreign Involvement</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The Stage Episode 3: Foreign Involvement With Special Guests: Former Senators J.G.T. Webb and JMP   Cabin: I&#39;d like to welcome to The Stage former Senators J.G.T. Webb and JMP! I&#39;ll start today&#39;s conversation off with this: how should the United States change its role in the ...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/UzeN1UQeRrgOzzwGEaqu58ZGalDoWh4KrYFsukCYhWLNn9kwQfTrggkEpPwNYTUPRyyUBw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/UzeN1UQeRrgOzzwGEaqu58ZGalDoWh4KrYFsukCYhWLNn9kwQfTrggkEpPwNYTUPRyyUBw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">23-Jan-20 01:27 AM</span>
+
+            <div class="chatlog__message " data-message-id="669714864016719892" id="message-669714864016719892">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+<span class="mention" title="Fat Amy#0836">@Fat Amy</span> will win the vacant NS-3 House seat due to overwhelming endorsements</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">28-Jan-20 12:25 AM</span>
+
+            <div class="chatlog__message " data-message-id="671511145642852363" id="message-671511145642852363">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage has reached out to Jefferson Governor Valerie and Labor challenger Codegreen for a debate. We hope both candidates will accept, and we can bring coverage to our viewers soon.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">30-Jan-20 12:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="672243805352886282" id="message-672243805352886282">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+Based on debate performance and the platforms of the two candidates, The Stage predicts Garland will take the Northern Governorship over John Darby almost irrespective of what happens between now and when the polls close</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">31-Jan-20 09:24 PM</span>
+
+            <div class="chatlog__message " data-message-id="672915051191074846" id="message-672915051191074846">
+                <div class="chatlog__content">
+                    <div class="markdown">As always, The Stage will be releasing predictions for the State Election in the coming days</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">03-Feb-20 12:12 AM</span>
+
+            <div class="chatlog__message " data-message-id="673682266928447500" id="message-673682266928447500">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+Dixie Governor - Cabin
+Dixie Lt. Governor - Ethan
+DX1 - Pon Raul
+DX2 - John Smith
+DX3 - Webb
+DX4 - Lohengramm
+DX5 - Trash
+DX6 - Hast Alg
+DX7 - Order
+AG - Webb
+SecState - Order
+Federalist Supermajority
+
+North Governor - Garland
+NS1 - Hagen
+NS2 - Ted Ddot
+NS3 - John Boehner
+NS4 - Thanos May
+NS5 - LOTR
+AG - Thanos May
+Federalist Majority
+
+Dixie Governor - Valerie
+JF1: Rincewind
+JF2: CommanderJohnsonson
+JF3: ComputerGuy
+JF4: JMP
+JF5: Chargerman
+Federalist Majority</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">03-Feb-20 04:30 AM</span>
+
+            <div class="chatlog__message " data-message-id="673747061153333258" id="message-673747061153333258">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage correctly predicted 23 of 24 races</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Feb-20 06:35 AM</span>
+
+            <div class="chatlog__message " data-message-id="674865768235794442" id="message-674865768235794442">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage is <strong>live</strong> with John Smith and James Order to discuss Dixieland, and reactions from groups in Dixie on all sides of the issue. Tune in now, or check back for a transcript.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Feb-20 04:55 PM</span>
+
+            <div class="chatlog__message " data-message-id="675384037422006272" id="message-675384037422006272">
+                <div class="chatlog__content">
+                    <div class="markdown">We talked historical context, rewriting history, and whether majorities can be wrong. Read Episode 4 of The Stage, on &quot;Dixieland&quot; with Assemblymen Smith and Order.
+
+<a href="https://docs.google.com/document/d/1D__pTuTZ5yShUEcBH8AFF23NEeJC46wR8Ic5__Fhxmo">https://docs.google.com/document/d/1D__pTuTZ5yShUEcBH8AFF23NEeJC46wR8Ic5__Fhxmo</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1D__pTuTZ5yShUEcBH8AFF23NEeJC46wR8Ic5__Fhxmo"><div class="markdown">The Stage Ep.4: Dixieland</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">The Stage Episode 4: Dixieland With Special Guests, Assemblymen John Smith and James Order   Cabin: The Stage is back! Tonight we welcome a pair from Dixie, Assembly Speaker John Smith and Assemblyman James Order. A controversy recently came back into the public discourse aft...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/J4eGrZpp0kKo9LoQ5ainDMNCgyjWR5jCsLz_4BxBe4LyDtzFSIrfNvfSWlzr3nsrxz4PoE7DYQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/J4eGrZpp0kKo9LoQ5ainDMNCgyjWR5jCsLz_4BxBe4LyDtzFSIrfNvfSWlzr3nsrxz4PoE7DYQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">14-Feb-20 11:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="678021483767005214" id="message-678021483767005214">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+For NS-3 House, we give candidates the following chance of winning the seat:
+<em>anoneymous - 65%
+Arkenstone - 35%
+Starcomer - &lt;1%</em></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">21-Feb-20 12:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="680213417394700288" id="message-680213417394700288">
+                <div class="chatlog__content">
+                    <div class="markdown">Big announcement coming soon!</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇽" title="🇽" src="https://twemoji.maxcdn.com/2/72x72/1f1fd.png">
+                            <span class="chatlog__reaction-count">12</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">21-Feb-20 05:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="680471405049020476" id="message-680471405049020476">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Introducing The Forecast</strong>
+Since our inception, we&#39;ve run election predictions with a fair bit of success. But us, like all the other pundits, are making these predictions based on a rough guess at who has the more successful campaign, the more skillful debate. The Stage is looking to change that with The Forecast.
+
+<strong>The Forecast</strong> is a data-driven tool that will predict a range of possible outcomes for every election we see in this country. We&#39;ll factor in likely voter history, debate skills, campaign performance, and many other components of what makes a candidate succeed. 
+
+This is a complex tool and we&#39;re being cautious before rolling it out for the public to put trust in. The Forecast will be operational by the upcoming federal election, but will be published after so we can quality test and ensure the highest accuracy possible.
+
+Anyone interested and skilled in web design is asked to reach out, we&#39;re looking to make this a user-interactive tool if possible.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="walter" title="walter" src="https://cdn.discordapp.com/emojis/674005786606829578.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="PridePepe" title="PridePepe" src="https://cdn.discordapp.com/emojis/571044310091563008.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">23-Feb-20 02:38 AM</span>
+
+            <div class="chatlog__message " data-message-id="680966596612849684" id="message-680966596612849684">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+Arkenstone will take wins in both the House race and the North legislature race</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="PridePepe" title="PridePepe" src="https://cdn.discordapp.com/emojis/571044310091563008.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">27-Feb-20 11:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="682734740112932888" id="message-682734740112932888">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage will be hosting the first presidential debate between President Valerie and Congressman Arkenstone!
+
+We will coordinate with both campaigns and announce a time and date as soon as possible.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">29-Feb-20 01:14 AM</span>
+
+            <div class="chatlog__message " data-message-id="683119958837952617" id="message-683119958837952617">
+                <div class="chatlog__content">
+                    <div class="markdown">The Presidential Debate will be hosted on The Stage tomorrow evening at 9pm est. Join us live, or watch for a transcript after!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">01-Mar-20 01:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="683482810878787587" id="message-683482810878787587">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://discord.gg/9K6agZs">https://discord.gg/9K6agZs</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">01-Mar-20 09:16 PM</span>
+
+            <div class="chatlog__message " data-message-id="683784647359987764" id="message-683784647359987764">
+                <div class="chatlog__content">
+                    <div class="markdown">Last night we had a fiery debate between the two presidential candidates! Transcript should be published soon.
+
+Additionally, <span class="mention" title="NYCDOT/John Darby/Sam Rimbledon#9355">@NYCDOT/John Darby/Sam Rimbledon</span> will be joining The Stage&#39;s staff to assist with The Forecast as we prepare for an internal test on the Federal Election</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👍" title="👍" src="https://twemoji.maxcdn.com/2/72x72/1f44d.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Mar-20 01:32 AM</span>
+
+            <div class="chatlog__message " data-message-id="685298636917178481" id="message-685298636917178481">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage is hosting the first Vice Presidential Debate between two former Dixie Governors, <span class="mention" title="MightyAtreides#1872">@MightyAtreides</span> and <span class="mention" title="Legendstorm TV/Andrew#7194">@Fmr. Governor/Assemblyman Blaze</span> tonight! Come join us!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Mar-20 03:25 AM</span>
+
+            <div class="chatlog__message " data-message-id="685327102265917461" id="message-685327102265917461">
+                <div class="chatlog__content">
+                    <div class="markdown">Breaking from the debate: <span class="mention" title="Legendstorm TV/Andrew#7194">@Fmr. Governor/Assemblyman Blaze</span> to file lawsuit against Dixie Special Prosecutor over Khalil Corruption Scandal</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="685327307455725582" id="message-685327307455725582">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="MightyAtreides#1872">@MightyAtreides</span>, his opponent, as Dixie AG would likely defend</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Mar-20 08:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="685578048032342034" id="message-685578048032342034">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Well that was interesting.</strong>
+
+Check out the VP debate on The Stage!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">08-Mar-20 09:59 PM</span>
+
+            <div class="chatlog__message " data-message-id="686332371154501747" id="message-686332371154501747">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>Update on The Forecast</strong>
+It is taking longer than planned to input all the previous election data that will drive our model. We will be retroactively testing it against the results of this election and still plan to roll it out publicly for the state election in April</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">09-Mar-20 12:57 AM</span>
+
+            <div class="chatlog__message " data-message-id="686377012956364835" id="message-686377012956364835">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage will not be releasing final predictions</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="cringe" title="cringe" src="https://cdn.discordapp.com/emojis/679435988388282382.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="bowsette" title="bowsette" src="https://cdn.discordapp.com/emojis/544765732903452683.png">
+                            <span class="chatlog__reaction-count">2</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">18-Mar-20 06:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="689907022510162013" id="message-689907022510162013">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+Sven Brender will win the special election for Rep. Sans&#39; vacant House seat</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">18-Mar-20 06:57 PM</span>
+
+            <div class="chatlog__message " data-message-id="689910359955734559" id="message-689910359955734559">
+                <div class="chatlog__content">
+                    <div class="markdown">Also, join us live for a discussion that is sure to remain dull and civil, gay marriage! Featuring guests <span class="mention" title="Ben#3011">@Ben</span> and <span class="mention" title="Kamala Harris#2677">@Kamala Harris</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">18-Mar-20 08:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="689936643758620727" id="message-689936643758620727">
+                <div class="chatlog__content">
+                    <div class="markdown">Well that was as much of a mess as one might have expected. Transcript soon, or view it on Stage 1 by joining!</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">22-Mar-20 05:39 AM</span>
+
+            <div class="chatlog__message " data-message-id="691159035537391678" id="message-691159035537391678">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>The Stage Predicts</strong>
+Barring a <em>major</em> shift, Federalists Omar Sandoval and Aegeus Phoenix will win the vacant Dixie Assembly seats, leaving the partisan makeup unchanged</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="yeahok" title="yeahok" src="https://cdn.discordapp.com/emojis/523704633290391562.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">01-Apr-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="694996079955017758" id="message-694996079955017758">
+                <div class="chatlog__content">
+                    <div class="markdown">Open call for guests, if anyone is interested in discussing the controversy in the Northern House of Delegates, join us for a segment</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="TransHeart" title="TransHeart" src="https://cdn.discordapp.com/emojis/624718230329622549.png">
+                            <span class="chatlog__reaction-count">3</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">04-Apr-20 12:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="695771795059638364" id="message-695771795059638364">
+                <div class="chatlog__content">
+                    <div class="markdown">The Stage is watching all races closely, and will be releasing predictions prior to the close of polls</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">08-Apr-20 05:18 AM</span>
+
+            <div class="chatlog__message " data-message-id="697299409167450133" id="message-697299409167450133">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="April#7342">@&#39;^April^&#39;</span> will be taking leadership of The Stage as I prepare for a more demanding governmental role. We will continue to bring fans and followers debates and discussions from the top political figures in the country, on the issues that matter to you!
+
+If you are interested in viewing or participating, join here!
+
+<a href="https://discord.gg/4tfHwep">https://discord.gg/4tfHwep</a></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">20-Apr-20 03:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="701806395544305704" id="message-701806395544305704">
+                <div class="chatlog__content">
+                    <div class="markdown">After a break, we at The Stage are looking for people who are willing to debate. If you are interested in debating or wish to debate, please join here! 
+ <a href="https://discord.gg/uSc9v7y">https://discord.gg/uSc9v7y</a><span class="chatlog__edited-timestamp" title="20-Apr-20 03:48 PM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">4</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">22-Apr-20 03:56 PM</span>
+
+            <div class="chatlog__message " data-message-id="702533261221429328" id="message-702533261221429328">
+                <div class="chatlog__content">
+                    <div class="markdown">As part of one of our expanison into more types of programming, We here at The Stage got the chance to do a post election interview with <span class="mention" title="Slavette#0420">@Traitor of the right wing</span> and here is how it went!
+
+<a href="https://docs.google.com/document/d/1HxrHxOEpglJjP-N3LgorGubrFFnVUiRASZk1PUJs-HM/edit?usp=drivesdk">https://docs.google.com/document/d/1HxrHxOEpglJjP-N3LgorGubrFFnVUiRASZk1PUJs-HM/edit?usp=drivesdk</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1HxrHxOEpglJjP-N3LgorGubrFFnVUiRASZk1PUJs-HM/edit?usp=drivesdk"><div class="markdown">Post JF-5 Parliament Special Election Interview with John Richfield</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Post Jefferson Parliament Special Election Interview with John Richfield (Socialist-JF)  This is a exact transcript of the post election interview of John Richfield  April: Shall we begin our Interview?  Richfield: Sure  April: You, unfortunately, Lost the race. Was there anyt...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh3.googleusercontent.com/RYLUFi-Fv8Sx39YkjzZ8Q1lAs13NCGZ22ZITqd-qPN7vlEoSWIvJ79fKte838a9reCFkupaKIQ=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh3.googleusercontent.com/RYLUFi-Fv8Sx39YkjzZ8Q1lAs13NCGZ22ZITqd-qPN7vlEoSWIvJ79fKte838a9reCFkupaKIQ=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">28-Apr-20 02:51 AM</span>
+
+            <div class="chatlog__message " data-message-id="704509969726439524" id="message-704509969726439524">
+                <div class="chatlog__content">
+                    <div class="markdown">We have just completed a great interview with NASA Director <span class="mention" title="Jebcubed#6350">@Jebcubed</span>. Come check it out!
+
+<a href="https://docs.google.com/document/d/17efky-8W6l4nf8lBAXcROv9sOxLzDZsv_RleZfCp2MY/edit?usp=drivesdk">https://docs.google.com/document/d/17efky-8W6l4nf8lBAXcROv9sOxLzDZsv_RleZfCp2MY/edit?usp=drivesdk</a><span class="chatlog__edited-timestamp" title="28-Apr-20 02:52 AM">(edited)</span></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/17efky-8W6l4nf8lBAXcROv9sOxLzDZsv_RleZfCp2MY/edit?usp=drivesdk"><div class="markdown">Bold Ideas for a Bold New Decade</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Bold Ideas for a Bold New Decade My Interview with NASA Director Jebcubed on the new Hephaestus Initiative   April: Lets get started  Jebcubed: Im ready  April: So, first, tell us a little about the Hephaestus Initiative  Jebcubed: The Hephaestus Initiative is what we are call...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh6.googleusercontent.com/OROBXMOlPGh_FyS0rIe2vY8H07xn3My8f5_1XoJNqN2lMLxdrzdXn0Kkw4u-F-D8rV_VN0FAXA=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh6.googleusercontent.com/OROBXMOlPGh_FyS0rIe2vY8H07xn3My8f5_1XoJNqN2lMLxdrzdXn0Kkw4u-F-D8rV_VN0FAXA=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/343571200901120002/fc2bf9bbcef6e381ca675b59254c3098.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="April#7342" data-user-id="343571200901120002"  style="color: rgb(241, 196, 15)" >&#39;^April^&#39;</span>
+
+
+        <span class="chatlog__timestamp">05-May-20 04:48 AM</span>
+
+            <div class="chatlog__message " data-message-id="707076299390189659" id="message-707076299390189659">
+                <div class="chatlog__content">
+                    <div class="markdown">Check out our new interview with the top two candidates from the NS-2 race!
+<a href="https://docs.google.com/document/d/1_aUdaz-Roi2TIjyNdlwTI0wseYHqauG9JmVIgWtHdTg/edit?usp=drivesdk">https://docs.google.com/document/d/1_aUdaz-Roi2TIjyNdlwTI0wseYHqauG9JmVIgWtHdTg/edit?usp=drivesdk</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1_aUdaz-Roi2TIjyNdlwTI0wseYHqauG9JmVIgWtHdTg/edit?usp=drivesdk"><div class="markdown">May 2020 Interview NS-2</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">Winner: Hale  April: Ill start with this, Now that you have won, Do you have anything you would like to say to your constituents?  Hale: Well, from the bottom of my heart, I would like to say thank you to my constituents for electing me their representative. It was a hard-foug...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh4.googleusercontent.com/Zxix9kBw0eDSpo9Jl4z3SWbo0J2P-bs4altaifhjEKJZmYs9lkuTN9X2JK2oFTr8zs7081uahw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh4.googleusercontent.com/Zxix9kBw0eDSpo9Jl4z3SWbo0J2P-bs4altaifhjEKJZmYs9lkuTN9X2JK2oFTr8zs7081uahw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">18-May-20 08:46 PM</span>
+
+            <div class="chatlog__message " data-message-id="712028248254447756" id="message-712028248254447756">
+                <div class="chatlog__content">
+                    <div class="markdown">Archived <img class="emoji " alt="😢" title="😢" src="https://twemoji.maxcdn.com/2/72x72/1f622.png"></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="😳" title="😳" src="https://twemoji.maxcdn.com/2/72x72/1f633.png">
+                            <span class="chatlog__reaction-count">8</span>
+                        </div>
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="🇫" title="🇫" src="https://twemoji.maxcdn.com/2/72x72/1f1eb.png">
+                            <span class="chatlog__reaction-count">5</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 54 message(s)</div>
+</div>
+
+</body>
+</html>

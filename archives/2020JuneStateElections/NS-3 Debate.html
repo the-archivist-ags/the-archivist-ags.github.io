@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AmericanGovSim - ns3-debate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        /* General */
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/6c6374bad0b0b6d204d8d6dc4a18d820.woff);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/e8acd7d9bf6207f99350ca9f9e23b168.woff);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/3bdef1251a424500c1b3a78dea9b7e57.woff);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/be0060dafb7a0e31d2a1ca17c0708636.woff);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Whitney;
+    src: url(https://discordapp.com/assets/8e12fb4f14d9c4592eb8ec9f22337b04.woff);
+    font-weight: 700;
+}
+
+body {
+    font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    object-fit: contain;
+}
+
+.markdown {
+    max-width: 100%;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.spoiler {
+    width: fit-content;
+}
+
+.spoiler--hidden {
+    cursor: pointer;
+}
+
+.spoiler-text {
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler--hidden .spoiler-text::selection {
+    color: rgba(0, 0, 0, 0);
+}
+
+.spoiler-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.spoiler--hidden .spoiler-image {
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.spoiler--hidden .spoiler-image img {
+    filter: blur(44px);
+}
+
+.spoiler--hidden .spoiler-image:after {
+    content: "SPOILER";
+    color: #dcddde;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600;
+    padding: 0.5em 0.7em;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    font-size: 0.9em;
+}
+
+.spoiler--hidden:hover .spoiler-image:after {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.quote {
+    margin: 0.1em 0;
+    padding-left: 0.6em;
+    border-left: 4px solid;
+    border-radius: 3px;
+}
+
+.pre {
+    font-family: "Consolas", "Courier New", Courier, monospace;
+}
+
+.pre--multiline {
+    margin-top: 0.25em;
+    padding: 0.5em;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.pre--inline {
+    padding: 2px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.mention {
+    border-radius: 3px;
+    padding: 0 2px;
+    color: #7289da;
+    background: rgba(114, 137, 218, .1);
+    font-weight: 500;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.06em;
+    vertical-align: -0.4em;
+}
+
+.emoji--small {
+    width: 1em;
+    height: 1em;
+}
+
+.emoji--large {
+    width: 2.8em;
+    height: 2.8em;
+}
+
+/* Preamble */
+
+.preamble {
+    display: grid;
+    margin: 0 0.3em 0.6em 0.3em;
+    max-width: 100%;
+    grid-template-columns: auto 1fr;
+}
+
+.preamble__guild-icon-container {
+    grid-column: 1;
+}
+
+.preamble__guild-icon {
+    max-width: 88px;
+    max-height: 88px;
+}
+
+.preamble__entries-container {
+    grid-column: 2;
+    margin-left: 0.6em;
+}
+
+.preamble__entry {
+    font-size: 1.4em;
+}
+
+.preamble__entry--small {
+    font-size: 1em;
+}
+
+/* Chatlog */
+
+.chatlog {
+    max-width: 100%;
+}
+
+.chatlog__message-group {
+    display: grid;
+    margin: 0 0.6em;
+    padding: 0.9em 0;
+    border-top: 1px solid;
+    grid-template-columns: auto 1fr;
+}
+
+.chatlog__author-avatar-container {
+    grid-column: 1;
+    width: 40px;
+    height: 40px;
+}
+
+.chatlog__author-avatar {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.chatlog__messages {
+    grid-column: 2;
+    margin-left: 1.2em;
+    min-width: 50%;
+}
+
+.chatlog__author-name {
+    font-weight: 500;
+}
+
+.chatlog__timestamp {
+    margin-left: 0.3em;
+    font-size: 0.75em;
+}
+
+.chatlog__message {
+    padding: 0.1em 0.3em;
+    margin: 0 -0.3em;
+    background-color: transparent;
+    transition: background-color 1s ease;
+}
+
+.chatlog__content {
+    font-size: 0.95em;
+    word-wrap: break-word;
+}
+
+.chatlog__edited-timestamp {
+    margin-left: 0.15em;
+    font-size: 0.8em;
+}
+
+.chatlog__attachment {
+    margin-top: 0.3em;
+}
+
+.chatlog__attachment-thumbnail {
+    vertical-align: top;
+    max-width: 45vw;
+    max-height: 500px;
+    border-radius: 3px;
+}
+
+.chatlog__embed {
+    display: flex;
+    margin-top: 0.3em;
+    max-width: 520px;
+}
+
+.chatlog__embed-color-pill {
+    flex-shrink: 0;
+    width: 0.25em;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.chatlog__embed-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0.6em;
+    border: 1px solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.chatlog__embed-content {
+    display: flex;
+    width: 100%;
+}
+
+.chatlog__embed-text {
+    flex: 1;
+}
+
+.chatlog__embed-author {
+    display: flex;
+    margin-bottom: 0.3em;
+    align-items: center;
+}
+
+.chatlog__embed-author-icon {
+    margin-right: 0.5em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.chatlog__embed-author-name {
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-title {
+    margin-bottom: 0.2em;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.chatlog__embed-description {
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.chatlog__embed-fields {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chatlog__embed-field {
+    flex: 0;
+    min-width: 100%;
+    max-width: 506px;
+    padding-top: 0.6em;
+    font-size: 0.875em;
+}
+
+.chatlog__embed-field--inline {
+    flex: 1;
+    flex-basis: auto;
+    min-width: 150px;
+}
+
+.chatlog__embed-field-name {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+}
+
+.chatlog__embed-field-value {
+    font-weight: 500;
+}
+
+.chatlog__embed-thumbnail {
+    flex: 0;
+    margin-left: 1.2em;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-image-container {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-image {
+    max-width: 500px;
+    max-height: 400px;
+    border-radius: 3px;
+}
+
+.chatlog__embed-footer {
+    margin-top: 0.6em;
+}
+
+.chatlog__embed-footer-icon {
+    margin-right: 0.2em;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.chatlog__embed-footer-text {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+.chatlog__reactions {
+    display: flex;
+}
+
+.chatlog__reaction {
+    display: flex;
+    align-items: center;
+    margin: 0.35em 0.1em 0.1em 0.1em;
+    padding: 0.2em 0.35em;
+    border-radius: 3px;
+}
+
+.chatlog__reaction-count {
+    min-width: 9px;
+    margin-left: 0.35em;
+    font-size: 0.875em;
+}
+
+.chatlog__bot-tag {
+    position: relative;
+    top: -.2em;
+    margin-left: 0.3em;
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    vertical-align: middle;
+    line-height: 1.3;
+    background: #7289da;
+    color: #ffffff;
+    font-size: 0.625em;
+    font-weight: 500;
+}
+
+/* Postamble */
+
+.postamble {
+    margin: 1.4em 0.3em 0.6em 0.3em;
+    padding: 1em;
+    border-top: 1px solid;
+}
+    </style>
+    <style>
+        /* General */
+
+body {
+    background-color: #36393e;
+    color: #dcddde;
+}
+
+a {
+    color: #0096cf;
+}
+
+.spoiler-text {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.spoiler--hidden .spoiler-text {
+    background-color: #202225;
+}
+
+.spoiler--hidden:hover .spoiler-text {
+    background-color: rgba(32, 34, 37, 0.8);
+}
+
+.quote {
+    border-color: #4f545c;
+}
+
+.pre {
+    background-color: #2f3136 !important;
+}
+
+.pre--multiline {
+    border-color: #282b30 !important;
+    color: #b9bbbe !important;
+}
+
+/* === Preamble === */
+
+.preamble__entry {
+    color: #ffffff;
+}
+
+/* Chatlog */
+
+.chatlog__message-group {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatlog__author-name {
+    color: #ffffff;
+}
+
+.chatlog__timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__message--highlighted {
+    background-color: rgba(114, 137, 218, 0.2) !important;
+}
+
+.chatlog__message--pinned {
+    background-color: rgba(249, 168, 37, 0.05);
+}
+
+.chatlog__edited-timestamp {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.chatlog__embed-color-pill--default {
+    background-color: rgba(79, 84, 92, 1);
+}
+
+.chatlog__embed-content-container {
+    background-color: rgba(46, 48, 54, 0.3);
+    border-color: rgba(46, 48, 54, 0.6);
+}
+
+.chatlog__embed-author-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-author-name-link {
+    color: #ffffff;
+}
+
+.chatlog__embed-title {
+    color: #ffffff;
+}
+
+.chatlog__embed-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-field-name {
+    color: #ffffff;
+}
+
+.chatlog__embed-field-value {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__embed-footer {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chatlog__reaction {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatlog__reaction-count {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Postamble */
+
+.postamble {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.postamble__entry {
+    color: #ffffff;
+}
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.pre--multiline').forEach(block => hljs.highlightBlock(block));
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('message-' + id);
+
+            if (element) {
+                event.preventDefault();
+
+                element.classList.add('chatlog__message--highlighted');
+
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(function() {
+                    element.classList.remove('chatlog__message--highlighted');
+                }, 2000);
+            }
+        }
+
+        function showSpoiler(event, element) {
+            if (element && element.classList.contains('spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('spoiler--hidden');
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/402306430872453121/f2d3c37932ce484abfd4c7c6544d448c.png" alt="Guild icon">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">AmericanGovSim</div>
+        <div class="preamble__entry">State Elections Channels / ns3-debate</div>
+
+
+        <div class="preamble__entry preamble__entry--small">
+                After 28-May-20 12:00 AM
+        </div>
+    </div>
+</div>
+
+<div class="chatlog">
+    <div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/177050204766208000/339ab3f4da82be2ec565f7458c49c0f8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="DisguisedJet719#5977" data-user-id="177050204766208000"  style="color: rgb(87, 94, 255)" >DisguisedJet719</span>
+
+
+        <span class="chatlog__timestamp">05-Jun-20 11:58 PM</span>
+
+            <div class="chatlog__message " data-message-id="718599729881022475" id="message-718599729881022475">
+                <div class="chatlog__content">
+                    <div class="markdown"><strong>June State Election</strong>
+
+The Candidates are: 
+
+<span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span>  (AL) 
+<span class="mention" title="Cabin#6713">@Vice President Cabin</span> (I)</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:09 AM</span>
+
+            <div class="chatlog__message " data-message-id="718602384372269159" id="message-718602384372269159">
+                <div class="chatlog__content">
+                    <div class="markdown">Good evening to all those watching, and to my opponent <span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span>. I hope we can have a productive and informative discussion that will help voters make a decision at the ballot box. I invite any questions.</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dontcare" title="dontcare" src="https://cdn.discordapp.com/emojis/700544311481204828.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:19 AM</span>
+
+            <div class="chatlog__message " data-message-id="718604989853073470" id="message-718604989853073470">
+                <div class="chatlog__content">
+                    <div class="markdown">Hello all. I am Sandra. I know that I am not well known and I am looking forward to answering any and all questions and look to a productive debate.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="718653373427220571" id="message-718653373427220571">
+                <div class="chatlog__content">
+                    <div class="markdown">Guess I can get us started off. <span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> what makes you the better candidate to serve the North?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:02 AM</span>
+
+            <div class="chatlog__message " data-message-id="718691248126558280" id="message-718691248126558280">
+                <div class="chatlog__content">
+                    <div class="markdown">Well I am active which means I will be present for most if not every vote. I am also country above party meaning that if my party, any elected official from, disappoints me I will point it out. I serve at the please of people not the party. I am also a liberal/progressive which means that I will be closer to the ideology of the North overall. Same question to you <span class="mention" title="Cabin#6713">@Vice President Cabin</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="718692780427444275" id="message-718692780427444275">
+                <div class="chatlog__content">
+                    <div class="markdown">Sure, thanks for the answer. I&#39;ve actually had the opportunity to author a few pieces of progressive legislation for the state even as I was living elsewhere. With the help of sponsors, I&#39;ve pushed through abolitions of mandatory minimums and cash bail in our state, and eased licensing restrictions so more people can get to work here. I have a proven track record of showing up for my constituents and of standing up for my values regardless of partisan pressures. Now, as an independent, I&#39;m more free than ever to focus on the needs of the voters alone.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666700446152523796/020d6aecbca828c501d46db7254b527b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="SteB#7085" data-user-id="666700446152523796"  style="color: rgb(0, 149, 255)" >Taft&#39;s alt</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:09 AM</span>
+
+            <div class="chatlog__message " data-message-id="718693038431666239" id="message-718693038431666239">
+                <div class="chatlog__content">
+                    <div class="markdown">What is the first thing you plan to do if you win the election?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="718694754086289489" id="message-718694754086289489">
+                <div class="chatlog__content">
+                    <div class="markdown">Immediately after? Thank my fianc&#233; for putting up with me through another campaign season, I imagine. In my official duties? Touch base with whoever the other delegates may be, and get to work bringing positive change to our state and to this district.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:16 AM</span>
+
+            <div class="chatlog__message " data-message-id="718694821304336404" id="message-718694821304336404">
+                <div class="chatlog__content">
+                    <div class="markdown">Ah cabin how do you feel about guns</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718694837771305040" id="message-718694837771305040">
+                <div class="chatlog__content">
+                    <div class="markdown">Gun control</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718694843441741875" id="message-718694843441741875">
+                <div class="chatlog__content">
+                    <div class="markdown">Etc</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718694908764094494" id="message-718694908764094494">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Cabin#6713">@Vice President Cabin</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:17 AM</span>
+
+            <div class="chatlog__message " data-message-id="718695093120532490" id="message-718695093120532490">
+                <div class="chatlog__content">
+                    <div class="markdown">Can I ask you to specify what &quot;guns etcetera&quot; is?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:17 AM</span>
+
+            <div class="chatlog__message " data-message-id="718695120253485126" id="message-718695120253485126">
+                <div class="chatlog__content">
+                    <div class="markdown">Gun control</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718695141447303179" id="message-718695141447303179">
+                <div class="chatlog__content">
+                    <div class="markdown">How do you feel about gun control</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:26 AM</span>
+
+            <div class="chatlog__message " data-message-id="718697287974518925" id="message-718697287974518925">
+                <div class="chatlog__content">
+                    <div class="markdown">I support the second amendment, and I believe that law abiding citizens should be allowed to exercise their rights. That said, there are reasonable, common sense regulations that must be in place to ensure public and private safety. Background checks, proper training, these aren&#39;t restrictive. It&#39;s responsible ownership, simple as that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:28 AM</span>
+
+            <div class="chatlog__message " data-message-id="718697906286100550" id="message-718697906286100550">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you support banning of magazines</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:31 AM</span>
+
+            <div class="chatlog__message " data-message-id="718698496160694362" id="message-718698496160694362">
+                <div class="chatlog__content">
+                    <div class="markdown">No I do not. Restriction? Sure, they shouldn&#39;t be as easy to get as a shotgun. But I don&#39;t believe that a ban is the right policy choice.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:33 AM</span>
+
+            <div class="chatlog__message " data-message-id="718699023887892520" id="message-718699023887892520">
+                <div class="chatlog__content">
+                    <div class="markdown">I see</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/420543986529206272/e3fbab9a33baf7208a60ab5b8a13fba9.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="mkay#6816" data-user-id="420543986529206272"  style="color: rgb(129, 134, 137)" >James W. Hagen</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:49 AM</span>
+
+            <div class="chatlog__message " data-message-id="718718295431184459" id="message-718718295431184459">
+                <div class="chatlog__content">
+                    <div class="markdown">Hey Cabin, whats up?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666700446152523796/020d6aecbca828c501d46db7254b527b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="SteB#7085" data-user-id="666700446152523796"  style="color: rgb(0, 149, 255)" >Taft&#39;s alt</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 12:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="718783972498472971" id="message-718783972498472971">
+                <div class="chatlog__content">
+                    <div class="markdown">Do you support the Green Employment Act?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718784069738954813" id="message-718784069738954813">
+                <div class="chatlog__content">
+                    <div class="markdown"><a href="https://docs.google.com/document/d/1Xmoc8qbKFCXkXDUGwuu_aDHQ2OpHfa-t7J7o6vD8gFs/edit?usp=sharing">https://docs.google.com/document/d/1Xmoc8qbKFCXkXDUGwuu_aDHQ2OpHfa-t7J7o6vD8gFs/edit?usp=sharing</a></div>
+                </div>
+
+
+            <div class="chatlog__embed">
+                <div class="chatlog__embed-color-pill chatlog__embed-color-pill--default"></div>
+                <div class="chatlog__embed-content-container">
+                    <div class="chatlog__embed-content">
+                        <div class="chatlog__embed-text">
+
+                            <div class="chatlog__embed-title">
+                                <a class="chatlog__embed-title-link" href="https://docs.google.com/document/d/1Xmoc8qbKFCXkXDUGwuu_aDHQ2OpHfa-t7J7o6vD8gFs/edit?usp=sharing"><div class="markdown">Green Employment Act</div></a>
+                            </div>
+
+                            <div class="chatlog__embed-description"><div class="markdown">IN THE HOUSE OF REPRESENTATIVES OF THE UNITED STATES OF AMERICA  June 2nd, 2020  A Bill to increase the size of the green energy sector in the United States Presented by Rep, SteB; Co-sponsored by Rep. Drunk, Rep. Epsilon and Rep. Apex  A Bill  To expand the Green Energy priva...</div></div>
+
+                        </div>
+
+                        <div class="chatlog__embed-thumbnail-container">
+                            <a class="chatlog__embed-thumbnail-link" href="https://lh5.googleusercontent.com/jwYU8HPvb1ChHlzKUAGY24H7Rf8yPI1vyinK3DtArTYhhTHiMXvNCCVxwNL9A6ETrkoK60Ywyw=w1200-h630-p">
+                                <img class="chatlog__embed-thumbnail" src="https://lh5.googleusercontent.com/jwYU8HPvb1ChHlzKUAGY24H7Rf8yPI1vyinK3DtArTYhhTHiMXvNCCVxwNL9A6ETrkoK60Ywyw=w1200-h630-p" alt="Thumbnail">
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:04 PM</span>
+
+            <div class="chatlog__message " data-message-id="718827619470147654" id="message-718827619470147654">
+                <div class="chatlog__content">
+                    <div class="markdown">Hi Senator. Hope all is well.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="718828611918102538" id="message-718828611918102538">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> and <span class="mention" title="Cabin#6713">@Vice President Cabin</span> upon being elected, what is the first thing that you plan to do</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 03:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="718829093742837801" id="message-718829093742837801">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="SteB#7085">@Taft&#39;s alt</span> broadly, yes. I do question the timeline though as the bill makes numerous references to job loss as a result of COVID-19, but takes effect only after all states have ended their emergencies related to the virus. By then I would expect those jobs to be back, and the massive unemployment number to be considerably lower.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718829252681662484" id="message-718829252681662484">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> feel free to reference my answer to SteB last night</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 04:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718854353997398027" id="message-718854353997398027">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Arkenstone#7880">@I worsed the drug crisis</span> thank you for the question. I will meet with my conference leader seeing as this would be my first election and take some tips and tricks from them. Make sure to meet all of my colleagues and start to feel where I will be able to make the biggest impact. After doing so is when I would look towards authoring my first legislation.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:35 PM</span>
+
+            <div class="chatlog__message " data-message-id="718865553078616164" id="message-718865553078616164">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> I&#39;ll follow up on a comment there, first, congratulations on your first campaign! Always glad to see someone new looking to serve the public. I will ask though, what experience would you bring to office outside of being a part of American Liberal party leadership?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:38 PM</span>
+
+            <div class="chatlog__message " data-message-id="718866374281265192" id="message-718866374281265192">
+                <div class="chatlog__content">
+                    <div class="markdown">Well as one of the few women I can definitely bring an unique viewpoint that this government seems to lack. Which isn&#39;t me saying vote for me because I am a woman, but in a country where 51% of them are women we should definitely have more influence in this government. Furthermore as said before I believe in having every ones voice heard regardless of whom you are or what you believe in. I will do my best to represent everyone and not just those of the people that vote for me. Thank you for the question.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:41 PM</span>
+
+            <div class="chatlog__message " data-message-id="718867058531631155" id="message-718867058531631155">
+                <div class="chatlog__content">
+                    <div class="markdown">Sure thing. What would you consider your main policy focus?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 05:42 PM</span>
+
+            <div class="chatlog__message " data-message-id="718867463802191962" id="message-718867463802191962">
+                <div class="chatlog__content">
+                    <div class="markdown">So often forgotten I think would be the education system and focusing on making a more equal playing ground and promotes inclusiveness instead of a pay for play scheme that it has promoted in the past.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:07 PM</span>
+
+            <div class="chatlog__message " data-message-id="718873610273423421" id="message-718873610273423421">
+                <div class="chatlog__content">
+                    <div class="markdown">I see. I would challenge that education is a smaller issue at this stage than the pandemic keeping schools closed, keeping some schools from opening in the fall. Of course education needs improvement, and it was a significant part of my work back in Dixie that I remain committed to. But in terms of main focuses, I&#39;m not sure that meets the moment that we&#39;re in today.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:10 PM</span>
+
+            <div class="chatlog__message " data-message-id="718874518608937000" id="message-718874518608937000">
+                <div class="chatlog__content">
+                    <div class="markdown">In your opinion maybe so. But our children are being robbed of an education and especially children of colour are at an even worse degree. When schools do get the chance to reopen the education gap will be even bigger than before. Is this issue the greatest amoung us? No. But is it important. Yes very much so. There is no reason to allow a problem to be kicked down stream just because it doesn&#39;t seem as important as others. A crack in a mirror no matter how small is still a crack.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:17 PM</span>
+
+            <div class="chatlog__message " data-message-id="718876163304325172" id="message-718876163304325172">
+                <div class="chatlog__content">
+                    <div class="markdown">My point is that right now, the mirror is shattered and you seem to only be looking at one little piece. Our world has been turned upside down, and trying to go about business as usual honestly shows a certain lack of preparedness for the situation you&#39;re hoping to insert yourself into. You say that the coronavirus being more important in this moment than education fixes is my opinion. Do you disagree with that?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:20 PM</span>
+
+            <div class="chatlog__message " data-message-id="718877034931159130" id="message-718877034931159130">
+                <div class="chatlog__content">
+                    <div class="markdown">Do I disagree no. Am I still going to fight for other things amoung fighting against coronaviris you bet your ass.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:34 PM</span>
+
+            <div class="chatlog__message " data-message-id="718880558075215943" id="message-718880558075215943">
+                <div class="chatlog__content">
+                    <div class="markdown">Well <em>obviously</em>. I asked the main focus, not everything you plan to do for two months. Prioritizing the rest of the laundry list over the crisis is just shortsighted and wrong.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:37 PM</span>
+
+            <div class="chatlog__message " data-message-id="718881143499391036" id="message-718881143499391036">
+                <div class="chatlog__content">
+                    <div class="markdown">I am sorry as I misinterpreted the question. The obvious focus would be fighting covid 19, and making sure our citizens are taken care of during these times.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:43 PM</span>
+
+            <div class="chatlog__message " data-message-id="718882705374314526" id="message-718882705374314526">
+                <div class="chatlog__content">
+                    <div class="markdown">I see. Well I&#39;m certainly glad that we can agree on that.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/666700446152523796/020d6aecbca828c501d46db7254b527b.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="SteB#7085" data-user-id="666700446152523796"  style="color: rgb(0, 149, 255)" >Taft&#39;s alt</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:44 PM</span>
+
+            <div class="chatlog__message " data-message-id="718882903026696192" id="message-718882903026696192">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> Do you support the Green Employment Act?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 06:45 PM</span>
+
+            <div class="chatlog__message " data-message-id="718883327003721779" id="message-718883327003721779">
+                <div class="chatlog__content">
+                    <div class="markdown">Yes, it is a good piece of legislation. And I thank you for introducing it.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="718899052195872899" id="message-718899052195872899">
+                <div class="chatlog__content">
+                    <div class="markdown">How do you feel about abortion</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:51 PM</span>
+
+            <div class="chatlog__message " data-message-id="718899942919372852" id="message-718899942919372852">
+                <div class="chatlog__content">
+                    <div class="markdown">Women should be able to have a choice. Now this choice be made before the fetus is too far developed. I think a 21 week cutoff is a good point. Any abortion past that should only be under extreme circumstances such as rape, incest, or the danger of the mothers life.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:52 PM</span>
+
+            <div class="chatlog__message " data-message-id="718900055028924499" id="message-718900055028924499">
+                <div class="chatlog__content">
+                    <div class="markdown">Lost my vote</div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="👏" title="👏" src="https://twemoji.maxcdn.com/2/72x72/1f44f.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:53 PM</span>
+
+            <div class="chatlog__message " data-message-id="718900430914060299" id="message-718900430914060299">
+                <div class="chatlog__content">
+                    <div class="markdown">Far too much of my tenure in Dixie was spent fighting against the most restrictive abortion ban in the world. I feel that perhaps the biggest downside of my confirmation to the vice presidency is that I could not continue that fight. No exception for rape, no exception for incest, only the most dire exception for threat to the life of the mother. It was wrong, and I will make certain that nothing resembling it will pass in this state.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 07:54 PM</span>
+
+            <div class="chatlog__message " data-message-id="718900720497066064" id="message-718900720497066064">
+                <div class="chatlog__content">
+                    <div class="markdown">How do you to feel on education reform?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 08:02 PM</span>
+
+            <div class="chatlog__message " data-message-id="718902755359457280" id="message-718902755359457280">
+                <div class="chatlog__content">
+                    <div class="markdown">My main priority is expanding access. I saw a major restructuring passed in Dixie, and I would of course be open to a similar program here if there was a consensus that it was needed. But first and foremost we have to ensure that everyone has a chance to better themselves, and there are pockets where that&#39;s simply not the case.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:08 PM</span>
+
+            <div class="chatlog__message " data-message-id="718934367015010354" id="message-718934367015010354">
+                <div class="chatlog__content">
+                    <div class="markdown">If Canada invaded what would you do to defend your state? What would you do if the federal government collapses</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="718944711603257425" id="message-718944711603257425">
+                <div class="chatlog__content">
+                    <div class="markdown">That&#39;s a bit too much suspension of disbelief for me. Surely there are issues more important to the people of this district than such a hypothetical.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">06-Jun-20 10:50 PM</span>
+
+            <div class="chatlog__message " data-message-id="718944941656506424" id="message-718944941656506424">
+                <div class="chatlog__content">
+                    <div class="markdown">I concur with Cabin. I don&#39;t see how this question is relevant in anyone&#39;s mind.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 01:06 AM</span>
+
+            <div class="chatlog__message " data-message-id="718979134071504996" id="message-718979134071504996">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> how long have you lived in the North?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="718993038613151904" id="message-718993038613151904">
+                <div class="chatlog__content">
+                    <div class="markdown">Wow dodging my questions</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718993078576218575" id="message-718993078576218575">
+                <div class="chatlog__content">
+                    <div class="markdown">Smh reason why I didn’t vote for you</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="718993093130453033" id="message-718993093130453033">
+                <div class="chatlog__content">
+                    <div class="markdown">Neither of you</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:37 AM</span>
+
+            <div class="chatlog__message " data-message-id="719002040499699784" id="message-719002040499699784">
+                <div class="chatlog__content">
+                    <div class="markdown">I have loved here my whole life a fact that I proud wear</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:40 AM</span>
+
+            <div class="chatlog__message " data-message-id="719002754965700629" id="message-719002754965700629">
+                <div class="chatlog__content">
+                    <div class="markdown">Would you say you&#39;ve had an impact on the state?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:41 AM</span>
+
+            <div class="chatlog__message " data-message-id="719002988458278953" id="message-719002988458278953">
+                <div class="chatlog__content">
+                    <div class="markdown">Seeing as I have just gotten into politics my impact is small, but I am looking forward to changing that and expanding my impact.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:45 AM</span>
+
+            <div class="chatlog__message " data-message-id="719004022744416316" id="message-719004022744416316">
+                <div class="chatlog__content">
+                    <div class="markdown">Glad to hear that. Though I did just move fairly recently, I&#39;ve had the privilege of working with members of the HoD to get changes made here to bring about a fairer system for the poor and minority communities. I hope you get the chance to do the same in some way or another.</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719004819028836394" id="message-719004819028836394">
+                <div class="chatlog__content">
+                    <div class="markdown">I actually have a quick question <span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span>, several of your campaign posters referenced sandra4congress.com. Now I checked, and that site doesn&#39;t seem to exist. But putting that aside, isn&#39;t it a strange domain choice?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/254141103454945281/b786154ffe02e1dba9029aaf544a16c5.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="bob2boy#7855" data-user-id="254141103454945281"  style="color: rgb(129, 134, 137)" >AG bob2boy</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 02:58 AM</span>
+
+            <div class="chatlog__message " data-message-id="719007361129513022" id="message-719007361129513022">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Cabin#6713">@Vice President Cabin</span> <span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> Here is a question I am sure is weighing on all ur hearts at this time. How to you plan on handling police reform in the wake of all these protests.?And also what measures do you intend on taking to quell civil unrest?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:04 AM</span>
+
+            <div class="chatlog__message " data-message-id="719008973935870025" id="message-719008973935870025">
+                <div class="chatlog__content">
+                    <div class="markdown">How do you feel about forced chemical castrations on pedos?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:08 AM</span>
+
+            <div class="chatlog__message " data-message-id="719009944531107881" id="message-719009944531107881">
+                <div class="chatlog__content">
+                    <div class="markdown">Sure, I&#39;m not sure that there is much to be done in the legislature about the protests themselves, though of course changes need to be made in our law enforcement system more broadly. I appreciate the steps taken to move police accountability outside police, ensuring that there is an independent review of potential misconduct. I do believe that finer changes could be made, not including armed officers for nonthreatening calls and the like, but the complication is that much of this needs to happen and the local municipal level. <span class="mention" title="bob2boy#7855">@AG bob2boy</span><span class="chatlog__edited-timestamp" title="07-Jun-20 03:11 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719010239021711440" id="message-719010239021711440">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe that falls firmly in the cruel and unusual column of potential punishments. We&#39;ve taken the great step of removing the death penalty in our nation, but we certainly don&#39;t need to replace it with mutilation. <span class="mention" title="ryandaly4545#5989">@ClerksandModsriggedthelection</span><span class="chatlog__edited-timestamp" title="07-Jun-20 03:11 AM">(edited)</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/660569561287884800/a78ee21abe533c161efcafa7b611bb01.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="ryandaly4545#5989" data-user-id="660569561287884800"  style="color: rgb(129, 134, 137)" >ClerksandModsriggedthelection</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:10 AM</span>
+
+            <div class="chatlog__message " data-message-id="719010288199925830" id="message-719010288199925830">
+                <div class="chatlog__content">
+                    <div class="markdown">Interesting <img class="emoji " alt="🤔" title="🤔" src="https://twemoji.maxcdn.com/2/72x72/1f914.png"></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/embed/avatars/4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="XRT-17#0109" data-user-id="585612720833953792"  style="color: rgb(129, 134, 137)" >XRT-17</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:20 AM</span>
+
+            <div class="chatlog__message " data-message-id="719012894184046623" id="message-719012894184046623">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Cabin#6713">@Vice President Cabin</span> Do you think restrictions on marriage should exist for any consenting adults? Such as relationships between siblings and cousins, or incest?<span class="chatlog__edited-timestamp" title="07-Jun-20 03:21 AM">(edited)</span></div>
+                </div>
+
+
+
+                <div class="chatlog__reactions">
+                        <div class="chatlog__reaction">
+                            <img class="emoji emoji--small" alt="dixiepride" title="dixiepride" src="https://cdn.discordapp.com/emojis/694999241663447131.png">
+                            <span class="chatlog__reaction-count">1</span>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:29 AM</span>
+
+            <div class="chatlog__message " data-message-id="719015138715500547" id="message-719015138715500547">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="XRT-17#0109">@XRT-17</span> I&#39;ll honestly say that it&#39;s not an issue I have ever considered, and I don&#39;t anticipate it becoming one that terribly many people consider.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 03:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="719019552931053709" id="message-719019552931053709">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="bob2boy#7855">@AG bob2boy</span> thank you for the question, I do feel that there are a few reforms that could take place that many would consider necessary in response to these protests. Allowing there to be civilian oversight over any investigation into police shootings that result in the untimely death of a civilian. Banning choke holds, as well as increasing the amount of sensitivity training they receive. I believe that the reforms mentioned being implemented will calm the protesters, as well as making sure those four officers are punished accordingly.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:06 AM</span>
+
+            <div class="chatlog__message " data-message-id="719024582836879392" id="message-719024582836879392">
+                <div class="chatlog__content">
+                    <div class="markdown">Also I want to say that the website for some reason isn&#39;t working, and I stupidly used congress as a synonym for the Delegation. That is a mistake I own up to. Thank you for the question</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/337691769422741506/a22b5801e524bb1b4bc6c50525035f2d.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Arkenstone#7880" data-user-id="337691769422741506"  style="color: rgb(0, 149, 255)" >I worsed the drug crisis</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:42 AM</span>
+
+            <div class="chatlog__message " data-message-id="719033568529088522" id="message-719033568529088522">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span> do you think you, by default of having lived in the state longer, understand the people of the state better?</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:47 AM</span>
+
+            <div class="chatlog__message " data-message-id="719034856063107082" id="message-719034856063107082">
+                <div class="chatlog__content">
+                    <div class="markdown">I would not state that, I think it is who is more aware to the state and the people in the state. Which I do believe is me, and as a more liberal state I believe that I am the one that would be a better representative for them.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:49 AM</span>
+
+            <div class="chatlog__message " data-message-id="719035184326115379" id="message-719035184326115379">
+                <div class="chatlog__content">
+                    <div class="markdown">You&#39;ve mentioned being liberal as a qualification a couple times now, which of my beliefs do you not believe fit the people of this district?</div>
+                </div>
+
+
+
+            </div>
+            <div class="chatlog__message " data-message-id="719035199546982491" id="message-719035199546982491">
+                <div class="chatlog__content">
+                    <div class="markdown"><span class="mention" title="Baise-Moi#6239">@COS Sandra Murphy-Colbert</span></div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:56 AM</span>
+
+            <div class="chatlog__message " data-message-id="719037126297124965" id="message-719037126297124965">
+                <div class="chatlog__content">
+                    <div class="markdown">I believe that it isn&#39;t that they&#39;re not fit for this district, but more that this state is considered the most liberal, and with me being a member and a Secretary of the most liberal party, and most progressive caucus within that party.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 04:59 AM</span>
+
+            <div class="chatlog__message " data-message-id="719037837948878849" id="message-719037837948878849">
+                <div class="chatlog__content">
+                    <div class="markdown">Well I don&#39;t know about you, but I&#39;m not running statewide. I&#39;m running to represent the people of this district, to listen and ensure that their needs and wants are heard in the House of Delegates. And frankly, I would challenge that my record on education, on criminal justice, on health, is a much better demonstration of my values and efficacy as a legislator than membership in a party.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 05:01 AM</span>
+
+            <div class="chatlog__message " data-message-id="719038176391462985" id="message-719038176391462985">
+                <div class="chatlog__content">
+                    <div class="markdown">It was a point I wanted to make. And by your response I can see I made it. So thank you for your contributions and your answer.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/279094591872040960/826f8aa7c4d5d99272e041471831adb4.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Cabin#6713" data-user-id="279094591872040960"  style="color: rgb(26, 188, 156)" >Vice President Cabin</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:48 PM</span>
+
+            <div class="chatlog__message " data-message-id="719321997829603429" id="message-719321997829603429">
+                <div class="chatlog__content">
+                    <div class="markdown">As we near the close of debate, I&#39;d like to thank my opponent for her time and thoughts. I&#39;m confident that this district will be well-represented regardless of the final vote tally.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div><div class="chatlog__message-group">
+    <div class="chatlog__author-avatar-container">
+        <img class="chatlog__author-avatar" src="https://cdn.discordapp.com/avatars/264516851910967296/88a0a18c93cc023025d698ecd493cab8.png" alt="Avatar">
+    </div>
+    <div class="chatlog__messages">
+        <span class="chatlog__author-name" title="Baise-Moi#6239" data-user-id="264516851910967296"  style="color: rgb(0, 149, 255)" >COS Sandra Murphy-Colbert</span>
+
+
+        <span class="chatlog__timestamp">07-Jun-20 11:49 PM</span>
+
+            <div class="chatlog__message " data-message-id="719322243150381126" id="message-719322243150381126">
+                <div class="chatlog__content">
+                    <div class="markdown">I would also like to thank the Vice President for his time also. And I wish good luck to him.</div>
+                </div>
+
+
+
+            </div>
+    </div>
+</div>
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 76 message(s)</div>
+</div>
+
+</body>
+</html>
